@@ -1,7 +1,9 @@
 // app.js - Controller for ORACLE-26 UI and Event Handling
-import { TEAMS } from './data/index.js';
+import { TEAMS, reloadTeams } from './data/index.js';
 import { runPrediction } from './engine.js';
 import { runBacktest, computeMetrics, diagnoseWeaknesses } from './verification.js';
+import { runPreMatchFlags } from './engine/preMatchFlags.js';
+import { deltaUpdateTeam } from './data/deltaSync.js';
 
 
 
@@ -124,11 +126,13 @@ document.addEventListener("DOMContentLoaded", () => {
   teamASelect.addEventListener("change", () => {
     if (validateTeamSelection()) {
       renderSquadAnalysis();
+      renderPreMatchFlags();
     }
   });
   teamBSelect.addEventListener("change", () => {
     if (validateTeamSelection()) {
       renderSquadAnalysis();
+      renderPreMatchFlags();
     }
   });
 
@@ -290,6 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Update Squad Analysis
     renderSquadAnalysis();
+    renderPreMatchFlags();
   }
 
   // Trigger Predict click handler
@@ -310,26 +315,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnTabPredictor = document.getElementById("btn-tab-predictor");
   const btnTabSquad = document.getElementById("btn-tab-squad");
   const btnTabVerification = document.getElementById("btn-tab-verification");
+  const btnTabSettings = document.getElementById("btn-tab-settings");
   const predictorView = document.getElementById("predictor-view");
   const squadAnalysisView = document.getElementById("squad-analysis-view");
   const verificationView = document.getElementById("verification-view");
+  const settingsView = document.getElementById("settings-view");
 
   btnTabPredictor.addEventListener("click", () => {
     btnTabPredictor.classList.add("active");
     btnTabSquad.classList.remove("active");
     btnTabVerification.classList.remove("active");
+    btnTabSettings.classList.remove("active");
     predictorView.classList.remove("hidden");
     squadAnalysisView.classList.add("hidden");
     verificationView.classList.add("hidden");
+    settingsView.classList.add("hidden");
   });
 
   btnTabSquad.addEventListener("click", () => {
     btnTabSquad.classList.add("active");
     btnTabPredictor.classList.remove("active");
     btnTabVerification.classList.remove("active");
+    btnTabSettings.classList.remove("active");
     squadAnalysisView.classList.remove("hidden");
     predictorView.classList.add("hidden");
     verificationView.classList.add("hidden");
+    settingsView.classList.add("hidden");
     
     // Render squad analysis
     renderSquadAnalysis();
@@ -339,12 +350,27 @@ document.addEventListener("DOMContentLoaded", () => {
     btnTabVerification.classList.add("active");
     btnTabPredictor.classList.remove("active");
     btnTabSquad.classList.remove("active");
+    btnTabSettings.classList.remove("active");
     verificationView.classList.remove("hidden");
     predictorView.classList.add("hidden");
     squadAnalysisView.classList.add("hidden");
+    settingsView.classList.add("hidden");
     
     // Execute backtest and display results
     executeAndRenderBacktest();
+  });
+
+  btnTabSettings.addEventListener("click", () => {
+    btnTabSettings.classList.add("active");
+    btnTabPredictor.classList.remove("active");
+    btnTabSquad.classList.remove("active");
+    btnTabVerification.classList.remove("active");
+    settingsView.classList.remove("hidden");
+    predictorView.classList.add("hidden");
+    squadAnalysisView.classList.add("hidden");
+    verificationView.classList.add("hidden");
+    
+    updateSettingsPanel();
   });
 
   function renderSquadAnalysis() {
@@ -411,18 +437,25 @@ document.addEventListener("DOMContentLoaded", () => {
       row.className = "player-row";
       
       // Check for X-Factor
-      const TUS = (player.xG_club_per90 * player.league_difficulty_coeff) > 0 
-        ? (player.xG_intl_per90 / (player.xG_club_per90 * player.league_difficulty_coeff)) 
-        : 0;
-      const TUS_weighted = TUS * Math.log(player.caps + 1);
-      const Ceiling = player.mean_xG_per90 > 0 
-        ? ((player.xG_best_single_match - player.mean_xG_per90) / player.mean_xG_per90) 
-        : 0;
-        
-      const hasXFactor = TUS_weighted > 1.8 && Ceiling > 1.0 
-                         && player.data_quality !== 'UNKNOWN' && player.data_quality !== 'MINIMAL';
+      let xFactorBadge = "";
+      if (player.xG_intl_per90 === 0 || player.best_match_source === "UNAVAILABLE") {
+        xFactorBadge = `<span class="badge-awaiting" style="color: var(--text-secondary); border: 1px dashed var(--text-secondary); font-size: 8px; padding: 1px 4px; margin-left: 6px; font-weight: bold; text-transform: uppercase;">X-FACTOR EVAL: AWAITING INTL DATA</span>`;
+      } else {
+        const TUS = (player.xG_club_per90 * player.league_difficulty_coeff) > 0 
+          ? (player.xG_intl_per90 / (player.xG_club_per90 * player.league_difficulty_coeff)) 
+          : 0;
+        const TUS_weighted = TUS * Math.log((player.caps || 0) + 1);
+        const Ceiling = player.mean_xG_per90 > 0 
+          ? ((player.xG_best_single_match - player.mean_xG_per90) / player.mean_xG_per90) 
+          : 0;
+          
+        const hasXFactor = TUS_weighted > 1.8 && Ceiling > 1.0 
+                           && player.data_quality !== 'UNKNOWN' && player.data_quality !== 'MINIMAL';
 
-      const xFactorBadge = hasXFactor ? `<span class="badge-xfactor">X-FACTOR</span>` : "";
+        if (hasXFactor) {
+          xFactorBadge = `<span class="badge-xfactor">X-FACTOR</span>`;
+        }
+      }
       const qualityClass = `badge-${player.data_quality.toLowerCase()}`;
       
       row.innerHTML = `
@@ -691,8 +724,412 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Pre-Match Flags Rendering in Match Prediction
+  function renderPreMatchFlags() {
+    const teamAId = teamASelect.value;
+    const teamBId = teamBSelect.value;
+    const container = document.getElementById("pre-match-flags-container");
+    
+    if (teamAId === teamBId) {
+      container.innerHTML = "";
+      container.classList.add("hidden");
+      return;
+    }
+
+    const flagsA = runPreMatchFlags(teamAId);
+    const flagsB = runPreMatchFlags(teamBId);
+
+    const hasFlagsA = flagsA.critical.length > 0 || flagsA.warning.length > 0 || flagsA.info.length > 0;
+    const hasFlagsB = flagsB.critical.length > 0 || flagsB.warning.length > 0 || flagsB.info.length > 0;
+
+    if (!hasFlagsA && !hasFlagsB) {
+      container.innerHTML = "";
+      container.classList.add("hidden");
+      return;
+    }
+
+    container.innerHTML = "";
+    container.classList.remove("hidden");
+
+    const box = document.createElement("div");
+    box.className = "pre-match-flags-box";
+
+    const renderTeamFlags = (teamId, flags) => {
+      const block = document.createElement("div");
+      block.className = "pre-match-flags-team-block";
+
+      const team = TEAMS.find(t => t.id === teamId) || { name: teamId };
+      
+      // Determine worst flag severity
+      let titleClass = "";
+      let prefixSym = "ℹ INFO";
+      if (flags.critical.length > 0) {
+        titleClass = "critical";
+        prefixSym = "🔴 CRITICAL";
+      } else if (flags.warning.length > 0) {
+        titleClass = "warning";
+        prefixSym = "⚠ WARNING";
+      }
+
+      block.innerHTML = `
+        <div class="pre-match-flags-title ${titleClass}">
+          ${prefixSym} — ${team.name.toUpperCase()}
+        </div>
+        <ul class="pre-match-flags-list">
+          ${flags.critical.map(f => `<li class="critical">${f}</li>`).join('')}
+          ${flags.warning.map(f => `<li class="warning">${f}</li>`).join('')}
+        </ul>
+      `;
+
+      if (flags.info.length > 0) {
+        const infoHtml = `
+          <details style="margin-top: 4px; cursor: pointer; color: var(--text-secondary);">
+            <summary style="font-size: 10px; text-transform: uppercase;">Info Notes (${flags.info.length})</summary>
+            <ul class="pre-match-flags-list" style="margin-top: 4px;">
+              ${flags.info.map(f => `<li class="info" style="font-size: 10px;">${f}</li>`).join('')}
+            </ul>
+          </details>
+        `;
+        block.querySelector(".pre-match-flags-list").insertAdjacentHTML('afterend', infoHtml);
+      }
+
+      return block;
+    };
+
+    if (hasFlagsA) box.appendChild(renderTeamFlags(teamAId, flagsA));
+    if (hasFlagsB) box.appendChild(renderTeamFlags(teamBId, flagsB));
+
+    container.appendChild(box);
+  }
+
+  // Update Settings Panel and Data Inspector Table
+  function updateSettingsPanel() {
+    if (typeof localStorage === 'undefined') return;
+
+    const meta = JSON.parse(localStorage.getItem('oracle26_meta') || 'null');
+    if (meta) {
+      document.getElementById("meta-version").textContent = meta.version;
+      document.getElementById("meta-total-teams").textContent = meta.total_teams;
+      document.getElementById("meta-total-players").textContent = meta.total_players;
+      document.getElementById("meta-last-pull").textContent = meta.last_pull_attempt
+        ? new Date(meta.last_pull_attempt).toLocaleTimeString()
+        : "NEVER";
+    }
+
+    const tbody = document.getElementById("inspector-table-body");
+    tbody.innerHTML = "";
+
+    TEAMS.forEach(team => {
+      const teamKey = `oracle26_team_${team.id}`;
+      const injuryKey = `oracle26_injuries_${team.id}`;
+      const cachedTeam = JSON.parse(localStorage.getItem(teamKey) || 'null');
+      const cachedInjuries = JSON.parse(localStorage.getItem(injuryKey) || 'null');
+
+      const flags = runPreMatchFlags(team.id);
+      const criticalCount = flags.critical.length;
+      const warningCount = flags.warning.length;
+
+      let rowClass = "inspector-row-ok";
+      if (criticalCount > 0) rowClass = "inspector-row-critical";
+      else if (warningCount > 0) rowClass = "inspector-row-warning";
+
+      let dataQualityLabel = "UNKNOWN";
+      if (cachedTeam) {
+        const starters = cachedTeam.squad.filter(p => p.is_starter);
+        const fullCount = starters.filter(p => p.data_quality === 'FULL').length;
+        const unknownCount = starters.filter(p => p.data_quality === 'UNKNOWN').length;
+        const gk = starters.find(p => p.position === 'GK');
+        const cbs = starters.filter(p => p.position === 'CB');
+        const keyPositionsOk = [gk, ...cbs].every(p => p && p.data_quality !== 'UNKNOWN' && p.data_quality !== 'MINIMAL');
+        const isDataComplete = starters.length > 0 && (fullCount / starters.length >= 0.8) && unknownCount <= 1 && keyPositionsOk;
+        dataQualityLabel = isDataComplete ? "COMPLETE" : "CAUTIOUS";
+      }
+
+      let injuryAgeLabel = "NO DATA";
+      if (cachedInjuries && cachedInjuries.updated_at) {
+        const ageHrs = (Date.now() - new Date(cachedInjuries.updated_at).getTime()) / 3600000;
+        injuryAgeLabel = `${Math.floor(ageHrs)} hrs`;
+      }
+
+      const flagsSummary = `${criticalCount} Crit, ${warningCount} Warn`;
+      const lastUpdatedStr = cachedTeam && cachedTeam.updated_at
+        ? new Date(cachedTeam.updated_at).toLocaleTimeString()
+        : "NEVER";
+
+      const tr = document.createElement("tr");
+      tr.className = rowClass;
+      tr.id = `inspector-row-${team.id}`;
+      tr.innerHTML = `
+        <td style="font-weight: bold;">${team.flag} ${team.name}</td>
+        <td>${cachedTeam ? cachedTeam.squad.length : 0}</td>
+        <td>${dataQualityLabel}</td>
+        <td>${injuryAgeLabel}</td>
+        <td>${flagsSummary}</td>
+        <td>${lastUpdatedStr}</td>
+      `;
+
+      const detailsTr = document.createElement("tr");
+      detailsTr.className = "details-row hidden";
+      detailsTr.id = `inspector-details-${team.id}`;
+      
+      const allFlagsList = [
+        ...flags.critical.map(f => `<span class="flag-item critical">[CRITICAL] ${f}</span>`),
+        ...flags.warning.map(f => `<span class="flag-item warning">[WARNING] ${f}</span>`),
+        ...flags.info.map(f => `<span class="flag-item info">[INFO] ${f}</span>`)
+      ];
+
+      const squadList = cachedTeam ? cachedTeam.squad : [];
+      const playersHtml = squadList.map(p => {
+        const badgeClass = `badge-${p.data_quality.toLowerCase()}`;
+        return `
+          <div class="inspector-player-card">
+            <div>
+              <div class="inspector-player-name">${p.name}</div>
+              <div class="inspector-player-meta">${p.position} | Caps: ${p.caps}</div>
+            </div>
+            <div style="text-align: right;">
+              <span class="${badgeClass}" style="font-size: 9px; padding: 2px 4px;">${p.data_quality}</span>
+              <div class="inspector-player-meta" style="margin-top: 4px;">xG: ${(p.xG_approx !== undefined ? p.xG_approx : 0.00).toFixed(2)} (${p.xG_source || 'MOCK'})</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      detailsTr.innerHTML = `
+        <td colspan="6">
+          <div class="inspector-details-container">
+            <div>
+              <h4 style="font-family: var(--font-display); font-size: 11px; margin-bottom: 6px; text-transform: uppercase; color: var(--accent-green);">Flag Reports</h4>
+              <div class="inspector-flags-list" style="display: flex; flex-direction: column; gap: 4px;">
+                ${allFlagsList.length > 0 ? allFlagsList.join('') : '<span style="color: var(--text-secondary); font-size: 11px;">NO FLAGS REPORTED</span>'}
+              </div>
+            </div>
+            <div class="margin-top-sm">
+              <h4 style="font-family: var(--font-display); font-size: 11px; margin-bottom: 6px; text-transform: uppercase; color: var(--accent-green);">Cached Squad (${squadList.length})</h4>
+              <div class="inspector-players-grid">
+                ${playersHtml.length > 0 ? playersHtml : '<div style="color: var(--text-secondary); font-size: 11px;">NO PLAYERS IN SQUAD</div>'}
+              </div>
+            </div>
+          </div>
+        </td>
+      `;
+
+      tbody.appendChild(tr);
+      tbody.appendChild(detailsTr);
+
+      tr.addEventListener("click", () => {
+        detailsTr.classList.toggle("hidden");
+      });
+    });
+  }
+
+  // Setup Remote Control Synchronization Handlers
+  // Setup Remote Control Synchronization Handlers
+  const btnPullSquad = document.getElementById("btn-pull-squad");
+  btnPullSquad.addEventListener("click", async () => {
+    btnPullSquad.disabled = true;
+    btnPullSquad.style.opacity = 0.5;
+    
+    const syncConsole = document.getElementById("sync-console");
+    syncConsole.innerHTML = "> INITIATING SQUAD DATA SYNC VIA DELTA sync engine...\n";
+    syncConsole.innerHTML += "> Connecting to backend synchronization server...\n";
+    syncConsole.scrollTop = syncConsole.scrollHeight;
+    
+    try {
+      const initRes = await fetch("http://localhost:3001/api/pull", { method: "POST" });
+      if (!initRes.ok) {
+        const errorData = await initRes.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server returned status: ${initRes.status}`);
+      }
+      
+      syncConsole.innerHTML += "> Pull process started. Listening to log stream...\n";
+      syncConsole.scrollTop = syncConsole.scrollHeight;
+      
+      const eventSource = new EventSource("http://localhost:3001/api/pull-stream");
+      
+      eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.log) {
+            syncConsole.innerHTML += `${data.log}\n`;
+            syncConsole.scrollTop = syncConsole.scrollHeight;
+            
+            if (data.log.includes("[SUCCESS]")) {
+              const match = data.log.match(/\[SUCCESS\]\s+([A-Z]{3}):/);
+              if (match) {
+                const teamCode = match[1];
+                fetch(`http://localhost:3001/cache/${teamCode}.json`)
+                  .then(res => res.json())
+                  .then(teamData => {
+                    deltaUpdateTeam(teamCode, teamData.squad, {});
+                    reloadTeams();
+                  })
+                  .catch(err => {
+                    syncConsole.innerHTML += `[LOCAL ERROR] Failed to fetch cache for ${teamCode}: ${err.message}\n`;
+                    syncConsole.scrollTop = syncConsole.scrollHeight;
+                  });
+              }
+            }
+            
+            if (data.log.includes("PROCESS EXITED WITH CODE")) {
+              eventSource.close();
+              finalizeSync();
+            }
+          }
+        } catch (e) {
+          // JSON parse error
+        }
+      };
+
+      eventSource.onerror = (error) => {
+        // SSE closed
+        eventSource.close();
+        finalizeSync();
+      };
+      
+    } catch (err) {
+      syncConsole.innerHTML += `\n> ERROR: Cannot connect to synchronization server.\n> Please ensure that the Express backend is running (run "npm run server" in a separate terminal).\n> Details: ${err.message}\n`;
+      syncConsole.scrollTop = syncConsole.scrollHeight;
+      btnPullSquad.disabled = false;
+      btnPullSquad.style.opacity = 1;
+    }
+    
+    function finalizeSync() {
+      const meta = JSON.parse(localStorage.getItem('oracle26_meta') || '{}');
+      meta.last_pull_attempt = new Date().toISOString();
+      localStorage.setItem('oracle26_meta', JSON.stringify(meta));
+      
+      syncConsole.innerHTML += "\n> SYNC PROCESS CONCLUDED.";
+      syncConsole.scrollTop = syncConsole.scrollHeight;
+      
+      reloadTeams();
+      updateDashboard();
+      updateSettingsPanel();
+      
+      btnPullSquad.disabled = false;
+      btnPullSquad.style.opacity = 1;
+    }
+  });
+
+  const btnUpdateInjuries = document.getElementById("btn-update-injuries");
+  btnUpdateInjuries.addEventListener("click", () => {
+    btnUpdateInjuries.disabled = true;
+    btnUpdateInjuries.style.opacity = 0.5;
+    
+    const syncConsole = document.getElementById("sync-console");
+    syncConsole.innerHTML = "> INITIATING INJURY INDEX SYNC FOR SELECTED TEAMS...\n";
+    
+    // Get the two selected teams
+    const teamA = document.getElementById("team-a-select").value;
+    const teamB = document.getElementById("team-b-select").value;
+    
+    const teamsToUpdate = [teamA, teamB].filter(Boolean);
+    if (teamsToUpdate.length === 0) {
+      syncConsole.innerHTML += "> ERROR: No teams selected for injury sync.\n";
+      btnUpdateInjuries.disabled = false;
+      btnUpdateInjuries.style.opacity = 1;
+      return;
+    }
+
+    let completed = 0;
+    teamsToUpdate.forEach(async (teamId) => {
+      syncConsole.innerHTML += `[${teamId}] Fetching live injury data...\n`;
+      syncConsole.scrollTop = syncConsole.scrollHeight;
+
+      try {
+        const response = await fetch(`http://localhost:3001/api/injuries?team=${teamId}`);
+        if (!response.ok) {
+          throw new Error(`Server returned status: ${response.status}`);
+        }
+        const injuryData = await response.json();
+        
+        // Save to localStorage: oracle26_injuries_{teamId}
+        const key = `oracle26_injuries_${teamId}`;
+        localStorage.setItem(key, JSON.stringify(injuryData));
+
+        syncConsole.innerHTML += `[${teamId}] Injury index synchronized. (Injured: ${injuryData.injured_players.length > 0 ? injuryData.injured_players.join(', ') : 'None'})\n`;
+      } catch (err) {
+        syncConsole.innerHTML += `[${teamId}] ERROR syncing injuries: ${err.message}\n`;
+      } finally {
+        syncConsole.scrollTop = syncConsole.scrollHeight;
+        completed++;
+        if (completed === teamsToUpdate.length) {
+          syncConsole.innerHTML += "\n> INJURY SYNC COMPLETE.";
+          syncConsole.scrollTop = syncConsole.scrollHeight;
+          
+          reloadTeams();
+          updateDashboard();
+          updateSettingsPanel();
+          
+          btnUpdateInjuries.disabled = false;
+          btnUpdateInjuries.style.opacity = 1;
+        }
+      }
+    });
+  });
+
+  async function syncLocalWithServerCache() {
+    try {
+      const response = await fetch("http://localhost:3001/api/cache-status");
+      if (!response.ok) return;
+      const data = await response.json();
+      
+      const promises = [];
+      data.teams.forEach(team => {
+        if (team.lastPulled) {
+          const localKey = `oracle26_team_${team.code}`;
+          const localData = JSON.parse(localStorage.getItem(localKey) || 'null');
+          
+          const needsSquadSync = !localData || 
+            localData.squad.some(p => p.xG_source === 'MOCK') ||
+            (localData.updated_at && new Date(localData.updated_at) < new Date(team.lastPulled));
+            
+          if (needsSquadSync) {
+            promises.push(
+              fetch(`http://localhost:3001/cache/${team.code}.json`)
+                .then(r => r.json())
+                .then(serverTeam => {
+                  deltaUpdateTeam(team.code, serverTeam.squad, {});
+                })
+            );
+          }
+        }
+        
+        if (team.injuryAge) {
+          const localInjuriesKey = `oracle26_injuries_${team.code}`;
+          const localInjuries = JSON.parse(localStorage.getItem(localInjuriesKey) || 'null');
+          
+          const needsInjurySync = !localInjuries ||
+            !localInjuries.updated_at ||
+            (new Date(localInjuries.updated_at) < new Date(team.injuryAge));
+            
+          if (needsInjurySync) {
+            promises.push(
+              fetch(`http://localhost:3001/cache/${team.code}_injuries.json`)
+                .then(r => r.json())
+                .then(serverInjuries => {
+                  localStorage.setItem(localInjuriesKey, JSON.stringify(serverInjuries));
+                })
+            );
+          }
+        }
+      });
+      
+      if (promises.length > 0) {
+        await Promise.all(promises);
+        reloadTeams();
+        updateDashboard();
+        updateSettingsPanel();
+      }
+    } catch (err) {
+      console.warn("Failed to sync local localStorage with server cache:", err);
+    }
+  }
+
   // Initialize data on load
   populateDropdowns();
   validateTeamSelection();
   updateDashboard();
+  renderPreMatchFlags();
+  syncLocalWithServerCache();
 });

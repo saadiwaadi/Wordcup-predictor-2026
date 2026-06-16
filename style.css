@@ -1314,3 +1314,116 @@ body {
 
 .gap-xs { gap: 8px; }
 
+/* DATA INSPECTOR STYLES */
+.brutalist-table tbody tr {
+  cursor: pointer;
+}
+.inspector-row-ok {
+  border-left: 4px solid var(--accent-green) !important;
+}
+.inspector-row-warning {
+  border-left: 4px solid #ffaa00 !important;
+}
+.inspector-row-critical {
+  border-left: 4px solid var(--accent-red) !important;
+}
+.details-row {
+  background-color: #0c0d0a !important;
+}
+.details-row td {
+  border-top: none !important;
+  padding: 14px !important;
+}
+.inspector-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.inspector-flags-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.flag-item {
+  font-family: var(--font-display);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.flag-item.critical { color: var(--accent-red); }
+.flag-item.warning { color: #ffaa00; }
+.flag-item.info { color: var(--accent-blue); }
+
+.inspector-players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+.inspector-player-card {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+.inspector-player-name {
+  font-weight: bold;
+}
+.inspector-player-meta {
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+/* PRE-MATCH FLAGS IN PREDICTOR VIEW */
+.pre-match-flags-box {
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  padding: 10px 12px;
+  font-family: var(--font-data);
+  font-size: 11px;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+.pre-match-flags-team-block {
+  margin-bottom: 8px;
+}
+.pre-match-flags-team-block:last-child {
+  margin-bottom: 0;
+}
+.pre-match-flags-title {
+  font-family: var(--font-display);
+  font-weight: bold;
+  font-size: 11px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pre-match-flags-title.critical {
+  color: var(--accent-red);
+}
+.pre-match-flags-title.warning {
+  color: #ffaa00;
+}
+.pre-match-flags-list {
+  margin: 0;
+  padding-left: 16px;
+  list-style-type: square;
+}
+.pre-match-flags-list li {
+  margin-bottom: 2px;
+  color: var(--text-primary);
+}
+.pre-match-flags-list li.critical {
+  color: #ff8888;
+}
+.pre-match-flags-list li.warning {
+  color: #ffcc66;
+}
+.pre-match-flags-list li.info {
+  color: var(--accent-blue);
+}
+
+

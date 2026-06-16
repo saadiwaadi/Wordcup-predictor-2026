@@ -47,6 +47,7 @@
       <button class="tab-btn active" id="btn-tab-predictor">[01] MATCH PREDICTION</button>
       <button class="tab-btn" id="btn-tab-squad">[02] SQUAD ANALYSIS</button>
       <button class="tab-btn" id="btn-tab-verification">[03] MODEL VERIFICATION</button>
+      <button class="tab-btn" id="btn-tab-settings">[04] DATA SETTINGS</button>
     </div>
 
     <!-- MAIN GRID LAYOUT -->
@@ -113,6 +114,11 @@
                 <input type="checkbox" id="toggle-injury-b" class="terminal-checkbox">
                 <span class="checkbox-label">Injure key player — Team B</span>
               </label>
+            </div>
+
+            <!-- PRE-MATCH FLAGS -->
+            <div id="pre-match-flags-container" class="margin-top-md hidden">
+              <!-- Filled dynamically by JS -->
             </div>
 
             <!-- RUN PREDICTION BUTTON -->
@@ -536,6 +542,110 @@
               </div>
             </div>
           </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- DATA SETTINGS VIEW (TAB 4) -->
+    <main class="grid-layout hidden" id="settings-view">
+      <!-- LEFT PANEL: DATA CONFIG & ACTIONS -->
+      <section class="panel panel-input">
+        <div class="panel-header">
+          <h2>[04] DATA SETTINGS</h2>
+          <span class="corner-label">SYS</span>
+        </div>
+        <div class="panel-body flex-column gap-md">
+          <!-- Section 1: API Config -->
+          <div class="settings-section">
+            <div class="panel-header sub-header" style="padding: 6px 12px; background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+              <h3 style="font-size: 11px;">[01] API CONFIGURATION</h3>
+            </div>
+            <div class="panel-body-inner flex-column gap-xs" style="padding: 10px; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-top: none;">
+              <div class="form-group">
+                <label style="font-size: 9px; margin-bottom: 2px;">API BASE URL</label>
+                <input type="text" value="https://api.oracle26.infra/v1" class="terminal-select" style="background: var(--bg-primary); cursor: text; padding: 6px 10px; font-size: 11px;" readonly>
+              </div>
+              <div class="form-group margin-top-sm">
+                <label style="font-size: 9px; margin-bottom: 2px;">ENVIRONMENT</label>
+                <input type="text" value="PRODUCTION-SECURE" class="terminal-select" style="background: var(--bg-primary); cursor: text; padding: 6px 10px; font-size: 11px;" readonly>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Cache Meta Stats -->
+          <div class="settings-section margin-top-md">
+            <div class="panel-header sub-header" style="padding: 6px 12px; background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+              <h3 style="font-size: 11px;">[02] DATABASE STATS</h3>
+            </div>
+            <div class="panel-body-inner flex-column gap-xs" style="padding: 12px; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-top: none; font-family: var(--font-data); font-size: 11px; gap: 8px;">
+              <div class="metric-row-flat" style="display: flex; justify-content: space-between;">
+                <span class="flat-label" style="color: var(--text-secondary);">META SCHEMA VERSION:</span>
+                <span class="flat-value" id="meta-version" style="font-weight: bold; color: var(--accent-green);">1</span>
+              </div>
+              <div class="metric-row-flat" style="display: flex; justify-content: space-between;">
+                <span class="flat-label" style="color: var(--text-secondary);">TOTAL TEAMS CACHED:</span>
+                <span class="flat-value" id="meta-total-teams" style="font-weight: bold; color: var(--text-primary);">0</span>
+              </div>
+              <div class="metric-row-flat" style="display: flex; justify-content: space-between;">
+                <span class="flat-label" style="color: var(--text-secondary);">TOTAL PLAYERS CACHED:</span>
+                <span class="flat-value" id="meta-total-players" style="font-weight: bold; color: var(--text-primary);">0</span>
+              </div>
+              <div class="metric-row-flat" style="display: flex; justify-content: space-between;">
+                <span class="flat-label" style="color: var(--text-secondary);">LAST PULL ATTEMPT:</span>
+                <span class="flat-value" id="meta-last-pull" style="font-weight: bold; color: var(--accent-blue);">NEVER</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Data Actions & Console Log -->
+          <div class="settings-section margin-top-md">
+            <div class="panel-header sub-header" style="padding: 6px 12px; background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+              <h3 style="font-size: 11px;">[03] REMOTE DATA CONTROL</h3>
+            </div>
+            <div class="panel-body-inner flex-column gap-sm" style="padding: 10px; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-top: none;">
+              <button type="button" id="btn-pull-squad" class="btn-predict" style="background-color: var(--accent-green); color: black; font-weight: bold; width: 100%; padding: 10px; border: 1px solid var(--border-color); cursor: pointer; text-transform: uppercase;">
+                [PULL SQUAD DATA]
+              </button>
+              <button type="button" id="btn-update-injuries" class="btn-predict margin-top-sm" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); cursor: pointer; text-transform: uppercase;">
+                [UPDATE INJURIES ONLY]
+              </button>
+              
+              <div class="engine-notes-panel margin-top-md">
+                <div class="panel-header sub-header" style="padding: 4px 10px; background-color: var(--bg-secondary);">
+                  <span style="font-size: 10px; font-weight: bold; font-family: var(--font-display);">SYNC CONSOLE</span>
+                  <span class="corner-label" style="font-size: 8px;">LIVE</span>
+                </div>
+                <div class="engine-notes-terminal" id="sync-console" style="height: 140px; overflow-y: auto; font-family: var(--font-data); font-size: 11px; padding: 8px; background-color: #030303; border: 1px solid var(--border-color); color: var(--accent-green); line-height: 1.4; white-space: pre-wrap;">
+&gt; SYNC ENGINE STANDBY...
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT PANEL: DATA INSPECTOR -->
+      <section class="panel panel-result">
+        <div class="panel-header">
+          <h2>[04] DATA INSPECTOR</h2>
+          <span class="corner-label">AUDIT</span>
+        </div>
+        <div class="panel-body" style="overflow-y: auto; max-height: 75vh; padding: 10px;">
+          <table class="brutalist-table">
+            <thead>
+              <tr>
+                <th>Team</th>
+                <th>Players</th>
+                <th>Data Quality</th>
+                <th>Injuries Age</th>
+                <th>Flags</th>
+                <th>Last Updated</th>
+              </tr>
+            </thead>
+            <tbody id="inspector-table-body">
+              <!-- JS populated rows -->
+            </tbody>
+          </table>
         </div>
       </section>
     </main>
