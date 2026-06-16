@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ORACLE-26 // Football Analytics Prediction Command Terminal</title>
+  
+  <!-- SEO & Metadata -->
+  <meta name="description" content="Classified World Cup 2026 analytical prediction model and scout system.">
+  <meta name="theme-color" content="#050505">
+  
+  <!-- Google Fonts: Space Mono, IBM Plex Mono, Space Grotesk, Geist Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Geist+Mono:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Retro CRT overlays -->
+  <div class="scanlines"></div>
+  <div class="grid-overlay"></div>
+
+  <!-- Terminal Container -->
+  <div class="terminal-container">
+    
+    <!-- HEADER BAR -->
+    <header class="header-bar" id="header-main">
+      <div class="header-left">
+        <span class="wordmark">ORACLE-26</span>
+        <div class="status-indicator">
+          <span class="pulsing-dot"></span>
+          <span class="status-text">Engine online</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="metadata-tag">SYS // WC26</span>
+        <span class="divider-slash">/</span>
+        <span class="muted-info">WC 2026 · 48 Nations</span>
+      </div>
+    </header>
+
+    <!-- TAB CONTROLS -->
+    <div class="tab-control-bar">
+      <button class="tab-btn active" id="btn-tab-predictor">[01] MATCH PREDICTION</button>
+      <button class="tab-btn" id="btn-tab-squad">[02] SQUAD ANALYSIS</button>
+      <button class="tab-btn" id="btn-tab-verification">[03] MODEL VERIFICATION</button>
+    </div>
+
+    <!-- MAIN GRID LAYOUT -->
+    <main class="grid-layout" id="predictor-view">
+
+      
+      <!-- LEFT PANEL: INPUT & CONTROLS -->
+      <section class="panel panel-input" id="panel-input-section">
+        <div class="panel-header">
+          <h2>[01] MATCH INPUT</h2>
+          <span class="corner-label">SYS</span>
+        </div>
+        <div class="panel-body">
+          <form id="prediction-form" onsubmit="event.preventDefault();">
+            
+            <!-- TEAM SELECTORS -->
+            <div class="team-selector-row">
+              <div class="form-group flex-1">
+                <label for="team-a-select">TEAM A (HOME)</label>
+                <select id="team-a-select" class="terminal-select">
+                  <!-- JS will populate options grouped by Tier -->
+                </select>
+              </div>
+              
+              <div class="vs-label">VS</div>
+              
+              <div class="form-group flex-1">
+                <label for="team-b-select">TEAM B (AWAY)</label>
+                <select id="team-b-select" class="terminal-select">
+                  <!-- JS will populate options grouped by Tier -->
+                </select>
+              </div>
+            </div>
+
+            <!-- INLINE ERROR MESSAGE -->
+            <div id="selection-error" class="error-banner hidden" role="alert">
+              &gt; ERROR: Please select two different teams
+            </div>
+
+            <!-- STAGE SELECTOR -->
+            <div class="form-group margin-top-md">
+              <label for="stage-select">TOURNAMENT STAGE</label>
+              <select id="stage-select" class="terminal-select">
+                <option value="Group">GROUP STAGE</option>
+                <option value="R32">ROUND OF 32</option>
+                <option value="R16">ROUND OF 16</option>
+                <option value="QF">QUARTER-FINAL</option>
+                <option value="SF">SEMI-FINAL</option>
+                <option value="Final">WORLD CUP FINAL</option>
+              </select>
+            </div>
+
+            <!-- CONFIGURATION TOGGLES -->
+            <div class="toggles-container margin-top-md">
+              <label class="toggle-row">
+                <input type="checkbox" id="toggle-stale" class="terminal-checkbox">
+                <span class="checkbox-label">Simulate stale data (−15 confidence)</span>
+              </label>
+              <label class="toggle-row">
+                <input type="checkbox" id="toggle-injury-a" class="terminal-checkbox">
+                <span class="checkbox-label">Injure key player — Team A</span>
+              </label>
+              <label class="toggle-row">
+                <input type="checkbox" id="toggle-injury-b" class="terminal-checkbox">
+                <span class="checkbox-label">Injure key player — Team B</span>
+              </label>
+            </div>
+
+            <!-- RUN PREDICTION BUTTON -->
+            <button type="button" id="predict-btn" class="btn-predict margin-top-lg">
+              Predict match ↗
+            </button>
+            
+          </form>
+        </div>
+      </section>
+
+      <!-- RIGHT PANEL: PREDICTION RESULTS -->
+      <section class="panel panel-result" id="panel-result-section">
+        <!-- LOADING INDICATOR -->
+        <div id="loading-state" class="loading-overlay hidden">
+          <div class="loading-box">
+            <span class="loading-bracket">[</span>
+            <span class="loading-text">COMPUTING PREDICTION MODEL...</span>
+            <span class="loading-bracket">]</span>
+          </div>
+        </div>
+
+        <div class="panel-header">
+          <h2>[02] PROBABILITY MODEL</h2>
+          <span class="corner-label">MODEL</span>
+        </div>
+        
+        <div class="panel-body flex-column justify-between height-100">
+          
+          <!-- RESULTS CONTENT -->
+          <div id="results-content" class="results-content">
+            
+            <!-- [1] PROBABILITY BAR -->
+            <div class="section-block">
+              <div class="prob-labels-row">
+                <div class="prob-label text-left">
+                  <div class="team-name-small" id="prob-team-a-name">FRANCE</div>
+                  <div class="prob-value" id="prob-team-a-val">0.0%</div>
+                </div>
+                <div class="prob-label text-center">
+                  <div class="team-name-small">DRAW</div>
+                  <div class="prob-value" id="prob-draw-val">0.0%</div>
+                </div>
+                <div class="prob-label text-right">
+                  <div class="team-name-small" id="prob-team-b-name">ARGENTINA</div>
+                  <div class="prob-value" id="prob-team-b-val">0.0%</div>
+                </div>
+              </div>
+              
+              <!-- 3-Segment Brutalist Signal Indicator Bar -->
+              <div class="prob-bar-container" id="prob-bar-container">
+                <div class="prob-segment win-a-segment" id="prob-segment-a" style="width: 33.3%;"></div>
+                <div class="prob-segment draw-segment" id="prob-segment-draw" style="width: 33.3%;"></div>
+                <div class="prob-segment win-b-segment" id="prob-segment-b" style="width: 33.3%;"></div>
+              </div>
+            </div>
+
+            <!-- MIDDLE GRID: METRIC CARDS & MATRIX -->
+            <div class="result-middle-grid">
+              
+              <!-- LEFT COLUMN: READOUTS -->
+              <div class="middle-col flex-column gap-md">
+                
+                <!-- [2] METRIC CARDS -->
+                <div class="metrics-container">
+                  <div class="panel-header sub-header">
+                    <h3>EXPECTED GOALS &amp; SCORELINE</h3>
+                  </div>
+                  <div class="metrics-grid">
+                    <div class="metric-card">
+                      <div class="metric-label" id="card-xg-a-label">XG FRA</div>
+                      <div class="metric-value" id="card-xg-a-val">1.8</div>
+                    </div>
+                    <div class="metric-card highlight-card">
+                      <div class="metric-label">SCORELINE</div>
+                      <div class="metric-value font-large" id="card-scoreline-val">2-1</div>
+                    </div>
+                    <div class="metric-card">
+                      <div class="metric-label" id="card-xg-b-label">XG ARG</div>
+                      <div class="metric-value" id="card-xg-b-val">1.4</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- [4] RECENT FORM -->
+                <div class="form-analysis-container">
+                  <div class="panel-header sub-header">
+                    <h3>[04] FORM ANALYSIS</h3>
+                    <span class="corner-label">DATA</span>
+                  </div>
+                  <div class="form-grid">
+                    <div class="form-col text-left">
+                      <div class="form-team-header" id="form-team-a-header">FRANCE</div>
+                      <div class="form-squares-row" id="form-team-a-squares">
+                        <!-- Filled by JS -->
+                      </div>
+                    </div>
+                    <div class="form-col text-right">
+                      <div class="form-team-header" id="form-team-b-header">ARGENTINA</div>
+                      <div class="form-squares-row justify-end" id="form-team-b-squares">
+                        <!-- Filled by JS -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- [5] HEAD TO HEAD -->
+                <div class="h2h-container">
+                  <div class="panel-header sub-header">
+                    <h3>[05] HEAD TO HEAD</h3>
+                    <span class="corner-label">DATA</span>
+                  </div>
+                  <div class="h2h-box">
+                    <div class="h2h-record-text" id="h2h-main-record">France 2 — 1 draw — 2 Argentina</div>
+                    <div class="h2h-note" id="h2h-match-note">2022 WC Final — ARG won pens</div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- RIGHT COLUMN: SCORE MATRIX -->
+              <div class="middle-col">
+                <!-- [3] TOP 5 SCORELINES -->
+                <div class="score-matrix-panel">
+                  <div class="panel-header sub-header">
+                    <h3>[03] SCORE MATRIX (TOP 5)</h3>
+                    <span class="corner-label">MODEL</span>
+                  </div>
+                  <div class="matrix-list" id="matrix-list-rows">
+                    <!-- Filled by JS -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- LOWER GRID: CONFIDENCE & ENGINE NOTES -->
+            <div class="result-lower-grid">
+              
+              <!-- [7] CONFIDENCE METER & LAYER BREAKDOWN -->
+              <div class="lower-col flex-column gap-md">
+                <div class="confidence-box">
+                  <div class="panel-header sub-header">
+                    <h3>[05] CONFIDENCE</h3>
+                    <span class="corner-label">SYS</span>
+                  </div>
+                  
+                  <div class="confidence-header-row">
+                    <div class="confidence-title">CONFIDENCE</div>
+                    <div class="confidence-value-container">
+                      <span id="stale-badge" class="badge-stale hidden">STALE DATA</span>
+                      <span class="confidence-score-text" id="confidence-score-val">87/100 — HIGH</span>
+                    </div>
+                  </div>
+                  
+                  <!-- Fill block visualization -->
+                  <div class="confidence-meter-container">
+                    <div class="confidence-meter-fill" id="confidence-meter-fill" style="width: 87%;"></div>
+                  </div>
+                </div>
+
+                <!-- [8] LAYER BREAKDOWN -->
+                <div class="layer-breakdown">
+                  <div class="panel-header sub-header">
+                    <h3>[06] LAYER BREAKDOWN</h3>
+                  </div>
+                  <div class="layers-row">
+                    <div class="layer-box">
+                      <div class="layer-lbl">L1: STATIC</div>
+                      <div class="layer-val" id="layer-static-val">P = 0.54</div>
+                    </div>
+                    <div class="layer-box">
+                      <div class="layer-lbl">L2: FORM</div>
+                      <div class="layer-val" id="layer-form-val">P = 0.58</div>
+                    </div>
+                    <div class="layer-box highlight-blue">
+                      <div class="layer-lbl">P(WIN A)</div>
+                      <div class="layer-val color-blue" id="layer-final-val">54.2%</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- [6] PREDICTION DRIVERS (ENGINE NOTES) -->
+              <div class="lower-col">
+                <div class="engine-notes-panel">
+                  <div class="panel-header sub-header">
+                    <h3>[06] ENGINE NOTES</h3>
+                    <span class="corner-label">LIVE</span>
+                  </div>
+                  <div class="engine-notes-terminal" id="engine-notes-console">
+                    <!-- Filled by JS as command lines -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- VERIFICATION VIEW -->
+    <main class="grid-layout hidden" id="verification-view">
+      <!-- LEFT PANEL: VERIFICATION RESULTS -->
+      <section class="panel">
+        <div class="panel-header">
+          <h2>[01] BACKTEST RESULTS</h2>
+          <span class="corner-label">SYS // VERIFY</span>
+        </div>
+        <div class="panel-body" style="padding: 0; overflow-x: auto;">
+          <table class="brutalist-table">
+            <thead>
+              <tr>
+                <th style="text-align: left;">MATCHUP</th>
+                <th style="text-align: left;">PREDICTED W / D / L</th>
+                <th style="text-align: left; width: 100px;">ACTUAL SCORE</th>
+                <th style="text-align: center; width: 80px;">OUTCOME</th>
+              </tr>
+            </thead>
+            <tbody id="backtest-results-body">
+              <!-- Filled by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- RIGHT PANEL: METRICS & ENGINE NOTES -->
+      <section class="panel flex-column gap-md" style="border: none; background: transparent;">
+        <!-- METRICS SUMMARY -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2>[02] METRICS SUMMARY</h2>
+            <span class="corner-label">ANALYSIS</span>
+          </div>
+          <div class="panel-body flex-column" id="metrics-summary-container" style="gap: 12px; padding: 16px;">
+            <!-- Filled by JS -->
+          </div>
+        </div>
+
+        <!-- ENGINE NOTES - BACKTESTING -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2>[06] ENGINE NOTES</h2>
+            <span class="corner-label">LOGS</span>
+          </div>
+          <div class="panel-body engine-notes-panel" style="padding: 0;">
+            <div class="engine-notes-terminal" id="backtest-engine-notes" style="height: 250px; overflow-y: auto; padding: 12px;">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- SQUAD ANALYSIS VIEW -->
+    <main class="squad-grid-layout hidden" id="squad-analysis-view">
+      <!-- LEFT COLUMN: TEAM A SQUAD -->
+      <section class="panel flex-column gap-md" style="border: none; background: transparent;">
+        <!-- TEAM A HEADER -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 id="squad-team-a-title">TEAM A SQUAD ANALYSIS</h2>
+            <span class="corner-label" id="squad-team-a-flag">FRA</span>
+          </div>
+          
+          <div class="panel-body flex-column gap-md" style="padding: 16px;">
+            <!-- Panel 1: Attacking Threat -->
+            <div class="squad-panel">
+              <div class="panel-header sub-header">
+                <h3>[01] ATTACKING THREAT</h3>
+                <span class="corner-label">xG/90</span>
+              </div>
+              <div class="panel-body-inner">
+                <div class="player-list" id="squad-team-a-players">
+                  <!-- Filled by JS -->
+                </div>
+                <div class="total-contribution-row margin-top-md">
+                  <span class="flat-label">EXPECTED GOALS THIS MATCH:</span>
+                  <span class="flat-value highlight-green-text" id="squad-team-a-total-xg">0.00</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel 2: Squad Confidence -->
+            <div class="squad-panel">
+              <div class="panel-header sub-header">
+                <h3>[02] SQUAD CONFIDENCE</h3>
+                <span class="corner-label">DATA QUALITY</span>
+              </div>
+              <div class="panel-body-inner flex-column gap-xs">
+                <div class="confidence-header-row" style="padding: 10px 0; background: transparent; display: flex; justify-content: space-between; align-items: center;">
+                  <span class="flat-label">XI DATA COMPLETENESS:</span>
+                  <span class="flat-value" id="squad-team-a-full-pct">0%</span>
+                </div>
+                <!-- Progress bar -->
+                <div class="confidence-meter-container" style="margin-top: 4px;">
+                  <div class="confidence-meter-fill" id="squad-team-a-full-bar" style="width: 0%;"></div>
+                </div>
+                <div class="mode-status-banner margin-top-sm" id="squad-team-a-mode-banner">
+                  <!-- Labeled DATA-COMPLETE or CAUTIOUS MODE -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel 3: Star Dependency -->
+            <div class="squad-panel">
+              <div class="panel-header sub-header">
+                <h3>[03] STAR DEPENDENCY &amp; DEPTH</h3>
+                <span class="corner-label">RELIANCE</span>
+              </div>
+              <div class="panel-body-inner flex-column gap-xs">
+                <div class="metric-row-flat">
+                  <span class="flat-label">TEAM XG (TOP PLAYER INCLUDED):</span>
+                  <span class="flat-value" id="squad-team-a-xg-inc">0.00</span>
+                </div>
+                <div class="metric-row-flat">
+                  <span class="flat-label">TEAM XG (TOP PLAYER REMOVED):</span>
+                  <span class="flat-value" id="squad-team-a-xg-exc">0.00</span>
+                </div>
+                <div class="metric-row-flat">
+                  <span class="flat-label">STAR RELIANCE INDEX (SRI):</span>
+                  <span class="flat-value" id="squad-team-a-sri-val">0.0%</span>
+                </div>
+                <div class="metric-row-flat">
+                  <span class="flat-label">DEPTH SCORE:</span>
+                  <span class="flat-value" id="squad-team-a-depth-val">0.00</span>
+                </div>
+                <div class="sri-classification-banner margin-top-sm" id="squad-team-a-sri-banner">
+                  <!-- DISTRIBUTED / DEPENDENT / FRAGILE -->
+                </div>
+                <p class="squad-explanation-text margin-top-xs" id="squad-team-a-explanation">
+                  <!-- Explanation sentence -->
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT COLUMN: TEAM B SQUAD -->
+      <section class="panel flex-column gap-md" style="border: none; background: transparent;">
+        <!-- TEAM B HEADER -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 id="squad-team-b-title">TEAM B SQUAD ANALYSIS</h2>
+            <span class="corner-label" id="squad-team-b-flag">ARG</span>
+          </div>
+          
+          <div class="panel-body flex-column gap-md" style="padding: 16px;">
+            <!-- Panel 1: Attacking Threat -->
+            <div class="squad-panel">
+              <div class="panel-header sub-header">
+                <h3>[01] ATTACKING THREAT</h3>
+                <span class="corner-label">xG/90</span>
+              </div>
+              <div class="panel-body-inner">
+                <div class="player-list" id="squad-team-b-players">
+                  <!-- Filled by JS -->
+                </div>
+                <div class="total-contribution-row margin-top-md">
+                  <span class="flat-label">EXPECTED GOALS THIS MATCH:</span>
+                  <span class="flat-value highlight-green-text" id="squad-team-b-total-xg">0.00</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel 2: Squad Confidence -->
+            <div class="squad-panel">
+              <div class="panel-header sub-header">
+                <h3>[02] SQUAD CONFIDENCE</h3>
+                <span class="corner-label">DATA QUALITY</span>
+              </div>
+              <div class="panel-body-inner flex-column gap-xs">
+                <div class="confidence-header-row" style="padding: 10px 0; background: transparent; display: flex; justify-content: space-between; align-items: center;">
+                  <span class="flat-label">XI DATA COMPLETENESS:</span>
+                  <span class="flat-value" id="squad-team-b-full-pct">0%</span>
+                </div>
+                <!-- Progress bar -->
+                <div class="confidence-meter-container" style="margin-top: 4px;">
+                  <div class="confidence-meter-fill" id="squad-team-b-full-bar" style="width: 0%;"></div>
+                </div>
+                <div class="mode-status-banner margin-top-sm" id="squad-team-b-mode-banner">
+                  <!-- Labeled DATA-COMPLETE or CAUTIOUS MODE -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel 3: Star Dependency -->
+            <div class="squad-panel">
+              <div class="panel-header sub-header">
+                <h3>[03] STAR DEPENDENCY &amp; DEPTH</h3>
+                <span class="corner-label">RELIANCE</span>
+              </div>
+              <div class="panel-body-inner flex-column gap-xs">
+                <div class="metric-row-flat">
+                  <span class="flat-label">TEAM XG (TOP PLAYER INCLUDED):</span>
+                  <span class="flat-value" id="squad-team-b-xg-inc">0.00</span>
+                </div>
+                <div class="metric-row-flat">
+                  <span class="flat-label">TEAM XG (TOP PLAYER REMOVED):</span>
+                  <span class="flat-value" id="squad-team-b-xg-exc">0.00</span>
+                </div>
+                <div class="metric-row-flat">
+                  <span class="flat-label">STAR RELIANCE INDEX (SRI):</span>
+                  <span class="flat-value" id="squad-team-b-sri-val">0.0%</span>
+                </div>
+                <div class="metric-row-flat">
+                  <span class="flat-label">DEPTH SCORE:</span>
+                  <span class="flat-value" id="squad-team-b-depth-val">0.00</span>
+                </div>
+                <div class="sri-classification-banner margin-top-sm" id="squad-team-b-sri-banner">
+                  <!-- DISTRIBUTED / DEPENDENT / FRAGILE -->
+                </div>
+                <p class="squad-explanation-text margin-top-xs" id="squad-team-b-explanation">
+                  <!-- Explanation sentence -->
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+
+    <!-- FUTURE SLOTS PANEL -->
+    <footer class="future-slots-section">
+      <div class="future-header">
+        <span>EXPANSION INTERFACES</span>
+        <span class="muted-slot-label">SLOTS A-F · ACTIVE DASHBOARD DETECTOR</span>
+      </div>
+      
+      <div class="slots-grid">
+        <!-- SLOT A -->
+        <div class="slot-card">
+          <div class="slot-id">[SLOT_A]</div>
+          <div class="slot-name">BOOKMAKER FEED</div>
+          <div class="slot-status">STATUS: OFFLINE</div>
+        </div>
+        <!-- SLOT B -->
+        <div class="slot-card">
+          <div class="slot-id">[SLOT_B]</div>
+          <div class="slot-name">TACTICAL FORMATION</div>
+          <div class="slot-status">STATUS: OFFLINE</div>
+        </div>
+        <!-- SLOT C -->
+        <div class="slot-card">
+          <div class="slot-id">[SLOT_C]</div>
+          <div class="slot-name">WEATHER &amp; VENUE</div>
+          <div class="slot-status">STATUS: OFFLINE</div>
+        </div>
+        <!-- SLOT D -->
+        <div class="slot-card">
+          <div class="slot-id">[SLOT_D]</div>
+          <div class="slot-name">BRACKET SIMULATOR</div>
+          <div class="slot-status">STATUS: OFFLINE</div>
+        </div>
+        <!-- SLOT E -->
+        <div class="slot-card">
+          <div class="slot-id">[SLOT_E]</div>
+          <div class="slot-name">LIVE RECALCULATOR</div>
+          <div class="slot-status">STATUS: OFFLINE</div>
+        </div>
+        <!-- SLOT F -->
+        <div class="slot-card">
+          <div class="slot-id">[SLOT_F]</div>
+          <div class="slot-name">XGBOOST CORE V2</div>
+          <div class="slot-status">STATUS: OFFLINE</div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Javascript Modules -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
