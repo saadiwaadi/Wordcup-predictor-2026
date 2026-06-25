@@ -4,6 +4,7 @@ import { runPrediction } from './engine.js';
 import { runBacktest, computeMetrics, diagnoseWeaknesses } from './verification.js';
 import { runPreMatchFlags } from './engine/preMatchFlags.js';
 import { deltaUpdateTeam } from './data/deltaSync.js';
+import { enrichMatchup, getLambdaOverride, recomputeScorelines } from './data/enrichTeam.js';
 
 
 
@@ -137,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Update Prediction Dashboard
-  function updateDashboard() {
+  async function updateDashboard() {
     const teamAId = teamASelect.value;
     const teamBId = teamBSelect.value;
     
@@ -146,19 +147,43 @@ document.addEventListener("DOMContentLoaded", () => {
     const teamA = TEAMS.find(t => t.id === teamAId);
     const teamB = TEAMS.find(t => t.id === teamBId);
 
+    // Call enrichMatchup to get enriched teams with live data
+    const { enrichedA, enrichedB } = await enrichMatchup(teamA, teamB);
+
+    // Set staleData dynamically based on team live data
+    let staleData = staleToggle.checked;
+    if (enrichedA.hasLiveData || enrichedB.hasLiveData) {
+      staleData = false;
+    } else {
+      staleData = true;
+    }
+
     const options = {
-      staleData: staleToggle.checked,
+      staleData,
       injureKeyA: injuryAToggle.checked,
       injureKeyB: injuryBToggle.checked,
       stage: stageSelect.value
     };
 
-    // Calculate prediction metrics
-    const results = runPrediction(teamA, teamB, options);
+    // Calculate prediction metrics using enriched teams
+    const results = runPrediction(enrichedA, enrichedB, options);
+
+    // Override lambdas and recompute top 5 scorelines if changed
+    const newLambdaA = getLambdaOverride(enrichedA, results.P_dynamic_A);
+    const newLambdaB = getLambdaOverride(enrichedB, results.P_dynamic_B);
+
+    if (newLambdaA !== results.lambda_A || newLambdaB !== results.lambda_B) {
+      results.lambda_A = newLambdaA;
+      results.lambda_B = newLambdaB;
+      const recomputed = recomputeScorelines(newLambdaA, newLambdaB);
+      results.top5 = recomputed.top5;
+      results.mostLikelyScoreline = recomputed.mostLikelyScoreline;
+      results.sumProb = recomputed.sumProb;
+    }
 
     // 1. PROBABILITY BAR TEXT & LABELS
-    probTeamAName.textContent = teamA.name.toUpperCase();
-    probTeamBName.textContent = teamB.name.toUpperCase();
+    probTeamAName.textContent = enrichedA.name.toUpperCase();
+    probTeamBName.textContent = enrichedB.name.toUpperCase();
     
     probTeamAVal.textContent = `${results.winA_pct.toFixed(1)}%`;
     probDrawVal.textContent = `${results.draw_pct.toFixed(1)}%`;
@@ -174,19 +199,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 50);
 
     // 2. EXPECTED GOALS & SCORELINE CARDS
-    cardXgALabel.textContent = `XG ${teamA.id}`;
+    cardXgALabel.textContent = `XG ${enrichedA.id}`;
     cardXgAVal.textContent = results.lambda_A.toFixed(1);
     
-    cardXgBLabel.textContent = `XG ${teamB.id}`;
+    cardXgBLabel.textContent = `XG ${enrichedB.id}`;
     cardXgBVal.textContent = results.lambda_B.toFixed(1);
     
     cardScorelineVal.textContent = results.mostLikelyScoreline;
 
     // 4. RECENT FORM SQUARES
-    formTeamAHeader.textContent = teamA.name.toUpperCase();
-    formTeamBHeader.textContent = teamB.name.toUpperCase();
-    renderFormSquares(teamA, formTeamASquares);
-    renderFormSquares(teamB, formTeamBSquares);
+    formTeamAHeader.textContent = enrichedA.name.toUpperCase();
+    formTeamBHeader.textContent = enrichedB.name.toUpperCase();
+    renderFormSquares(enrichedA, formTeamASquares);
+    renderFormSquares(enrichedB, formTeamBSquares);
 
     // 5. HEAD TO HEAD BLOCK
     h2hMainRecord.textContent = results.h2hText;
