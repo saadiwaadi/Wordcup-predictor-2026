@@ -489,11 +489,36 @@ export async function getEnrichedMatchData(homeCode, awayCode) {
   };
 }
 
+export async function getFixture(team1Code, team2Code) {
+  const cache = await getCache();
+  const rawMatches = cache.matches?.matches || [];
+  
+  for (const m of rawMatches) {
+    const code1 = teamNameToCode[m.team1] || null;
+    const code2 = teamNameToCode[m.team2] || null;
+    
+    if ((code1 === team1Code && code2 === team2Code) || (code1 === team2Code && code2 === team1Code)) {
+      return {
+        homeTeamCode: code1,
+        awayTeamCode: code2,
+        date: m.date,
+        ground: m.ground || "Unknown Stadium",
+        round: m.round,
+        group: m.group || null,
+        isCompleted: !!(m.score && m.score.ft),
+        score: (m.score && m.score.ft) ? m.score : null
+      };
+    }
+  }
+  
+  return null;
+}
+
 // Auto-run execution block
-const nodePath = process.argv[1];
-if (nodePath) {
-  (async () => {
-    if (isNode) {
+if (isNode) {
+  const nodePath = process.argv[1];
+  if (nodePath) {
+    (async () => {
       await initNode();
       const isDirectRun = path.resolve(nodePath) === path.resolve(fileURLToPath(import.meta.url));
       if (isDirectRun) {
@@ -557,8 +582,20 @@ if (nodePath) {
         const enriched = await getEnrichedMatchData('MEX', 'KOR');
         console.log(JSON.stringify(enriched, null, 2));
 
+        console.log("\n8. Testing getFixture('MEX', 'RSA'):");
+        console.log(await getFixture('MEX', 'RSA'));
+
+        console.log("\n9. Testing getFixture('RSA', 'MEX'):");
+        console.log(await getFixture('RSA', 'MEX'));
+
+        console.log("\n10. Testing getFixture('FRA', 'SEN'):");
+        console.log(await getFixture('FRA', 'SEN'));
+
+        console.log("\n11. Testing getFixture('ARG', 'FRA') (should be null):");
+        console.log(await getFixture('ARG', 'FRA'));
+
         console.log("\n=== Verification Completed ===");
       }
-    }
-  })();
+    })();
+  }
 }

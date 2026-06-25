@@ -1,6 +1,6 @@
 // Run with: node data/enrichTeam.js
 
-import { getTeamForm, getTeamStats, getH2HResults } from './openFootballLayer.js';
+import { getTeamForm, getTeamStats, getH2HResults, getFixture } from './openFootballLayer.js';
 import { TEAMS } from './index.js';
 
 export async function enrichTeamWithLiveData(teamObject) {
@@ -30,11 +30,54 @@ export async function enrichMatchup(teamAObject, teamBObject) {
   enrichedA.live2026H2H = h2hResults;
   enrichedB.live2026H2H = h2hResults;
 
-  return { enrichedA, enrichedB, h2hResults };
+  const fixture = await getFixture(enrichedA.id, enrichedB.id);
+  if (fixture) {
+    enrichedA.isHome = (fixture.homeTeamCode === enrichedA.id);
+    enrichedB.isHome = (fixture.homeTeamCode === enrichedB.id);
+    enrichedA.ground = fixture.ground;
+    enrichedB.ground = fixture.ground;
+    enrichedA.fixtureDate = fixture.date;
+    enrichedB.fixtureDate = fixture.date;
+  } else {
+    console.warn(`Warning: No scheduled fixture found between ${enrichedA.id} and ${enrichedB.id}. Defaulting ${enrichedA.id} as home.`);
+    enrichedA.isHome = true;
+    enrichedB.isHome = false;
+    enrichedA.ground = "Unknown Stadium";
+    enrichedB.ground = "Unknown Stadium";
+    enrichedA.fixtureDate = null;
+    enrichedB.fixtureDate = null;
+  }
+
+  return { enrichedA, enrichedB, h2hResults, fixture };
 }
 
-export function getLambdaOverride(enrichedTeam, P_dynamic) {
-  if (!enrichedTeam) return Math.max(0.1, 1.8 * P_dynamic + 0.27);
+export const CALIBRATION_CONSTANTS = {
+  home_residual_correction: 0.54,  // from backtest
+  away_residual_correction: -0.27  // from backtest
+};
+
+export function applyDrawCorrection(result) {
+  const drawBoost = 0.08;  // 8% boost from research
+  const adjustedDraw = result.draw_pct + (drawBoost * 100);
+  const pullFrom = drawBoost * 50;  // split equally
+  const adjustedWinA = result.winA_pct - pullFrom;
+  const adjustedWinB = result.winB_pct - pullFrom;
+
+  return {
+    ...result,
+    draw_pct: adjustedDraw,
+    winA_pct: Math.max(5, adjustedWinA),
+    winB_pct: Math.max(5, adjustedWinB),
+    drawCorrectionApplied: true
+  };
+}
+
+export function getLambdaOverride(enrichedTeam, P_dynamic, isHome) {
+  if (!enrichedTeam) {
+    const defaultLambda = Math.max(0.1, 1.8 * P_dynamic + 0.27);
+    const residual_adj = isHome ? 0.54 * 0.3 : -0.27 * 0.3;
+    return Math.max(0.1, defaultLambda + residual_adj);
+  }
   
   let lambda;
   if (enrichedTeam.hasLiveData && enrichedTeam.matchesPlayedInTournament >= 2) {
@@ -44,7 +87,8 @@ export function getLambdaOverride(enrichedTeam, P_dynamic) {
     lambda = 1.8 * P_dynamic + 0.27;
   }
 
-  return Math.max(0.1, lambda);
+  const residual_adj = isHome ? 0.54 * 0.3 : -0.27 * 0.3;
+  return Math.max(0.1, lambda + residual_adj);
 }
 
 // Poisson probability helpers
@@ -78,11 +122,11 @@ export function recomputeScorelines(lambda_A, lambda_B) {
 }
 
 // Auto-run block
-const nodePath = process.argv[1];
-if (nodePath) {
-  (async () => {
-    const isNode = typeof window === 'undefined';
-    if (isNode) {
+const isNode = typeof window === 'undefined';
+if (isNode) {
+  const nodePath = process.argv[1];
+  if (nodePath) {
+    (async () => {
       const pathModule = await import('path');
       const urlModule = await import('url');
       const path = pathModule.default;
@@ -141,8 +185,8 @@ if (nodePath) {
         const defaultLambdaMEX = 1.8 * pDynamicMEX + 0.27;
         const defaultLambdaDEN = 1.8 * pDynamicDEN + 0.27;
         
-        const overrideMEX = getLambdaOverride(test1.enrichedA, pDynamicMEX);
-        const overrideDEN = getLambdaOverride(test2.enrichedB, pDynamicDEN);
+        const overrideMEX = getLambdaOverride(test1.enrichedA, pDynamicMEX, true);
+        const overrideDEN = getLambdaOverride(test2.enrichedB, pDynamicDEN, false);
 
         console.log(`MEX (with live data, played >= 2 matches, P_dynamic = ${pDynamicMEX}):`);
         console.log(`  - Default lambda: ${defaultLambdaMEX.toFixed(4)}`);
@@ -155,6 +199,6 @@ if (nodePath) {
 
         console.log("\n=== Self-test Completed ===");
       }
-    }
-  })();
+    })();
+  }
 }

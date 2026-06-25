@@ -66,7 +66,7 @@
             <!-- TEAM SELECTORS -->
             <div class="team-selector-row">
               <div class="form-group flex-1">
-                <label for="team-a-select">TEAM A (HOME)</label>
+                <label for="team-a-select">TEAM A</label>
                 <select id="team-a-select" class="terminal-select">
                   <!-- JS will populate options grouped by Tier -->
                 </select>
@@ -75,11 +75,17 @@
               <div class="vs-label">VS</div>
               
               <div class="form-group flex-1">
-                <label for="team-b-select">TEAM B (AWAY)</label>
+                <label for="team-b-select">TEAM B</label>
                 <select id="team-b-select" class="terminal-select">
                   <!-- JS will populate options grouped by Tier -->
                 </select>
               </div>
+            </div>
+            
+            <div id="fixture-auto-resolved" class="hidden" 
+              style="font-size: 10px; font-family: var(--font-data); 
+              color: var(--accent-blue); margin-top: 6px;">
+              📍 <span id="fixture-resolved-text">—</span>
             </div>
 
             <!-- INLINE ERROR MESSAGE -->
@@ -148,8 +154,22 @@
         
         <div class="panel-body flex-column justify-between height-100">
           
+          <!-- RESULTS PLACEHOLDER -->
+          <div id="results-placeholder" style="
+            display: flex; align-items: center; justify-content: center;
+            height: 300px; flex-direction: column; gap: 12px;
+            font-family: var(--font-data); color: var(--text-muted);">
+            <span style="font-size: 28px; opacity: 0.3;">◈</span>
+            <span style="font-size: 11px; letter-spacing: 0.1em;">
+              SELECT TEAMS AND RUN PREDICTION
+            </span>
+            <span style="font-size: 10px; opacity: 0.5;">
+              ENGINE STANDING BY
+            </span>
+          </div>
+          
           <!-- RESULTS CONTENT -->
-          <div id="results-content" class="results-content">
+          <div id="results-content" class="results-content hidden">
             
             <!-- [1] PROBABILITY BAR -->
             <div class="section-block">
@@ -174,6 +194,12 @@
                 <div class="prob-segment draw-segment" id="prob-segment-draw" style="width: 33.3%;"></div>
                 <div class="prob-segment win-b-segment" id="prob-segment-b" style="width: 33.3%;"></div>
               </div>
+              
+              <!-- Venue & Status Details -->
+              <div class="match-meta-details-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 10px; font-family: var(--font-data);">
+                <span id="match-venue-display" style="color: var(--accent-blue);">📍 venue loading...</span>
+                <span id="match-completed-banner" class="hidden" style="color: var(--accent-red); font-weight: bold; background: rgba(177, 32, 32, 0.15); padding: 2px 6px; border: 1px solid var(--accent-red);">⚠️ COMPLETED: 0-0</span>
+              </div>
             </div>
 
             <!-- MIDDLE GRID: METRIC CARDS & MATRIX -->
@@ -185,7 +211,7 @@
                 <!-- [2] METRIC CARDS -->
                 <div class="metrics-container">
                   <div class="panel-header sub-header">
-                    <h3>EXPECTED GOALS &amp; SCORELINE</h3>
+                    <h3 class="has-tooltip" data-tip="Poisson model's expected goals per team. Blends win probability with real 2026 goals scored. Not the same as shot-based xG.">PREDICTED GOALS (λ) &amp; SCORELINE</h3>
                   </div>
                   <div class="metrics-grid">
                     <div class="metric-card">
@@ -244,7 +270,7 @@
                 <!-- [3] TOP 5 SCORELINES -->
                 <div class="score-matrix-panel">
                   <div class="panel-header sub-header">
-                    <h3>[03] SCORE MATRIX (TOP 5)</h3>
+                    <h3 class="has-tooltip" data-tip="The 5 most probable exact scorelines from Poisson distribution. Probabilities shown are per scoreline — they do not sum to 100%.">[03] SCORE MATRIX (TOP 5)</h3>
                     <span class="corner-label">MODEL</span>
                   </div>
                   <div class="matrix-list" id="matrix-list-rows">
@@ -262,7 +288,7 @@
               <div class="lower-col flex-column gap-md">
                 <div class="confidence-box">
                   <div class="panel-header sub-header">
-                    <h3>[05] CONFIDENCE</h3>
+                    <h3 class="has-tooltip" data-tip="How much we trust this prediction. Deducted for: Tier 4 teams (-20), fewer than 3 WC appearances (-15), missing key player (-5), neutral venue (-5).">[05] CONFIDENCE</h3>
                     <span class="corner-label">SYS</span>
                   </div>
                   
@@ -286,15 +312,15 @@
                     <h3>[06] LAYER BREAKDOWN</h3>
                   </div>
                   <div class="layers-row">
-                    <div class="layer-box">
+                    <div class="layer-box has-tooltip" data-tip="Win probability from Elo rating (1.0x), FIFA rank (0.5x), and squad market value (0.25x). Pre-tournament baseline — does not update.">
                       <div class="layer-lbl">L1: STATIC</div>
                       <div class="layer-val" id="layer-static-val">P = 0.54</div>
                     </div>
-                    <div class="layer-box">
+                    <div class="layer-box has-tooltip" data-tip="Adjusts L1 using last 5 match results and Elo momentum. Uses real 2026 results when the team has played at least 1 match.">
                       <div class="layer-lbl">L2: FORM</div>
                       <div class="layer-val" id="layer-form-val">P = 0.58</div>
                     </div>
-                    <div class="layer-box highlight-blue">
+                    <div class="layer-box highlight-blue has-tooltip" data-tip="Final blended win probability after both static and dynamic layers. Used to compute the Poisson lambda and scoreline matrix.">
                       <div class="layer-lbl">P(WIN A)</div>
                       <div class="layer-val color-blue" id="layer-final-val">54.2%</div>
                     </div>
@@ -443,7 +469,7 @@
                   <span class="flat-value" id="squad-team-a-xg-exc">0.00</span>
                 </div>
                 <div class="metric-row-flat">
-                  <span class="flat-label">STAR RELIANCE INDEX (SRI):</span>
+                  <span class="flat-label has-tooltip" data-tip="Star Reliance Index: how much attacking output drops if the top xG player is removed. &gt;40% = FRAGILE, 20-40% = DEPENDENT, &lt;20% = DISTRIBUTED.">STAR RELIANCE INDEX (SRI):</span>
                   <span class="flat-value" id="squad-team-a-sri-val">0.0%</span>
                 </div>
                 <div class="metric-row-flat">
@@ -526,7 +552,7 @@
                   <span class="flat-value" id="squad-team-b-xg-exc">0.00</span>
                 </div>
                 <div class="metric-row-flat">
-                  <span class="flat-label">STAR RELIANCE INDEX (SRI):</span>
+                  <span class="flat-label has-tooltip" data-tip="Star Reliance Index: how much attacking output drops if the top xG player is removed. &gt;40% = FRAGILE, 20-40% = DEPENDENT, &lt;20% = DISTRIBUTED.">STAR RELIANCE INDEX (SRI):</span>
                   <span class="flat-value" id="squad-team-b-sri-val">0.0%</span>
                 </div>
                 <div class="metric-row-flat">
@@ -654,7 +680,7 @@
     <!-- FUTURE SLOTS PANEL -->
     <footer class="future-slots-section">
       <div class="future-header">
-        <span>EXPANSION INTERFACES</span>
+        <span>PLANNED EXPANSION MODULES</span>
         <span class="muted-slot-label">SLOTS A-F · ACTIVE DASHBOARD DETECTOR</span>
       </div>
       
@@ -662,38 +688,38 @@
         <!-- SLOT A -->
         <div class="slot-card">
           <div class="slot-id">[SLOT_A]</div>
-          <div class="slot-name">BOOKMAKER FEED</div>
-          <div class="slot-status">STATUS: OFFLINE</div>
+          <div class="slot-name">BOOKMAKER ODDS FEED</div>
+          <div class="slot-status">STATUS: PLANNED</div>
         </div>
         <!-- SLOT B -->
         <div class="slot-card">
           <div class="slot-id">[SLOT_B]</div>
-          <div class="slot-name">TACTICAL FORMATION</div>
-          <div class="slot-status">STATUS: OFFLINE</div>
+          <div class="slot-name">LIVE MATCH EVENTS</div>
+          <div class="slot-status">STATUS: PLANNED</div>
         </div>
         <!-- SLOT C -->
         <div class="slot-card">
           <div class="slot-id">[SLOT_C]</div>
-          <div class="slot-name">WEATHER &amp; VENUE</div>
-          <div class="slot-status">STATUS: OFFLINE</div>
+          <div class="slot-name">WEATHER &amp; VENUE DATA</div>
+          <div class="slot-status">STATUS: PLANNED</div>
         </div>
         <!-- SLOT D -->
         <div class="slot-card">
           <div class="slot-id">[SLOT_D]</div>
-          <div class="slot-name">BRACKET SIMULATOR</div>
-          <div class="slot-status">STATUS: OFFLINE</div>
+          <div class="slot-name">TOURNAMENT BRACKET SIM</div>
+          <div class="slot-status">STATUS: PLANNED</div>
         </div>
         <!-- SLOT E -->
         <div class="slot-card">
           <div class="slot-id">[SLOT_E]</div>
-          <div class="slot-name">LIVE RECALCULATOR</div>
-          <div class="slot-status">STATUS: OFFLINE</div>
+          <div class="slot-name">xG SHOT DATA FEED</div>
+          <div class="slot-status">STATUS: PLANNED</div>
         </div>
         <!-- SLOT F -->
         <div class="slot-card">
           <div class="slot-id">[SLOT_F]</div>
-          <div class="slot-name">XGBOOST CORE V2</div>
-          <div class="slot-status">STATUS: OFFLINE</div>
+          <div class="slot-name">CALIBRATION ENGINE V2</div>
+          <div class="slot-status">STATUS: PLANNED</div>
         </div>
       </div>
     </footer>

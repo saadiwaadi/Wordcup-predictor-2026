@@ -9,7 +9,8 @@ const WC_48_TEAMS = new Set([
   "SEN", "MAR", "JPN", "USA", "MEX", "CAN", "COL", "URU", "SUI", "SRB",
   "DEN", "AUT", "TUR", "KOR", "POL", "AUS", "IRN", "ECU", "NGR", "GHA",
   "CMR", "EGY", "ALG", "CIV", "SAU", "QAT", "CRI", "PAN", "VEN", "CHI",
-  "ROU", "UKR", "RSA", "CZE", "PAR", "SCO", "SWE", "TUN"
+  "ROU", "UKR", "RSA", "CZE", "PAR", "SCO", "SWE", "TUN",
+  "NOR", "NZL", "BIH", "HAI", "CUW", "CPV", "IRQ", "JOR", "COD", "UZB"
 ]);
 
 export function initializeLocalStorageCache() {

@@ -1426,4 +1426,52 @@ body {
   color: var(--accent-blue);
 }
 
+/* TOOLTIP & ANIMATIONS ADDITIONS */
+.has-tooltip { 
+  position: relative; 
+  cursor: help;
+  border-bottom: 1px dashed var(--text-muted);
+}
+.has-tooltip::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-secondary);
+  border: 1px solid var(--accent-blue);
+  color: var(--text-primary);
+  font-size: 10px;
+  font-family: var(--font-data);
+  padding: 6px 10px;
+  width: 220px;
+  line-height: 1.5;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  white-space: normal;
+  text-align: left;
+}
+.has-tooltip:hover::after {
+  opacity: 1;
+}
 
+@keyframes slideIn {
+  from { width: 0%; }
+  to { width: var(--target-width); }
+}
+
+@keyframes fadeInRow {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-bar {
+  transition: width 600ms ease;
+}
+
+.matrix-row-animate {
+  animation: fadeInRow 200ms ease forwards;
+  opacity: 0;
+}

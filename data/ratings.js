@@ -49,5 +49,15 @@ export const RATINGS = {
   "SAU": { "elo": 1690, "eloDelta90": 2,   "fifaPoints": 45, "marketValue": 120  },
   "RSA": { "elo": 1650, "eloDelta90": 5,   "fifaPoints": 46, "marketValue": 50   },
   "PAN": { "elo": 1650, "eloDelta90": 5,   "fifaPoints": 47, "marketValue": 60   },
-  "QAT": { "elo": 1680, "eloDelta90": -5,  "fifaPoints": 48, "marketValue": 90   }
+  "QAT": { "elo": 1680, "eloDelta90": -5,  "fifaPoints": 48,  "marketValue": 90   },
+  "NOR": { "elo": 1650, "eloDelta90": 0,   "fifaPoints": 35,  "marketValue": 350  },
+  "NZL": { "elo": 1480, "eloDelta90": 0,   "fifaPoints": 95,  "marketValue": 25   },
+  "BIH": { "elo": 1590, "eloDelta90": 0,   "fifaPoints": 55,  "marketValue": 80   },
+  "HAI": { "elo": 1420, "eloDelta90": 0,   "fifaPoints": 115, "marketValue": 15   },
+  "CUW": { "elo": 1380, "eloDelta90": 0,   "fifaPoints": 130, "marketValue": 12   },
+  "CPV": { "elo": 1510, "eloDelta90": 0,   "fifaPoints": 80,  "marketValue": 28   },
+  "IRQ": { "elo": 1520, "eloDelta90": 0,   "fifaPoints": 75,  "marketValue": 18   },
+  "JOR": { "elo": 1450, "eloDelta90": 0,   "fifaPoints": 105, "marketValue": 14   },
+  "COD": { "elo": 1530, "eloDelta90": 0,   "fifaPoints": 65,  "marketValue": 35   },
+  "UZB": { "elo": 1490, "eloDelta90": 0,   "fifaPoints": 88,  "marketValue": 26   }
 };

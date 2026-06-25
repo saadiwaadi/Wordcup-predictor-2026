@@ -4,7 +4,7 @@ import { runPrediction } from './engine.js';
 import { runBacktest, computeMetrics, diagnoseWeaknesses } from './verification.js';
 import { runPreMatchFlags } from './engine/preMatchFlags.js';
 import { deltaUpdateTeam } from './data/deltaSync.js';
-import { enrichMatchup, getLambdaOverride, recomputeScorelines } from './data/enrichTeam.js';
+import { enrichMatchup, getLambdaOverride, recomputeScorelines, applyDrawCorrection } from './data/enrichTeam.js';
 
 
 
@@ -57,6 +57,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const layerFinalVal = document.getElementById("layer-final-val");
   
   const engineNotesConsole = document.getElementById("engine-notes-console");
+  const venueDisplay = document.getElementById("match-venue-display");
+  const completedBanner = document.getElementById("match-completed-banner");
+  const fixtureAutoResolved = document.getElementById("fixture-auto-resolved");
+  const fixtureResolvedText = document.getElementById("fixture-resolved-text");
+  const resultsPlaceholder = document.getElementById("results-placeholder");
+  const resultsContent = document.getElementById("results-content");
 
   // Group teams by Tier
   const TIERS = {
@@ -124,16 +130,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  async function updateResolvedFixture() {
+    const teamAId = teamASelect.value;
+    const teamBId = teamBSelect.value;
+    if (teamAId === teamBId) {
+      fixtureAutoResolved.classList.add('hidden');
+      return;
+    }
+    const teamA = TEAMS.find(t => t.id === teamAId);
+    const teamB = TEAMS.find(t => t.id === teamBId);
+    const { fixture } = await enrichMatchup(teamA, teamB);
+    if (fixture) {
+      const homeTeam = TEAMS.find(t => t.id === fixture.homeTeamCode);
+      const awayTeam = TEAMS.find(t => t.id === fixture.awayTeamCode);
+      const homeName = homeTeam ? homeTeam.name : fixture.homeTeamCode;
+      const awayName = awayTeam ? awayTeam.name : fixture.awayTeamCode;
+      
+      fixtureResolvedText.textContent = `${homeName} (H) vs ${awayName} (A) · ${fixture.ground}`;
+      fixtureAutoResolved.classList.remove('hidden');
+    } else {
+      fixtureAutoResolved.classList.add('hidden');
+    }
+  }
+
   teamASelect.addEventListener("change", () => {
     if (validateTeamSelection()) {
       renderSquadAnalysis();
       renderPreMatchFlags();
+      updateResolvedFixture();
     }
   });
   teamBSelect.addEventListener("change", () => {
     if (validateTeamSelection()) {
       renderSquadAnalysis();
       renderPreMatchFlags();
+      updateResolvedFixture();
     }
   });
 
@@ -144,11 +175,15 @@ document.addEventListener("DOMContentLoaded", () => {
     
     if (teamAId === teamBId) return;
 
+    // Show results panel and hide placeholder
+    if (resultsPlaceholder) resultsPlaceholder.classList.add('hidden');
+    if (resultsContent) resultsContent.classList.remove('hidden');
+
     const teamA = TEAMS.find(t => t.id === teamAId);
     const teamB = TEAMS.find(t => t.id === teamBId);
 
-    // Call enrichMatchup to get enriched teams with live data
-    const { enrichedA, enrichedB } = await enrichMatchup(teamA, teamB);
+    // Call enrichMatchup to get enriched teams with live data and resolved fixture
+    const { enrichedA, enrichedB, fixture } = await enrichMatchup(teamA, teamB);
 
     // Set staleData dynamically based on team live data
     let staleData = staleToggle.checked;
@@ -169,8 +204,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const results = runPrediction(enrichedA, enrichedB, options);
 
     // Override lambdas and recompute top 5 scorelines if changed
-    const newLambdaA = getLambdaOverride(enrichedA, results.P_dynamic_A);
-    const newLambdaB = getLambdaOverride(enrichedB, results.P_dynamic_B);
+    const newLambdaA = getLambdaOverride(enrichedA, results.P_dynamic_A, enrichedA.isHome);
+    const newLambdaB = getLambdaOverride(enrichedB, results.P_dynamic_B, enrichedB.isHome);
 
     if (newLambdaA !== results.lambda_A || newLambdaB !== results.lambda_B) {
       results.lambda_A = newLambdaA;
@@ -181,31 +216,56 @@ document.addEventListener("DOMContentLoaded", () => {
       results.sumProb = recomputed.sumProb;
     }
 
+    // Apply draw correction
+    const correctedResults = applyDrawCorrection(results);
+
+    // Render Venue & Completed Match Banner
+    if (venueDisplay) {
+      if (fixture) {
+        venueDisplay.textContent = `📍 ${fixture.ground || "Unknown Venue"}`;
+        if (fixture.isCompleted && fixture.score && fixture.score.ft) {
+          completedBanner.textContent = `⚠️ COMPLETED: ${fixture.score.ft[0]}-${fixture.score.ft[1]}`;
+          completedBanner.classList.remove("hidden");
+        } else {
+          completedBanner.classList.add("hidden");
+        }
+      } else {
+        venueDisplay.textContent = `📍 Neutral Venue / TBD`;
+        completedBanner.classList.add("hidden");
+      }
+    }
+
     // 1. PROBABILITY BAR TEXT & LABELS
     probTeamAName.textContent = enrichedA.name.toUpperCase();
     probTeamBName.textContent = enrichedB.name.toUpperCase();
     
-    probTeamAVal.textContent = `${results.winA_pct.toFixed(1)}%`;
-    probDrawVal.textContent = `${results.draw_pct.toFixed(1)}%`;
-    probTeamBVal.textContent = `${results.winB_pct.toFixed(1)}%`;
+    probTeamAVal.textContent = `${correctedResults.winA_pct.toFixed(1)}%`;
+    probDrawVal.textContent = `${correctedResults.draw_pct.toFixed(1)}%`;
+    probTeamBVal.textContent = `${correctedResults.winB_pct.toFixed(1)}%`;
 
     // 3-Segment width transition (Discrete animation from center)
-    // To animate from center on load, reset segment widths to 0, then expand.
-    // However, since it is a fast interface, standard transitions do this beautifully.
-    setTimeout(() => {
-      probSegmentA.style.width = `${results.winA_pct}%`;
-      probSegmentDraw.style.width = `${results.draw_pct}%`;
-      probSegmentB.style.width = `${results.winB_pct}%`;
-    }, 50);
+    probSegmentA.style.width = '0%';
+    probSegmentDraw.style.width = '0%';
+    probSegmentB.style.width = '0%';
+    requestAnimationFrame(() => {
+      probSegmentA.style.transition = 'width 600ms ease';
+      probSegmentA.style.width = `${correctedResults.winA_pct}%`;
+      
+      probSegmentDraw.style.transition = 'width 600ms ease';
+      probSegmentDraw.style.width = `${correctedResults.draw_pct}%`;
+      
+      probSegmentB.style.transition = 'width 600ms ease';
+      probSegmentB.style.width = `${correctedResults.winB_pct}%`;
+    });
 
     // 2. EXPECTED GOALS & SCORELINE CARDS
-    cardXgALabel.textContent = `XG ${enrichedA.id}`;
-    cardXgAVal.textContent = results.lambda_A.toFixed(1);
+    cardXgALabel.textContent = `λ ${teamA.name.toUpperCase()}`;
+    cardXgAVal.textContent = correctedResults.lambda_A.toFixed(1);
     
-    cardXgBLabel.textContent = `XG ${enrichedB.id}`;
-    cardXgBVal.textContent = results.lambda_B.toFixed(1);
+    cardXgBLabel.textContent = `λ ${teamB.name.toUpperCase()}`;
+    cardXgBVal.textContent = correctedResults.lambda_B.toFixed(1);
     
-    cardScorelineVal.textContent = results.mostLikelyScoreline;
+    cardScorelineVal.textContent = correctedResults.mostLikelyScoreline;
 
     // 4. RECENT FORM SQUARES
     formTeamAHeader.textContent = enrichedA.name.toUpperCase();
@@ -221,13 +281,14 @@ document.addEventListener("DOMContentLoaded", () => {
     matrixListRows.innerHTML = "";
     const maxProb = results.top5[0].probability; // highest probability
     
-    results.top5.forEach(row => {
+    results.top5.forEach((row, index) => {
       const percentageText = `${(row.probability * 100).toFixed(1)}%`;
       // Fill width proportional to probability relative to highest probability (highest = 100% width)
       const fillPercentage = maxProb > 0 ? (row.probability / maxProb) * 100 : 0;
       
       const matrixRow = document.createElement("div");
-      matrixRow.className = "matrix-row";
+      matrixRow.className = "matrix-row matrix-row-animate";
+      matrixRow.style.animationDelay = `${index * 60}ms`;
       
       matrixRow.innerHTML = `
         <div class="matrix-score">${row.scoreA}-${row.scoreB}</div>
@@ -267,9 +328,11 @@ document.addEventListener("DOMContentLoaded", () => {
     confidenceMeterFill.classList.add(colorClass);
     
     // Animate confidence meter width
-    setTimeout(() => {
+    confidenceMeterFill.style.width = '0%';
+    requestAnimationFrame(() => {
+      confidenceMeterFill.style.transition = 'width 800ms ease';
       confidenceMeterFill.style.width = `${results.confidence}%`;
-    }, 50);
+    });
 
     // 8. LAYER BREAKDOWN
     layerStaticVal.textContent = `P = ${results.P_static_A.toFixed(1)}`;
@@ -300,22 +363,35 @@ document.addEventListener("DOMContentLoaded", () => {
       lines.push(`WARNING: CONFIDENCE DEDUCTION APPLIED [STALE DATA DETECTED]`);
     }
 
-    lines.forEach((lineText, idx) => {
-      const line = document.createElement("div");
-      line.className = "console-line";
-      
-      if (lineText.startsWith("WARNING:")) {
-        line.classList.add("warning-line");
-      } else if (lineText.startsWith("SYS LOG:") || lineText.startsWith("STAGE") || lineText.startsWith("STATIC") || lineText.startsWith("DYNAMIC")) {
-        line.classList.add("muted-line");
+    function typewriterAppend(container, linesList) {
+      container.innerHTML = '';
+      let lineIndex = 0;
+      function nextLine() {
+        if (lineIndex >= linesList.length) return;
+        const lineText = linesList[lineIndex++];
+        const el = document.createElement('div');
+        el.className = 'console-line';
+        if (lineText.startsWith("WARNING:")) {
+          el.classList.add("warning-line");
+        } else if (lineText.startsWith("SYS LOG:") || lineText.startsWith("STAGE") || lineText.startsWith("STATIC") || lineText.startsWith("DYNAMIC")) {
+          el.classList.add("muted-line");
+        }
+        el.textContent = '';
+        container.appendChild(el);
+        let charIndex = 0;
+        const interval = setInterval(() => {
+          el.textContent += lineText[charIndex++];
+          container.scrollTop = container.scrollHeight;
+          if (charIndex >= lineText.length) {
+            clearInterval(interval);
+            setTimeout(nextLine, 80);
+          }
+        }, 12);
       }
-      
-      line.textContent = lineText;
-      engineNotesConsole.appendChild(line);
-    });
-
-    // Scroll console to bottom
-    engineNotesConsole.scrollTop = engineNotesConsole.scrollHeight;
+      nextLine();
+    }
+    
+    typewriterAppend(engineNotesConsole, lines);
 
     // Update Squad Analysis
     renderSquadAnalysis();
@@ -1154,7 +1230,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize data on load
   populateDropdowns();
   validateTeamSelection();
-  updateDashboard();
+  updateResolvedFixture();
   renderPreMatchFlags();
   syncLocalWithServerCache();
 });
