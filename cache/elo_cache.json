@@ -1,0 +1,245 @@
+{
+  "fetchedAt": "2026-06-26T19:24:16.909Z",
+  "teams": {
+    "ARG": {
+      "elo": 2144,
+      "rank": 1,
+      "delta": 1
+    },
+    "ESP": {
+      "elo": 2134,
+      "rank": 2,
+      "delta": -1
+    },
+    "FRA": {
+      "elo": 2090,
+      "rank": 3,
+      "delta": 0
+    },
+    "ENG": {
+      "elo": 2028,
+      "rank": 4,
+      "delta": 0
+    },
+    "BRA": {
+      "elo": 2009,
+      "rank": 5,
+      "delta": 2
+    },
+    "COL": {
+      "elo": 2006,
+      "rank": 6,
+      "delta": -1
+    },
+    "POR": {
+      "elo": 1988,
+      "rank": 7,
+      "delta": -1
+    },
+    "NED": {
+      "elo": 1980,
+      "rank": 8,
+      "delta": 0
+    },
+    "GER": {
+      "elo": 1916,
+      "rank": 10,
+      "delta": 2
+    },
+    "SUI": {
+      "elo": 1914,
+      "rank": 11,
+      "delta": 2
+    },
+    "MEX": {
+      "elo": 1912,
+      "rank": 12,
+      "delta": 8
+    },
+    "JPN": {
+      "elo": 1910,
+      "rank": 13,
+      "delta": 3
+    },
+    "ECU": {
+      "elo": 1902,
+      "rank": 14,
+      "delta": -4
+    },
+    "CRO": {
+      "elo": 1896,
+      "rank": 15,
+      "delta": -6
+    },
+    "MAR": {
+      "elo": 1877,
+      "rank": 16,
+      "delta": 8
+    },
+    "DEN": {
+      "elo": 1869,
+      "rank": 17,
+      "delta": 0
+    },
+    "BEL": {
+      "elo": 1869,
+      "rank": 17,
+      "delta": 4
+    },
+    "TUR": {
+      "elo": 1852,
+      "rank": 20,
+      "delta": -5
+    },
+    "URU": {
+      "elo": 1851,
+      "rank": 21,
+      "delta": -7
+    },
+    "AUT": {
+      "elo": 1841,
+      "rank": 22,
+      "delta": 1
+    },
+    "SEN": {
+      "elo": 1817,
+      "rank": 23,
+      "delta": -5
+    },
+    "PAR": {
+      "elo": 1815,
+      "rank": 24,
+      "delta": -2
+    },
+    "AUS": {
+      "elo": 1800,
+      "rank": 25,
+      "delta": 4
+    },
+    "USA": {
+      "elo": 1781,
+      "rank": 26,
+      "delta": 8
+    },
+    "ALG": {
+      "elo": 1780,
+      "rank": 27,
+      "delta": 13
+    },
+    "UKR": {
+      "elo": 1780,
+      "rank": 27,
+      "delta": 5
+    },
+    "NGR": {
+      "elo": 1767,
+      "rank": 30,
+      "delta": 6
+    },
+    "IRN": {
+      "elo": 1766,
+      "rank": 31,
+      "delta": 2
+    },
+    "CAN": {
+      "elo": 1748,
+      "rank": 32,
+      "delta": -7
+    },
+    "CIV": {
+      "elo": 1743,
+      "rank": 35,
+      "delta": 22
+    },
+    "SWE": {
+      "elo": 1742,
+      "rank": 36,
+      "delta": 10
+    },
+    "EGY": {
+      "elo": 1740,
+      "rank": 37,
+      "delta": 16
+    },
+    "SRB": {
+      "elo": 1734,
+      "rank": 38,
+      "delta": -8
+    },
+    "VEN": {
+      "elo": 1733,
+      "rank": 39,
+      "delta": 4
+    },
+    "KOR": {
+      "elo": 1723,
+      "rank": 40,
+      "delta": -13
+    },
+    "CHI": {
+      "elo": 1717,
+      "rank": 41,
+      "delta": -2
+    },
+    "POL": {
+      "elo": 1710,
+      "rank": 43,
+      "delta": -8
+    },
+    "CZE": {
+      "elo": 1680,
+      "rank": 49,
+      "delta": -7
+    },
+    "PAN": {
+      "elo": 1668,
+      "rank": 51,
+      "delta": -13
+    },
+    "ROU": {
+      "elo": 1639,
+      "rank": 56,
+      "delta": 1
+    },
+    "CMR": {
+      "elo": 1614,
+      "rank": 62,
+      "delta": 0
+    },
+    "CRI": {
+      "elo": 1608,
+      "rank": 63,
+      "delta": -3
+    },
+    "SAU": {
+      "elo": 1593,
+      "rank": 65,
+      "delta": -1
+    },
+    "GHA": {
+      "elo": 1584,
+      "rank": 69,
+      "delta": 11
+    },
+    "RSA": {
+      "elo": 1575,
+      "rank": 70,
+      "delta": 8
+    },
+    "TUN": {
+      "elo": 1562,
+      "rank": 73,
+      "delta": -12
+    },
+    "QAT": {
+      "elo": 1411,
+      "rank": 99,
+      "delta": -7
+    },
+    "SCO": {
+      "elo": 853,
+      "rank": 204,
+      "delta": 0
+    }
+  }
+}

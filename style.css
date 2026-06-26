@@ -60,17 +60,22 @@ body {
 
 .grid-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: 30px 30px;
-  background-image: 
-    linear-gradient(to right, rgba(141, 255, 47, 0.015) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(141, 255, 47, 0.015) 1px, transparent 1px);
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   pointer-events: none;
-  z-index: 9998;
+  z-index: 0;
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridDrift 20s linear infinite;
 }
+
+@keyframes gridDrift {
+  0% { background-position: 0px 0px; }
+  100% { background-position: 0px 40px; }
+}
+
 
 /* UTILITY CLASSES */
 .hidden {
@@ -1427,15 +1432,16 @@ body {
 }
 
 /* TOOLTIP & ANIMATIONS ADDITIONS */
-.has-tooltip { 
-  position: relative; 
+.has-tooltip {
+  position: relative;
   cursor: help;
   border-bottom: 1px dashed var(--text-muted);
+  display: inline-block;
 }
 .has-tooltip::after {
   content: attr(data-tip);
   position: absolute;
-  bottom: calc(100% + 6px);
+  bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
   background: var(--bg-secondary);
@@ -1443,10 +1449,10 @@ body {
   color: var(--text-primary);
   font-size: 10px;
   font-family: var(--font-data);
-  padding: 6px 10px;
-  width: 220px;
-  line-height: 1.5;
-  z-index: 100;
+  padding: 8px 10px;
+  width: 230px;
+  line-height: 1.6;
+  z-index: 9999;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.15s ease;
@@ -1463,8 +1469,8 @@ body {
 }
 
 @keyframes fadeInRow {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .animate-bar {
@@ -1472,6 +1478,41 @@ body {
 }
 
 .matrix-row-animate {
-  animation: fadeInRow 200ms ease forwards;
   opacity: 0;
+  animation: fadeInRow 180ms ease forwards;
 }
+
+@keyframes segmentPulse {
+  0% { filter: brightness(1); }
+  40% { filter: brightness(1.6); }
+  100% { filter: brightness(1); }
+}
+.segment-pulse {
+  animation: segmentPulse 500ms ease 700ms 1 forwards;
+}
+
+.engine-note-line {
+  margin-bottom: 4px;
+  white-space: pre-wrap;
+}
+
+/* SQUAD VIEW ANIMATIONS */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gkPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.gk-pulse {
+  animation: gkPulse 2.5s ease-in-out infinite;
+}
+

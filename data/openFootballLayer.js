@@ -306,7 +306,7 @@ function computeAll(matchesData, groupsData) {
 }
 
 // Main fetcher and caching refresh function
-async function refreshCache() {
+export async function refreshCache() {
   if (!isNode) return;
   await ensureCacheDir();
   const existingCache = await loadCache();
@@ -387,7 +387,7 @@ async function fetchCacheFromBrowser() {
 }
 
 // Fetch cache wrapper
-async function getCache() {
+export async function getCache() {
   if (!isNode) {
     return await fetchCacheFromBrowser();
   }
@@ -513,6 +513,105 @@ export async function getFixture(team1Code, team2Code) {
   
   return null;
 }
+
+export async function getTeamSquad(teamCode) {
+  const cache = await getCache();
+  const squads = cache.squads || [];
+  const teamSquad = squads.find(s => s.fifa_code === teamCode);
+  if (!teamSquad || !teamSquad.players) return [];
+
+  return teamSquad.players.map(p => {
+    // compute age from date_of_birth to today
+    let age = 0;
+    if (p.date_of_birth) {
+      const dob = new Date(p.date_of_birth);
+      const today = new Date();
+      age = today.getFullYear() - dob.getFullYear();
+      const m = today.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+    }
+    
+    // posGroup
+    let posGroup = "FORWARDS";
+    if (p.pos === "GK") posGroup = "GOALKEEPERS";
+    else if (p.pos === "DF") posGroup = "DEFENDERS";
+    else if (p.pos === "MF") posGroup = "MIDFIELDERS";
+
+    // numbers 1-11 starter: true, 12-26 starter: false
+    const starter = p.number >= 1 && p.number <= 11;
+
+    return {
+      number: p.number,
+      pos: p.pos,
+      name: p.name,
+      age,
+      posGroup,
+      starter
+    };
+  });
+}
+
+export async function getTopScorers(limit = 10) {
+  const cache = await getCache();
+  const completed = cache.computed?.completedMatches || [];
+  const scorerMap = {}; // key: name|teamCode -> count
+
+  completed.forEach(m => {
+    const t1 = m.team1Code;
+    const t2 = m.team2Code;
+    if (Array.isArray(m.goals1)) {
+      m.goals1.forEach(g => {
+        if (g.name && t1) {
+          const key = `${g.name}|${t1}`;
+          scorerMap[key] = (scorerMap[key] || 0) + 1;
+        }
+      });
+    }
+    if (Array.isArray(m.goals2)) {
+      m.goals2.forEach(g => {
+        if (g.name && t2) {
+          const key = `${g.name}|${t2}`;
+          scorerMap[key] = (scorerMap[key] || 0) + 1;
+        }
+      });
+    }
+  });
+
+  const list = Object.entries(scorerMap).map(([key, goals]) => {
+    const [name, teamCode] = key.split('|');
+    return { name, teamCode, goals };
+  });
+
+  list.sort((a, b) => {
+    if (b.goals !== a.goals) return b.goals - a.goals;
+    return a.name.localeCompare(b.name);
+  });
+
+  return list.slice(0, limit);
+}
+
+export async function getTeamCleanSheets(teamCode) {
+  const cache = await getCache();
+  const completed = cache.computed?.completedMatches || [];
+  let cleanSheets = 0;
+
+  completed.forEach(m => {
+    if (m.team1Code === teamCode) {
+      if (m.score && Array.isArray(m.score.ft) && m.score.ft[1] === 0) {
+        cleanSheets++;
+      }
+    } else if (m.team2Code === teamCode) {
+      if (m.score && Array.isArray(m.score.ft) && m.score.ft[0] === 0) {
+        cleanSheets++;
+      }
+    }
+  });
+
+  return cleanSheets;
+}
+
 
 // Auto-run execution block
 if (isNode) {

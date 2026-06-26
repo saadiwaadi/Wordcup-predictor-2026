@@ -1,6 +1,8 @@
 // engine.js - Core prediction calculations for ORACLE-26
 import { getH2H } from './data/index.js';
 
+export const RHO = -0.04;
+
 // Helper: factorial for Poisson
 const FACTORIALS = [1, 1, 2, 6, 24, 120, 720];
 function factorial(n) {
@@ -93,15 +95,34 @@ function runPrediction(teamA, teamB, options = {}) {
   const lambda_B = Math.max(0.1, 1.8 * P_dynamic_B + 0.27);
 
   // 4. Scoreline Matrix (7x7)
+  function dixonColesTau(i, j, lambda_A, lambda_B, rho) {
+    if (i === 0 && j === 0) 
+      return 1 - (lambda_A * lambda_B * rho);
+    if (i === 1 && j === 0) 
+      return 1 + (lambda_B * rho);
+    if (i === 0 && j === 1) 
+      return 1 + (lambda_A * rho);
+    if (i === 1 && j === 1) 
+      return 1 - rho;
+    return 1.0;
+  }
+
   const matrix = [];
   let sumProb = 0.0;
   for (let i = 0; i <= 6; i++) {
     for (let j = 0; j <= 6; j++) {
-      const prob = poissonPMF(i, lambda_A) * poissonPMF(j, lambda_B);
+      const tau = dixonColesTau(i, j, lambda_A, lambda_B, RHO);
+      const prob = poissonPMF(i, lambda_A) * poissonPMF(j, lambda_B) * tau;
       matrix.push({ scoreA: i, scoreB: j, probability: prob });
       sumProb += prob;
     }
   }
+
+  // Normalize the matrix after building it (Dixon-Coles adjustment normalization)
+  const totalProb = matrix.reduce((sum, cell) => sum + cell.probability, 0);
+  matrix.forEach(cell => {
+    cell.probability = cell.probability / totalProb;
+  });
 
   // Sort by probability descending
   matrix.sort((a, b) => b.probability - a.probability);
@@ -110,16 +131,19 @@ function runPrediction(teamA, teamB, options = {}) {
   const top5 = matrix.slice(0, 5);
   const mostLikelyScoreline = `${top5[0].scoreA}-${top5[0].scoreB}`;
 
-  // 5. Draw Probability & Final Normalize
-  const P_draw = (1 / 3) * Math.exp(-Math.pow(P_dynamic_A - 0.5, 2) / (2 * Math.pow(0.28, 2)));
+  // Gaussian draw probability (outcome prediction)
+  const P_draw = (1/3) * Math.exp(
+    -Math.pow(P_dynamic_A - 0.5, 2) / 
+    (2 * Math.pow(0.28, 2))
+  )
 
-  const raw_win_A = P_dynamic_A * (1 - P_draw);
-  const raw_win_B = P_dynamic_B * (1 - P_draw);
+  const raw_win_A = P_dynamic_A * (1 - P_draw)
+  const raw_win_B = P_dynamic_B * (1 - P_draw)
+  const total = raw_win_A + P_draw + raw_win_B
 
-  const total = raw_win_A + P_draw + raw_win_B;
-  const winA_pct = (raw_win_A / total) * 100;
-  const draw_pct = (P_draw / total) * 100;
-  const winB_pct = (raw_win_B / total) * 100;
+  const winA_pct = (raw_win_A / total) * 100
+  const draw_pct = (P_draw / total) * 100
+  const winB_pct = (raw_win_B / total) * 100
 
   // 6. Confidence Scoring
   let confidence = 100;

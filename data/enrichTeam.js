@@ -52,30 +52,15 @@ export async function enrichMatchup(teamAObject, teamBObject) {
 }
 
 export const CALIBRATION_CONSTANTS = {
-  home_residual_correction: 0.54,  // from backtest
-  away_residual_correction: -0.27  // from backtest
+  home_residual_correction: 0.27,  // from backtest
+  away_residual_correction: -0.01  // from backtest
 };
 
-export function applyDrawCorrection(result) {
-  const drawBoost = 0.08;  // 8% boost from research
-  const adjustedDraw = result.draw_pct + (drawBoost * 100);
-  const pullFrom = drawBoost * 50;  // split equally
-  const adjustedWinA = result.winA_pct - pullFrom;
-  const adjustedWinB = result.winB_pct - pullFrom;
-
-  return {
-    ...result,
-    draw_pct: adjustedDraw,
-    winA_pct: Math.max(5, adjustedWinA),
-    winB_pct: Math.max(5, adjustedWinB),
-    drawCorrectionApplied: true
-  };
-}
 
 export function getLambdaOverride(enrichedTeam, P_dynamic, isHome) {
   if (!enrichedTeam) {
     const defaultLambda = Math.max(0.1, 1.8 * P_dynamic + 0.27);
-    const residual_adj = isHome ? 0.54 * 0.3 : -0.27 * 0.3;
+    const residual_adj = isHome ? 0.54 * 0.65 : -0.27 * 0.3;
     return Math.max(0.1, defaultLambda + residual_adj);
   }
   
@@ -87,7 +72,7 @@ export function getLambdaOverride(enrichedTeam, P_dynamic, isHome) {
     lambda = 1.8 * P_dynamic + 0.27;
   }
 
-  const residual_adj = isHome ? 0.54 * 0.3 : -0.27 * 0.3;
+  const residual_adj = isHome ? 0.54 * 0.65 : -0.27 * 0.3;
   return Math.max(0.1, lambda + residual_adj);
 }
 

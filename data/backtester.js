@@ -5,7 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { runPrediction } from '../engine.js';
 import { TEAMS } from './index.js';
-import { getLambdaOverride, recomputeScorelines, applyDrawCorrection } from './enrichTeam.js';
+import { getLambdaOverride, recomputeScorelines } from './enrichTeam.js';
 import { getFixture } from './openFootballLayer.js';
 
 // Setup file paths
@@ -143,15 +143,21 @@ export async function runBacktest() {
       prediction.sumProb = recomputed.sumProb;
     }
 
-    // Apply draw correction
-    const correctedPrediction = applyDrawCorrection(prediction);
+    // Assign prediction directly (draw correction removed in favor of Dixon-Coles)
+    const correctedPrediction = prediction;
 
     // Outcomes mapping
-    let predictedOutcome = "DRAW";
-    if (correctedPrediction.winA_pct > correctedPrediction.winB_pct && correctedPrediction.winA_pct > correctedPrediction.draw_pct) {
-      predictedOutcome = "HOME";
-    } else if (correctedPrediction.winB_pct > correctedPrediction.winA_pct && correctedPrediction.winB_pct > correctedPrediction.draw_pct) {
-      predictedOutcome = "AWAY";
+    const winA_pct = correctedPrediction.winA_pct;
+    const winB_pct = correctedPrediction.winB_pct;
+    const draw_pct = correctedPrediction.draw_pct;
+
+    let predictedOutcome;
+    if (draw_pct >= winA_pct && draw_pct >= winB_pct) {
+      predictedOutcome = 'DRAW';
+    } else if (winA_pct >= winB_pct) {
+      predictedOutcome = 'HOME';
+    } else {
+      predictedOutcome = 'AWAY';
     }
 
     let actualOutcome = "DRAW";
@@ -402,6 +408,171 @@ if (nodePath) {
           const scoreDetail = b.exactScoreCorrect ? `Exact Score: ${b.actualScore}` : `Top 5 Score: ${b.mostLikelyScoreline}`;
           console.log(`  ${i + 1}. ${b.match} — predicted ${b.predictedOutcome} (${b.predictedOutcomePct.toFixed(0)}%), actual ${b.actualOutcome} [${scoreDetail}]`);
         });
+
+        // --- STATISTICAL VALIDATION TESTS ---
+        console.log("\n=== CALIBRATION CHECK ===");
+        const buckets = ['45-50%', '50-55%', '55-60%', '60-65%', '65-70%', '70%+'];
+        const bucketStats = {};
+        buckets.forEach(b => {
+          bucketStats[b] = { total: 0, correct: 0 };
+        });
+
+        results.forEach(r => {
+          const p = r.predictedOutcomeProbability;
+          let bucket = null;
+          if (p >= 45 && p < 50) bucket = '45-50%';
+          else if (p >= 50 && p < 55) bucket = '50-55%';
+          else if (p >= 55 && p < 60) bucket = '55-60%';
+          else if (p >= 60 && p < 65) bucket = '60-65%';
+          else if (p >= 65 && p < 70) bucket = '65-70%';
+          else if (p >= 70) bucket = '70%+';
+
+          if (bucket) {
+            bucketStats[bucket].total++;
+            if (r.outcomeCorrect) {
+              bucketStats[bucket].correct++;
+            }
+          }
+        });
+
+        console.log("CONFIDENCE | PREDICTIONS | CORRECT | OBSERVED ACC");
+        buckets.forEach(b => {
+          const stats = bucketStats[b];
+          const accStr = stats.total > 0 ? `${((stats.correct / stats.total) * 100).toFixed(1)}%` : "0.0%";
+          console.log(`  ${b.padEnd(8)} |      ${stats.total.toString().padEnd(3)}     |    ${stats.correct.toString().padEnd(2)}   |    ${accStr}`);
+        });
+
+        // Calculate calibration trend
+        const midpoints = {
+          '45-50%': 47.5,
+          '50-55%': 52.5,
+          '55-60%': 57.5,
+          '60-65%': 62.5,
+          '65-70%': 67.5,
+          '70%+': 75.0
+        };
+        const activeBuckets = buckets.filter(b => bucketStats[b].total > 0);
+        let trend = 'FLAT';
+        if (activeBuckets.length >= 2) {
+          let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+          activeBuckets.forEach(b => {
+            const x = midpoints[b];
+            const y = (bucketStats[b].correct / bucketStats[b].total) * 100;
+            sumX += x;
+            sumY += y;
+            sumXY += x * y;
+            sumXX += x * x;
+          });
+          const N = activeBuckets.length;
+          const num = N * sumXY - sumX * sumY;
+          if (num > 0.1) trend = 'IMPROVING';
+          else if (num < -0.1) trend = 'DEGRADING';
+        }
+
+        console.log("\n=== BASELINE COMPARISON ===");
+        // Baseline A: Always Home
+        const homeCorrect = results.filter(r => r.actualOutcome === 'HOME').length;
+        const alwaysHomeAcc = (homeCorrect / results.length) * 100;
+
+        // Baseline B: Always Favorite (lower FIFA rank wins, predict HOME if equal)
+        let fifaCorrect = 0;
+        results.forEach(r => {
+          const teamAObj = TEAMS.find(t => t.id === r.homeTeam);
+          const teamBObj = TEAMS.find(t => t.id === r.awayTeam);
+          let pred = 'HOME';
+          if (teamAObj && teamBObj) {
+            if (teamAObj.fifa_rank < teamBObj.fifa_rank) pred = 'HOME';
+            else if (teamBObj.fifa_rank < teamAObj.fifa_rank) pred = 'AWAY';
+          }
+          if (pred === r.actualOutcome) {
+            fifaCorrect++;
+          }
+        });
+        const fifaRankAcc = (fifaCorrect / results.length) * 100;
+
+        // Baseline C: Pure Random
+        let totalRandomCorrect = 0;
+        const randOptions = ['HOME', 'DRAW', 'AWAY'];
+        for (let sim = 0; sim < 1000; sim++) {
+          results.forEach(r => {
+            const randPred = randOptions[Math.floor(Math.random() * 3)];
+            if (randPred === r.actualOutcome) {
+              totalRandomCorrect++;
+            }
+          });
+        }
+        const randomChanceAcc = (totalRandomCorrect / (1000 * results.length)) * 100;
+
+        const oracle26Acc = metrics.overall.outcomeAccuracy;
+        const formatDiff = (diff) => (diff >= 0 ? `+${diff.toFixed(1)}` : `${diff.toFixed(1)}`);
+
+        console.log(`Random chance (1000 sim avg):    ${randomChanceAcc.toFixed(1)}%`);
+        console.log(`Always predict home win:         ${alwaysHomeAcc.toFixed(1)}%`);
+        console.log(`Always predict better FIFA rank: ${fifaRankAcc.toFixed(1)}%`);
+        console.log(`ORACLE-26 actual:                ${oracle26Acc.toFixed(1)}%`);
+        console.log(`ORACLE-26 vs random:             ${formatDiff(oracle26Acc - randomChanceAcc)} percentage points`);
+        console.log(`ORACLE-26 vs always home:        ${formatDiff(oracle26Acc - alwaysHomeAcc)} percentage points`);
+        console.log(`ORACLE-26 vs FIFA rank naive:    ${formatDiff(oracle26Acc - fifaRankAcc)} percentage points`);
+
+        // Test 3: Brier Score
+        console.log("\n=== BRIER SCORE (Probability Calibration) ===");
+        let totalBS = 0;
+        results.forEach(r => {
+          const p_home = r.winA_pct / 100;
+          const p_draw = r.draw_pct / 100;
+          const p_away = r.winB_pct / 100;
+
+          const act_home = r.actualOutcome === 'HOME' ? 1 : 0;
+          const act_draw = r.actualOutcome === 'DRAW' ? 1 : 0;
+          const act_away = r.actualOutcome === 'AWAY' ? 1 : 0;
+
+          const bs = Math.pow(p_home - act_home, 2) +
+                     Math.pow(p_draw - act_draw, 2) +
+                     Math.pow(p_away - act_away, 2);
+          totalBS += bs;
+        });
+        const brierScore = totalBS / results.length;
+
+        let brierInterpretation = 'POOR';
+        if (brierScore < 0.4) brierInterpretation = 'EXCELLENT';
+        else if (brierScore <= 0.5) brierInterpretation = 'GOOD';
+        else if (brierScore <= 0.6) brierInterpretation = 'FAIR';
+
+        console.log(`ORACLE-26 Brier Score: ${brierScore.toFixed(3)}`);
+        console.log("Reference — Random:    0.667");
+        console.log("Reference — Perfect:   0.000");
+        console.log(`Interpretation: ${brierInterpretation}`);
+
+        // Final Verdict Block
+        console.log("\n=== ORACLE-26 STATISTICAL VALIDATION ===");
+        console.log(`Matches analysed: ${results.length}`);
+        console.log(`Overall accuracy: ${oracle26Acc.toFixed(1)}% (${metrics.overall.outcomeCorrect}/${results.length})`);
+        console.log("");
+        
+        const beatsRandom = oracle26Acc > randomChanceAcc;
+        const beatsHome = oracle26Acc > alwaysHomeAcc;
+        const beatsFIFA = oracle26Acc > fifaRankAcc;
+        const goodBrier = brierScore < 0.5;
+
+        console.log(`vs Random baseline:      ${formatDiff(oracle26Acc - randomChanceAcc)}% ${beatsRandom ? '✓' : '✗'}`);
+        console.log(`vs Naive baseline:       ${formatDiff(oracle26Acc - fifaRankAcc)}% ${beatsFIFA ? '✓' : '✗'}`);
+        console.log(`Calibration trend:       ${trend}`);
+        console.log(`Brier score:             ${brierScore.toFixed(3)} (${brierInterpretation})`);
+        console.log("");
+
+        let verdict = 'NO SIGNAL';
+        if (!beatsRandom) {
+          verdict = 'NO SIGNAL';
+        } else {
+          if (beatsHome && beatsFIFA && goodBrier) {
+            verdict = 'STRONG SIGNAL';
+          } else if (oracle26Acc - randomChanceAcc <= 3) {
+            verdict = 'WEAK SIGNAL';
+          } else {
+            verdict = 'MODERATE SIGNAL';
+          }
+        }
+        console.log(`VERDICT: ${verdict}`);
 
       } catch (err) {
         console.error("Backtester execution error:", err);

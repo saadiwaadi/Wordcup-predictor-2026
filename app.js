@@ -1,16 +1,22 @@
 // app.js - Controller for ORACLE-26 UI and Event Handling
-import { TEAMS, reloadTeams } from './data/index.js';
+import { TEAMS, reloadTeams, getH2H } from './data/index.js';
 import { runPrediction } from './engine.js';
-import { runBacktest, computeMetrics, diagnoseWeaknesses } from './verification.js';
+import { runLiveBacktest } from './js/verificationEngine.js';
+import { getCache } from './data/openFootballLayer.js';
 import { runPreMatchFlags } from './engine/preMatchFlags.js';
 import { deltaUpdateTeam } from './data/deltaSync.js';
-import { enrichMatchup, getLambdaOverride, recomputeScorelines, applyDrawCorrection } from './data/enrichTeam.js';
+import { enrichMatchup, getLambdaOverride, recomputeScorelines } from './data/enrichTeam.js';
+import { getTeamForm, getTeamSquad, getTopScorers, getTeamCleanSheets } from './data/openFootballLayer.js';
+
 
 
 
 document.addEventListener("DOMContentLoaded", () => {
   const teamASelect = document.getElementById("team-a-select");
   const teamBSelect = document.getElementById("team-b-select");
+  const squadTeamASelect = document.getElementById("squad-team-a-select");
+  const squadTeamBSelect = document.getElementById("squad-team-b-select");
+  const squadAnalysisPlaceholder = document.getElementById("squad-analysis-placeholder");
   const stageSelect = document.getElementById("stage-select");
   
   const staleToggle = document.getElementById("toggle-stale");
@@ -64,6 +70,63 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultsPlaceholder = document.getElementById("results-placeholder");
   const resultsContent = document.getElementById("results-content");
 
+  function animateProbBar(segA, segDraw, segB, valA, valDraw, valB) {
+    segA.style.width = '0%';
+    segDraw.style.width = '0%';
+    segB.style.width = '0%';
+    
+    segA.classList.remove('segment-pulse');
+    segDraw.classList.remove('segment-pulse');
+    segB.classList.remove('segment-pulse');
+
+    requestAnimationFrame(() => {
+      segA.style.transition = 'width 600ms cubic-bezier(0.16, 1, 0.3, 1)';
+      segA.style.width = `${valA}%`;
+      
+      segDraw.style.transition = 'width 600ms cubic-bezier(0.16, 1, 0.3, 1)';
+      segDraw.style.width = `${valDraw}%`;
+      
+      segB.style.transition = 'width 600ms cubic-bezier(0.16, 1, 0.3, 1)';
+      segB.style.width = `${valB}%`;
+      
+      setTimeout(() => {
+        if (valA > valDraw && valA > valB) {
+          segA.classList.add('segment-pulse');
+        } else if (valB > valA && valB > valDraw) {
+          segB.classList.add('segment-pulse');
+        } else {
+          segDraw.classList.add('segment-pulse');
+        }
+      }, 650);
+    });
+  }
+
+  function typewriterLines(container, lines, prefix = '> ') {
+    container.innerHTML = '';
+    let lineIndex = 0;
+    
+    function renderNextLine() {
+      if (lineIndex >= lines.length) return;
+      const text = prefix + lines[lineIndex++];
+      const el = document.createElement('div');
+      el.className = 'engine-note-line';
+      el.textContent = '';
+      container.appendChild(el);
+      
+      let charIndex = 0;
+      const charInterval = setInterval(() => {
+        el.textContent += text[charIndex++];
+        container.scrollTop = container.scrollHeight;
+        if (charIndex >= text.length) {
+          clearInterval(charInterval);
+          setTimeout(renderNextLine, 60);
+        }
+      }, 10);
+    }
+    
+    renderNextLine();
+  }
+
   // Group teams by Tier
   const TIERS = {
     1: "Tier 1 — Elite",
@@ -103,12 +166,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Populate form squares for form view
-  function renderFormSquares(team, container) {
+  function renderFormSquares(team, container, rawForm = []) {
     container.innerHTML = "";
-    team.last_6.forEach(result => {
+    team.last_6.forEach((result, idx) => {
       const tile = document.createElement("div");
       tile.className = `form-tile ${result}`;
       tile.textContent = result;
+      const detail = rawForm[idx];
+      if (detail && detail.opponent) {
+        tile.title = `${detail.result} vs ${detail.opponent} (${detail.goalsFor}-${detail.goalsAgainst}) · ${detail.date}`;
+      }
       container.appendChild(tile);
     });
   }
@@ -133,23 +200,32 @@ document.addEventListener("DOMContentLoaded", () => {
   async function updateResolvedFixture() {
     const teamAId = teamASelect.value;
     const teamBId = teamBSelect.value;
-    if (teamAId === teamBId) {
+    if (!teamAId || !teamBId || teamAId === teamBId) {
       fixtureAutoResolved.classList.add('hidden');
       return;
     }
     const teamA = TEAMS.find(t => t.id === teamAId);
     const teamB = TEAMS.find(t => t.id === teamBId);
-    const { fixture } = await enrichMatchup(teamA, teamB);
-    if (fixture) {
-      const homeTeam = TEAMS.find(t => t.id === fixture.homeTeamCode);
-      const awayTeam = TEAMS.find(t => t.id === fixture.awayTeamCode);
-      const homeName = homeTeam ? homeTeam.name : fixture.homeTeamCode;
-      const awayName = awayTeam ? awayTeam.name : fixture.awayTeamCode;
-      
-      fixtureResolvedText.textContent = `${homeName} (H) vs ${awayName} (A) · ${fixture.ground}`;
-      fixtureAutoResolved.classList.remove('hidden');
-    } else {
+    if (!teamA || !teamB) {
       fixtureAutoResolved.classList.add('hidden');
+      return;
+    }
+    const { enrichedA, enrichedB, fixture } = await enrichMatchup(teamA, teamB);
+    
+    const fixtureDiv = document.getElementById('fixture-auto-resolved');
+    const fixtureText = document.getElementById('fixture-resolved-text');
+    
+    if (fixture) {
+      const homeName = enrichedA.isHome ? teamA.name : teamB.name;
+      const awayName = enrichedA.isHome ? teamB.name : teamA.name;
+      fixtureText.textContent = 
+        homeName + ' (H) vs ' + awayName + 
+        ' (A) · ' + (fixture.ground || 'TBD') +
+        ' · ' + (fixture.date || '');
+      fixtureDiv.classList.remove('hidden');
+    } else {
+      fixtureText.textContent = 'No scheduled fixture found — using team order';
+      fixtureDiv.classList.remove('hidden');
     }
   }
 
@@ -216,8 +292,8 @@ document.addEventListener("DOMContentLoaded", () => {
       results.sumProb = recomputed.sumProb;
     }
 
-    // Apply draw correction
-    const correctedResults = applyDrawCorrection(results);
+    // Assign results directly (draw correction removed in favor of Dixon-Coles)
+    const correctedResults = results;
 
     // Render Venue & Completed Match Banner
     if (venueDisplay) {
@@ -243,26 +319,15 @@ document.addEventListener("DOMContentLoaded", () => {
     probDrawVal.textContent = `${correctedResults.draw_pct.toFixed(1)}%`;
     probTeamBVal.textContent = `${correctedResults.winB_pct.toFixed(1)}%`;
 
-    // 3-Segment width transition (Discrete animation from center)
-    probSegmentA.style.width = '0%';
-    probSegmentDraw.style.width = '0%';
-    probSegmentB.style.width = '0%';
-    requestAnimationFrame(() => {
-      probSegmentA.style.transition = 'width 600ms ease';
-      probSegmentA.style.width = `${correctedResults.winA_pct}%`;
-      
-      probSegmentDraw.style.transition = 'width 600ms ease';
-      probSegmentDraw.style.width = `${correctedResults.draw_pct}%`;
-      
-      probSegmentB.style.transition = 'width 600ms ease';
-      probSegmentB.style.width = `${correctedResults.winB_pct}%`;
-    });
+    animateProbBar(probSegmentA, probSegmentDraw, probSegmentB, correctedResults.winA_pct, correctedResults.draw_pct, correctedResults.winB_pct);
 
     // 2. EXPECTED GOALS & SCORELINE CARDS
-    cardXgALabel.textContent = `λ ${teamA.name.toUpperCase()}`;
+    const labelA = teamA.name.substring(0, 3).toUpperCase();
+    const labelB = teamB.name.substring(0, 3).toUpperCase();
+    cardXgALabel.textContent = `λ ${labelA}`;
     cardXgAVal.textContent = correctedResults.lambda_A.toFixed(1);
     
-    cardXgBLabel.textContent = `λ ${teamB.name.toUpperCase()}`;
+    cardXgBLabel.textContent = `λ ${labelB}`;
     cardXgBVal.textContent = correctedResults.lambda_B.toFixed(1);
     
     cardScorelineVal.textContent = correctedResults.mostLikelyScoreline;
@@ -270,12 +335,24 @@ document.addEventListener("DOMContentLoaded", () => {
     // 4. RECENT FORM SQUARES
     formTeamAHeader.textContent = enrichedA.name.toUpperCase();
     formTeamBHeader.textContent = enrichedB.name.toUpperCase();
-    renderFormSquares(enrichedA, formTeamASquares);
-    renderFormSquares(enrichedB, formTeamBSquares);
+    const rawFormA = await getTeamForm(teamA.id);
+    const rawFormB = await getTeamForm(teamB.id);
+    renderFormSquares(enrichedA, formTeamASquares, rawFormA);
+    renderFormSquares(enrichedB, formTeamBSquares, rawFormB);
 
     // 5. HEAD TO HEAD BLOCK
-    h2hMainRecord.textContent = results.h2hText;
-    h2hMatchNote.textContent = results.h2hNote || "No notable notes in archive.";
+    const h2hData = getH2H(teamA.id, teamB.id);
+    if (!h2hData) {
+      h2hMainRecord.textContent = '> NO PRIOR MEETINGS IN DATASET';
+      h2hMainRecord.style.color = 'var(--text-muted)';
+      h2hMatchNote.textContent = 'First meeting between these teams';
+      h2hMatchNote.style.opacity = '0.5';
+    } else {
+      h2hMainRecord.textContent = results.h2hText;
+      h2hMainRecord.style.color = '';
+      h2hMatchNote.textContent = results.h2hNote || "No notable notes in archive.";
+      h2hMatchNote.style.opacity = '';
+    }
 
     // 3. TOP 5 SCORELINES BAR CHART
     matrixListRows.innerHTML = "";
@@ -288,7 +365,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       const matrixRow = document.createElement("div");
       matrixRow.className = "matrix-row matrix-row-animate";
-      matrixRow.style.animationDelay = `${index * 60}ms`;
+      matrixRow.style.animationDelay = `${index * 70}ms`;
       
       matrixRow.innerHTML = `
         <div class="matrix-score">${row.scoreA}-${row.scoreB}</div>
@@ -329,9 +406,12 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Animate confidence meter width
     confidenceMeterFill.style.width = '0%';
+    confidenceMeterFill.style.transition = 'none';
     requestAnimationFrame(() => {
-      confidenceMeterFill.style.transition = 'width 800ms ease';
-      confidenceMeterFill.style.width = `${results.confidence}%`;
+      requestAnimationFrame(() => {
+        confidenceMeterFill.style.transition = 'width 900ms cubic-bezier(0.4, 0, 0.2, 1)';
+        confidenceMeterFill.style.width = `${results.confidence}%`;
+      });
     });
 
     // 8. LAYER BREAKDOWN
@@ -340,76 +420,53 @@ document.addEventListener("DOMContentLoaded", () => {
     layerFinalVal.textContent = `${results.winA_pct.toFixed(1)}%`;
 
     // 6. PREDICTION DRIVERS (ENGINE NOTES CONSOLE LOGS)
-    engineNotesConsole.innerHTML = "";
+    const prefixedDrivers = results.drivers.map(d => 
+      (enrichedA.hasLiveData || enrichedB.hasLiveData ? '[LIVE] ' : '[STATIC] ') + d.toUpperCase()
+    );
     
-    // Log static timestamp
-    const now = new Date();
-    const timestamp = now.toISOString().replace("T", " ").substring(0, 19);
-    
-    const lines = [
-      `SYS LOG: PREDICTION ENGINE COMPILATION COMPLETE [${timestamp}]`,
-      `STAGE SELECTED: ${options.stage.toUpperCase()}`,
-      `STATIC BASE: P_static_A = ${results.P_static_A.toFixed(3)} | P_static_B = ${results.P_static_B.toFixed(3)}`,
-      `DYNAMIC MOD: P_dynamic_A = ${results.P_dynamic_A.toFixed(3)} | P_dynamic_B = ${results.P_dynamic_B.toFixed(3)}`,
-      `--- MODEL INSIGHTS OUTPUT ---`
-    ];
-
-    // Add calculations details
-    results.drivers.forEach(driver => {
-      lines.push(`> ${driver.toUpperCase()}`);
-    });
-
-    if (options.staleData) {
-      lines.push(`WARNING: CONFIDENCE DEDUCTION APPLIED [STALE DATA DETECTED]`);
-    }
-
-    function typewriterAppend(container, linesList) {
-      container.innerHTML = '';
-      let lineIndex = 0;
-      function nextLine() {
-        if (lineIndex >= linesList.length) return;
-        const lineText = linesList[lineIndex++];
-        const el = document.createElement('div');
-        el.className = 'console-line';
-        if (lineText.startsWith("WARNING:")) {
-          el.classList.add("warning-line");
-        } else if (lineText.startsWith("SYS LOG:") || lineText.startsWith("STAGE") || lineText.startsWith("STATIC") || lineText.startsWith("DYNAMIC")) {
-          el.classList.add("muted-line");
-        }
-        el.textContent = '';
-        container.appendChild(el);
-        let charIndex = 0;
-        const interval = setInterval(() => {
-          el.textContent += lineText[charIndex++];
-          container.scrollTop = container.scrollHeight;
-          if (charIndex >= lineText.length) {
-            clearInterval(interval);
-            setTimeout(nextLine, 80);
-          }
-        }, 12);
-      }
-      nextLine();
-    }
-    
-    typewriterAppend(engineNotesConsole, lines);
+    typewriterLines(engineNotesConsole, prefixedDrivers);
 
     // Update Squad Analysis
     renderSquadAnalysis();
     renderPreMatchFlags();
   }
 
+  function runLoadingSequence(onComplete) {
+    const steps = [
+      "INITIALIZING NEURAL WEIGHTS...",
+      "CALIBRATING POISSON MODEL FOR OUTCOMES...",
+      "RESOLVING HISTORICAL HEAD-TO-HEAD MATRICES...",
+      "BLENDING LIVE DATA FEEDS AND WEATHER MODIFIERS...",
+      "COMPUTING CONFIDENCE SCORE AND LAMBDAS..."
+    ];
+    
+    const loadingOverlay = document.getElementById("loading-state");
+    const textEl = loadingOverlay.querySelector(".loading-text");
+    loadingOverlay.classList.remove("hidden");
+    
+    let stepIndex = 0;
+    
+    function nextStep() {
+      if (stepIndex >= steps.length) {
+        setTimeout(() => {
+          loadingOverlay.classList.add("hidden");
+          onComplete();
+        }, 150);
+        return;
+      }
+      textEl.textContent = steps[stepIndex++];
+      setTimeout(nextStep, 180);
+    }
+    
+    nextStep();
+  }
+
   // Trigger Predict click handler
   predictBtn.addEventListener("click", () => {
     if (!validateTeamSelection()) return;
-
-    // Show computing loading screen
-    loadingState.classList.remove("hidden");
-
-    // Hide calculations, wait 200ms, then render results
-    setTimeout(() => {
-      loadingState.classList.add("hidden");
+    runLoadingSequence(() => {
       updateDashboard();
-    }, 200);
+    });
   });
 
   // Tab Switching logic
@@ -457,8 +514,8 @@ document.addEventListener("DOMContentLoaded", () => {
     squadAnalysisView.classList.add("hidden");
     settingsView.classList.add("hidden");
     
-    // Execute backtest and display results
-    executeAndRenderBacktest();
+    // Execute live backtest dynamically
+    initVerificationTab();
   });
 
   btnTabSettings.addEventListener("click", () => {
@@ -474,356 +531,787 @@ document.addEventListener("DOMContentLoaded", () => {
     updateSettingsPanel();
   });
 
-  function renderSquadAnalysis() {
-    const teamAId = teamASelect.value;
-    const teamBId = teamBSelect.value;
-    if (teamAId === teamBId) return;
+  // Backtest filter buttons click event listeners
+  const filterAll = document.getElementById("filter-all");
+  const filterCorrect = document.getElementById("filter-correct");
+  const filterIncorrect = document.getElementById("filter-incorrect");
+  const filterDraws = document.getElementById("filter-draws");
 
-    const teamA = TEAMS.find(t => t.id === teamAId);
-    const teamB = TEAMS.find(t => t.id === teamBId);
-
-    if (teamA) renderSingleTeamSquad(teamA, 'a');
-    if (teamB) renderSingleTeamSquad(teamB, 'b');
-  }
-
-  function renderSingleTeamSquad(team, suffix) {
-    const players = team.players || [];
+  if (filterAll && filterCorrect && filterIncorrect && filterDraws) {
+    const filters = [filterAll, filterCorrect, filterIncorrect, filterDraws];
     
-    // 1. Position-based starters and keyPositionsOk
-    const starters = players.filter(p => p.is_starter);
-    const fullCount = starters.filter(p => p.data_quality === 'FULL').length;
-    const unknownCount = starters.filter(p => p.data_quality === 'UNKNOWN').length;
-    const gk = starters.find(p => p.position === 'GK');
-    const cbs = starters.filter(p => p.position === 'CB');
-    
-    const keyPositionsOk = [gk, ...cbs].every(p => 
-      p && p.data_quality !== 'UNKNOWN' && p.data_quality !== 'MINIMAL'
-    );
-    
-    const isDataComplete = starters.length > 0 && 
-                           (fullCount / starters.length >= 0.8) && 
-                           unknownCount <= 1 && 
-                           keyPositionsOk;
+    function applyFilter(activeBtn, type) {
+      filters.forEach(btn => btn.classList.remove("active"));
+      activeBtn.classList.add("active");
+      
+      const rows = document.querySelectorAll("#backtest-results-body tr");
+      rows.forEach(row => {
+        if (row.classList.contains("details-row")) {
+          row.classList.add("hidden");
+          return;
+        }
 
-    // Mode Banner & Mode styling
-    const modeBannerEl = document.getElementById(`squad-team-${suffix}-mode-banner`);
-    if (isDataComplete) {
-      modeBannerEl.className = "mode-status-banner banner-complete";
-      modeBannerEl.textContent = "DATA-COMPLETE";
-    } else {
-      modeBannerEl.className = "mode-status-banner banner-cautious";
-      modeBannerEl.textContent = "CAUTIOUS MODE";
+        if (type === "all") {
+          row.classList.remove("hidden");
+        } else if (type === "draws") {
+          if (row.dataset.actualOutcome === "DRAW") {
+            row.classList.remove("hidden");
+          } else {
+            row.classList.add("hidden");
+          }
+        } else {
+          if (row.dataset.correct === type) {
+            row.classList.remove("hidden");
+          } else {
+            row.classList.add("hidden");
+          }
+        }
+      });
     }
 
-    // Calculate top 5 players by mean_xG_per90 descending
-    const sortedPlayers = [...players].sort((a, b) => b.mean_xG_per90 - a.mean_xG_per90);
-    const top5 = sortedPlayers.slice(0, 5);
+    filterAll.addEventListener("click", () => applyFilter(filterAll, "all"));
+    filterCorrect.addEventListener("click", () => applyFilter(filterCorrect, "true"));
+    filterIncorrect.addEventListener("click", () => applyFilter(filterIncorrect, "false"));
+    filterDraws.addEventListener("click", () => applyFilter(filterDraws, "draws"));
+  }
 
-    // Helper to format xG value depending on Cautious mode
-    const formatXG = (val) => {
-      if (!isDataComplete) {
-        const low = Math.max(0, val - 0.3).toFixed(2);
-        const high = (val + 0.3).toFixed(2);
-        return `${low} - ${high}`;
-      }
-      return val.toFixed(2);
+  const CAPTAINS_MAP = {
+    FRA: 7, ARG: 10, BRA: 10, ENG: 9, ESP: 8,
+    GER: 8, POR: 7, NED: 4, BEL: 10, CRO: 10,
+    MEX: 3, USA: 10, CAN: 10, URU: 2, COL: 8,
+    SEN: 5, MAR: 6, JPN: 10, KOR: 7, AUS: 10,
+    SUI: 10, DEN: 10, SWE: 10, POL: 9, SRB: 10,
+    TUR: 10, AUT: 10, ALG: 10, EGY: 10, NGR: 10,
+    GHA: 10, CMR: 10, CIV: 10, SAU: 10, QAT: 10,
+    IRN: 10, ECU: 10, VEN: 10, CHI: 10, PAR: 7,
+    SCO: 6, HAI: 10, CUW: 10, NZL: 10, CPV: 10,
+    IRQ: 10, NOR: 9, JOR: 10, COD: 10, UZB: 10,
+    BIH: 10, SLO: 7, ROU: 10, GEO: 10, UKR: 10,
+    RSA: 2, CZE: 10, CRI: 10, SLV: 10, PAN: 10
+  };
+
+  function isPlayerVerified(teamCode, playerName) {
+    const internalTeam = TEAMS.find(t => t.id === teamCode);
+    if (!internalTeam || !internalTeam.players) return false;
+    
+    const match = internalTeam.players.find(ip => {
+      const ipName = ip.name.toLowerCase();
+      const pName = playerName.toLowerCase();
+      return ipName === pName || ipName.includes(pName) || pName.includes(ipName);
+    });
+    
+    return !!(match && match.data_quality === 'FULL');
+  }
+
+  function getSortedStarters(squad) {
+    const starters = squad.filter(p => p.starter);
+    
+    const gks = starters.filter(p => p.posGroup === 'GOALKEEPERS');
+    const dfs = starters.filter(p => p.posGroup === 'DEFENDERS');
+    const mfs = starters.filter(p => p.posGroup === 'MIDFIELDERS');
+    const fws = starters.filter(p => p.posGroup === 'FORWARDS');
+
+    gks.sort((a, b) => a.number - b.number);
+    dfs.sort((a, b) => a.number - b.number);
+    mfs.sort((a, b) => a.number - b.number);
+    fws.sort((a, b) => a.number - b.number);
+
+    return [...gks, ...dfs, ...mfs, ...fws];
+  }
+
+  async function renderSquadAnalysis() {
+    const teamAId = squadTeamASelect.value;
+    const teamBId = squadTeamBSelect.value;
+
+    if (!teamAId || !teamBId) {
+      document.getElementById("squad-analysis-view").classList.add("hidden");
+      document.getElementById("squad-analysis-placeholder").classList.remove("hidden");
+      return;
+    }
+
+    document.getElementById("squad-analysis-placeholder").classList.add("hidden");
+    document.getElementById("squad-analysis-view").classList.remove("hidden");
+
+    // Load squads
+    const squadA = await getTeamSquad(teamAId);
+    const squadB = await getTeamSquad(teamBId);
+
+    // Get clean sheets
+    const cleanSheetsA = await getTeamCleanSheets(teamAId);
+    const cleanSheetsB = await getTeamCleanSheets(teamBId);
+
+    // Get top scorers
+    const topScorersList = await getTopScorers(15);
+    
+    const topScorerA = topScorersList.find(s => s.teamCode === teamAId) || null;
+    const topScorerB = topScorersList.find(s => s.teamCode === teamBId) || null;
+
+    // Render components
+    renderGoldenBootBar(topScorersList, teamAId, teamBId);
+    renderSingleTeamSquad(teamAId, squadA, 'a');
+    renderSingleTeamSquad(teamBId, squadB, 'b');
+    renderPitchSVG(squadA, squadB, teamAId, teamBId, topScorerA, topScorerB);
+    await renderAwardsBar(teamAId, teamBId, topScorerA, topScorerB, cleanSheetsA, cleanSheetsB);
+  }
+
+  function renderGoldenBootBar(scorers, teamACode, teamBCode) {
+    const container = document.getElementById("golden-boot-chips-container");
+    if (!container) return;
+    container.innerHTML = "";
+
+    if (scorers.length === 0) {
+      container.innerHTML = `<div style="font-family: var(--font-data); font-size: 10px; color: #444; padding: 6px 0;">&gt; NO GOALS RECORDED YET IN TOURNAMENT</div>`;
+      return;
+    }
+
+    const maxGoals = scorers[0]?.goals || 0;
+
+    scorers.forEach((scorer, index) => {
+      const chip = document.createElement("div");
+      chip.className = "golden-boot-chip";
+      chip.style.cssText = `
+        border: 1px solid #1a1a1a;
+        background: #070707;
+        padding: 5px 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+        animation: fadeUp 0.3s ease forwards;
+        opacity: 0;
+        animation-delay: ${index * 0.06}s;
+      `;
+
+      const isLiveWire = scorer.goals === maxGoals && maxGoals > 0;
+      const liveWireBadge = isLiveWire ? `
+        <span style="background: #1a0808; color: #ef4444; border: 1px solid #ef444422; font-size: 8px; letter-spacing: 0.08em; padding: 1px 5px; text-transform: uppercase; font-family: var(--font-label);">LIVE WIRE</span>
+      ` : "";
+
+      chip.innerHTML = `
+        <span style="color: #444; font-size: 9px; font-family: var(--font-label);">#${index + 1}</span>
+        <span style="color: #e8e8e8; font-size: 10px; font-weight: 500;">${scorer.name}</span>
+        <span style="color: #555; font-size: 9px; font-family: var(--font-label);">${scorer.teamCode}</span>
+        <span style="color: #22c55e; font-size: 10px; font-weight: 600; font-family: var(--font-data);">${scorer.goals} G</span>
+        ${liveWireBadge}
+      `;
+      container.appendChild(chip);
+    });
+  }
+
+  function renderSingleTeamSquad(teamCode, squad, side) {
+    const container = document.getElementById(`squad-team-${side}-panel`);
+    if (!container) return;
+    container.innerHTML = "";
+
+    const team = TEAMS.find(t => t.id === teamCode) || {};
+    const teamName = team.name || teamCode;
+    const formation = side === 'a' ? "4-2-3-1" : "4-3-3";
+
+    const headerDiv = document.createElement("div");
+    headerDiv.className = "squad-panel-header";
+    headerDiv.style.cssText = "display: flex; flex-direction: column; gap: 2px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;";
+    
+    headerDiv.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-family: var(--font-display); font-size: 11px; font-weight: bold; color: var(--text-primary); text-transform: uppercase;">${team.flag || ''} ${teamName}</span>
+        <span style="font-family: var(--font-label); font-size: 9px; color: #444;">${teamCode}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 9px; color: #666; font-family: var(--font-label);">${formation}</span>
+        <span style="font-size: 8px; color: #444; font-family: var(--font-label); text-transform: uppercase;">${team.confederation || ''}</span>
+      </div>
+    `;
+    container.appendChild(headerDiv);
+
+    const posGroups = ["GOALKEEPERS", "DEFENDERS", "MIDFIELDERS", "FORWARDS"];
+    const grouped = {
+      GOALKEEPERS: [],
+      DEFENDERS: [],
+      MIDFIELDERS: [],
+      FORWARDS: []
     };
 
-    // Render Panel 1: Attacking Threat player list
-    const playerListEl = document.getElementById(`squad-team-${suffix}-players`);
-    playerListEl.innerHTML = "";
-    
-    top5.forEach(player => {
-      const row = document.createElement("div");
-      row.className = "player-row";
-      
-      // Check for X-Factor
-      let xFactorBadge = "";
-      if (player.xG_intl_per90 === 0 || player.best_match_source === "UNAVAILABLE") {
-        xFactorBadge = `<span class="badge-awaiting" style="color: var(--text-secondary); border: 1px dashed var(--text-secondary); font-size: 8px; padding: 1px 4px; margin-left: 6px; font-weight: bold; text-transform: uppercase;">X-FACTOR EVAL: AWAITING INTL DATA</span>`;
+    squad.forEach(p => {
+      if (grouped[p.posGroup]) {
+        grouped[p.posGroup].push(p);
       } else {
-        const TUS = (player.xG_club_per90 * player.league_difficulty_coeff) > 0 
-          ? (player.xG_intl_per90 / (player.xG_club_per90 * player.league_difficulty_coeff)) 
-          : 0;
-        const TUS_weighted = TUS * Math.log((player.caps || 0) + 1);
-        const Ceiling = player.mean_xG_per90 > 0 
-          ? ((player.xG_best_single_match - player.mean_xG_per90) / player.mean_xG_per90) 
-          : 0;
-          
-        const hasXFactor = TUS_weighted > 1.8 && Ceiling > 1.0 
-                           && player.data_quality !== 'UNKNOWN' && player.data_quality !== 'MINIMAL';
-
-        if (hasXFactor) {
-          xFactorBadge = `<span class="badge-xfactor">X-FACTOR</span>`;
-        }
+        grouped.FORWARDS.push(p);
       }
-      const qualityClass = `badge-${player.data_quality.toLowerCase()}`;
-      
-      row.innerHTML = `
-        <div class="player-info">
-          <span class="player-name">${player.name}</span>
-          <span class="player-pos-badge">${player.position}</span>
-          ${xFactorBadge}
-        </div>
-        <div class="player-badges">
-          <span class="player-xg-val" style="margin-right: 8px;">${formatXG(player.mean_xG_per90)}</span>
-          <span class="${qualityClass}">${player.data_quality}</span>
-        </div>
-      `;
-      playerListEl.appendChild(row);
     });
 
-    // Calculate sum of starter contributions (Expected Goals This Match)
-    const startersSumXG = starters.reduce((sum, p) => sum + p.mean_xG_per90, 0);
-    const totalXGEl = document.getElementById(`squad-team-${suffix}-total-xg`);
-    totalXGEl.textContent = formatXG(startersSumXG);
+    posGroups.forEach(groupKey => {
+      const playersInGroup = grouped[groupKey];
+      if (playersInGroup.length === 0) return;
 
-    // Panel 2: Squad Confidence progress bar
-    const completenessPct = starters.length > 0 ? (fullCount / starters.length) * 100 : 0;
-    document.getElementById(`squad-team-${suffix}-full-pct`).textContent = `${completenessPct.toFixed(0)}%`;
-    
-    const barEl = document.getElementById(`squad-team-${suffix}-full-bar`);
-    barEl.style.width = `${completenessPct}%`;
-    barEl.className = "confidence-meter-fill " + (isDataComplete ? "HIGH" : "LOW");
+      const groupHeader = document.createElement("div");
+      groupHeader.style.cssText = `
+        font-family: var(--font-label);
+        font-size: 7px;
+        letter-spacing: 0.2em;
+        color: #444444;
+        text-transform: uppercase;
+        margin-top: 10px;
+        margin-bottom: 6px;
+        border-bottom: 1px solid #111;
+        padding-bottom: 2px;
+      `;
+      groupHeader.textContent = groupKey;
+      container.appendChild(groupHeader);
 
-    // Panel 3: Star Dependency & Depth
-    // Starters sorted by mean_xG_per90 descending
-    const sortedStarters = [...starters].sort((a, b) => b.mean_xG_per90 - a.mean_xG_per90);
-    const player_1 = sortedStarters[0] || { mean_xG_per90: 0 };
-    const player_1_xg = player_1.mean_xG_per90;
-    
-    // Depth score calculation
-    const players_2_to_5 = sortedStarters.slice(1, 5);
-    let depthScore = 0;
-    if (players_2_to_5.length > 0 && player_1_xg > 0) {
-      const mean_players_2_to_5_xg = players_2_to_5.reduce((sum, p) => sum + p.mean_xG_per90, 0) / players_2_to_5.length;
-      depthScore = mean_players_2_to_5_xg / player_1_xg;
-    }
+      playersInGroup.forEach((player, idx) => {
+        const isCaptain = player.number === CAPTAINS_MAP[teamCode];
+        const verified = isPlayerVerified(teamCode, player.name);
 
-    // SRI (Star Reliance Index) percentage
-    // SRI = (top starter xG / sum of all starters xG) * 100
-    const sriPct = startersSumXG > 0 ? (player_1_xg / startersSumXG) * 100 : 0;
+        const row = document.createElement("div");
+        row.className = "squad-player-row";
+        row.style.cssText = `
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 3px 4px;
+          border-bottom: 1px solid #0a0a0a;
+          cursor: pointer;
+          transition: background 0.15s ease;
+          animation: slideIn 0.2s ease forwards;
+          opacity: 0;
+          animation-delay: ${idx * 0.025}s;
+        `;
+        
+        row.onmouseover = () => { row.style.background = "#0d0d0d"; };
+        row.onmouseout = () => { row.style.background = "transparent"; };
 
-    // Team xG with top player removed (conservative subtraction only)
-    const xgRemoved = startersSumXG - player_1_xg;
+        const captainBadge = isCaptain ? `
+          <span style="color: #f59e0b; font-family: var(--font-label); font-size: 9px; font-weight: bold; margin-left: 2px;">[C]</span>
+        ` : "";
 
-    // Display Star Dependency values
-    document.getElementById(`squad-team-${suffix}-xg-inc`).textContent = formatXG(startersSumXG);
-    document.getElementById(`squad-team-${suffix}-xg-exc`).textContent = formatXG(xgRemoved);
-    document.getElementById(`squad-team-${suffix}-sri-val`).textContent = `${sriPct.toFixed(1)}%`;
-    document.getElementById(`squad-team-${suffix}-depth-val`).textContent = depthScore.toFixed(2);
+        const verifyBadge = verified ? `
+          <span style="color: #22c55e; font-family: var(--font-label); font-size: 9px; font-weight: bold; margin-left: 2px;">[✓]</span>
+        ` : `
+          <span style="color: #444; font-family: var(--font-label); font-size: 9px; font-weight: bold; margin-left: 2px;">[?]</span>
+        `;
 
-    // SRI Classification Banner & text explanation
-    let classification = "DISTRIBUTED";
-    let explanation = "";
-    let sriBannerClass = "sri-classification-banner banner-distributed";
+        const nameColor = player.starter ? "#e8e8e8" : "#333333";
 
-    if (sriPct < 35) {
-      classification = "DISTRIBUTED";
-      explanation = `${team.name} exhibits a distributed attacking structure, reducing tactical reliance on any single individual.`;
-      sriBannerClass = "sri-classification-banner banner-distributed";
-    } else if (sriPct >= 35 && sriPct <= 60) {
-      classification = "DEPENDENT";
-      explanation = `${team.name}'s offense is dependent on ${player_1.name || 'their top forward'}, presenting a clear focal point for opposition scouts.`;
-      sriBannerClass = "sri-classification-banner banner-dependent";
-    } else {
-      classification = "FRAGILE";
-      explanation = `${team.name}'s system is fragile. Neutralizing ${player_1.name || 'their star player'} will likely collapse their entire offensive production.`;
-      sriBannerClass = "sri-classification-banner banner-fragile";
-    }
+        row.innerHTML = `
+          <span style="width: 14px; text-align: right; font-size: 9px; color: #888; font-family: var(--font-data);">${player.number}</span>
+          <span style="flex: 1; font-size: 10px; color: ${nameColor}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${player.name}</span>
+          <span style="font-size: 8px; color: #555; font-family: var(--font-data); margin-right: 4px;">${player.age}y</span>
+          ${captainBadge}
+          ${verifyBadge}
+        `;
 
-    const sriBannerEl = document.getElementById(`squad-team-${suffix}-sri-banner`);
-    sriBannerEl.className = sriBannerClass;
-    sriBannerEl.textContent = classification;
-
-    document.getElementById(`squad-team-${suffix}-explanation`).textContent = explanation;
-
-    // Title and Flag metadata headers
-    document.getElementById(`squad-team-${suffix}-title`).textContent = `${team.name.toUpperCase()} SQUAD ANALYSIS`;
-    document.getElementById(`squad-team-${suffix}-flag`).textContent = `${team.flag} ${team.id}`;
+        container.appendChild(row);
+      });
+    });
   }
 
-  function executeAndRenderBacktest() {
-    const backtestResults = runBacktest();
-    const metrics = computeMetrics(backtestResults);
+  function renderPitchSVG(squadA, squadB, teamACode, teamBCode, topScorerA, topScorerB) {
+    const container = document.getElementById("squad-pitch-container");
+    if (!container) return;
 
-    // 1. Render Results Table
+    const coordsA = [
+      { x: 150, y: 40 },   // GK
+      { x: 45,  y: 95 },   // LB
+      { x: 115, y: 95 },   // LCB
+      { x: 185, y: 95 },   // RCB
+      { x: 255, y: 95 },   // RB
+      { x: 105, y: 140 },  // LDM
+      { x: 195, y: 140 },  // RDM
+      { x: 50,  y: 180 },  // LAM
+      { x: 150, y: 175 },  // CAM
+      { x: 250, y: 180 },  // RAM
+      { x: 150, y: 210 }   // ST
+    ];
+
+    const coordsB = [
+      { x: 150, y: 410 },  // GK
+      { x: 45,  y: 355 },  // LB
+      { x: 115, y: 355 },  // LCB
+      { x: 185, y: 355 },  // RCB
+      { x: 255, y: 355 },  // RB
+      { x: 80,  y: 310 },  // LCM
+      { x: 150, y: 320 },  // CM
+      { x: 220, y: 310 },  // RCM
+      { x: 60,  y: 260 },  // LW
+      { x: 150, y: 250 },  // ST
+      { x: 240, y: 260 }   // RW
+    ];
+
+    const startersA = getSortedStarters(squadA);
+    const startersB = getSortedStarters(squadB);
+
+    let svgHtml = `
+      <svg viewBox="0 0 300 450" width="100%" height="100%" style="max-height: 480px; font-family: var(--font-data); display: block;">
+        <!-- Pitch Background -->
+        <rect x="0" y="0" width="300" height="450" fill="#040404" />
+        
+        <!-- Boundary lines -->
+        <rect x="10" y="10" width="280" height="430" fill="none" stroke="#111111" stroke-width="2" />
+        
+        <!-- Center line -->
+        <line x1="10" y1="225" x2="290" y2="225" stroke="#111111" stroke-width="1.5" />
+        
+        <!-- Center Circle -->
+        <circle cx="150" cy="225" r="40" fill="none" stroke="#111111" stroke-width="1.5" />
+        <circle cx="150" cy="225" r="2" fill="#111111" />
+        
+        <!-- Top Goal/Penalty Area -->
+        <rect x="60" y="10" width="180" height="70" fill="none" stroke="#111111" stroke-width="1.5" />
+        <rect x="110" y="10" width="80" height="25" fill="none" stroke="#111111" stroke-width="1.5" />
+        <circle cx="150" cy="55" r="2" fill="#111111" />
+        <path d="M 115 80 A 40 40 0 0 0 185 80" fill="none" stroke="#111111" stroke-width="1.5" />
+        
+        <!-- Bottom Goal/Penalty Area -->
+        <rect x="60" y="370" width="180" height="70" fill="none" stroke="#111111" stroke-width="1.5" />
+        <rect x="110" y="415" width="80" height="25" fill="none" stroke="#111111" stroke-width="1.5" />
+        <circle cx="150" cy="395" r="2" fill="#111111" />
+        <path d="M 115 370 A 40 40 0 0 1 185 370" fill="none" stroke="#111111" stroke-width="1.5" />
+    `;
+
+    startersA.forEach((player, idx) => {
+      const coord = coordsA[idx] || { x: 150, y: 225 };
+      const isGK = player.posGroup === 'GOALKEEPERS';
+      const isStar = topScorerA && player.name === topScorerA.name;
+      const isCaptain = player.number === CAPTAINS_MAP[teamACode];
+      
+      const r = isStar ? 13 : 8;
+      const pulseClass = isGK ? 'class="gk-pulse"' : '';
+      
+      let labelText = player.name;
+      if (isCaptain) labelText += ' (C)';
+      
+      svgHtml += `
+        <g>
+          <circle cx="${coord.x}" cy="${coord.y}" r="${r}" stroke="#22c55e" stroke-width="1.5" fill="#08130a" ${pulseClass} />
+          <text x="${coord.x}" y="${coord.y + 3}" font-size="8px" fill="#22c55e" font-weight="bold" text-anchor="middle">${player.number}</text>
+          <text x="${coord.x}" y="${coord.y - (r + 4)}" font-size="6px" fill="#22c55e" fill-opacity="0.7" text-anchor="middle" font-weight="500">${labelText}</text>
+        </g>
+      `;
+    });
+
+    startersB.forEach((player, idx) => {
+      const coord = coordsB[idx] || { x: 150, y: 225 };
+      const isGK = player.posGroup === 'GOALKEEPERS';
+      const isStar = topScorerB && player.name === topScorerB.name;
+      const isCaptain = player.number === CAPTAINS_MAP[teamBCode];
+      
+      const r = isStar ? 13 : 8;
+      const pulseClass = isGK ? 'class="gk-pulse"' : '';
+      
+      let labelText = player.name;
+      if (isCaptain) labelText += ' (C)';
+      
+      svgHtml += `
+        <g>
+          <circle cx="${coord.x}" cy="${coord.y}" r="${r}" stroke="#3b82f6" stroke-width="1.5" fill="#080d14" ${pulseClass} />
+          <text x="${coord.x}" y="${coord.y + 3}" font-size="8px" fill="#60a5fa" font-weight="bold" text-anchor="middle">${player.number}</text>
+          <text x="${coord.x}" y="${coord.y - (r + 4)}" font-size="6px" fill="#60a5fa" fill-opacity="0.7" text-anchor="middle" font-weight="500">${labelText}</text>
+        </g>
+      `;
+    });
+
+    svgHtml += `</svg>`;
+    container.innerHTML = svgHtml;
+  }
+
+  async function renderAwardsBar(teamACode, teamBCode, topScorerA, topScorerB, cleanSheetsA, cleanSheetsB) {
+    const container = document.getElementById("squad-awards-bar");
+    if (!container) return;
+    container.innerHTML = "";
+
+    const squadA = await getTeamSquad(teamACode);
+    const squadB = await getTeamSquad(teamBCode);
+
+    const gkA = squadA.find(p => p.posGroup === "GOALKEEPERS") || { name: "N/A" };
+    const gkB = squadB.find(p => p.posGroup === "GOALKEEPERS") || { name: "N/A" };
+
+    const cells = [
+      {
+        badgeLabel: "LIVE WIRE",
+        badgeType: "LIVE_WIRE",
+        playerName: topScorerA ? topScorerA.name : "N/A",
+        teamCode: teamACode,
+        posGroup: "FORWARD",
+        statValue: topScorerA ? `${topScorerA.goals} GOALS` : "0 GOALS"
+      },
+      {
+        badgeLabel: "LIVE WIRE",
+        badgeType: "LIVE_WIRE",
+        playerName: topScorerB ? topScorerB.name : "N/A",
+        teamCode: teamBCode,
+        posGroup: "FORWARD",
+        statValue: topScorerB ? `${topScorerB.goals} GOALS` : "0 GOALS"
+      },
+      {
+        badgeLabel: "IRON HANDS",
+        badgeType: "IRON_HANDS",
+        playerName: gkA.name,
+        teamCode: teamACode,
+        posGroup: "GOALKEEPER",
+        statValue: `${cleanSheetsA} CLEAN SHEETS`
+      },
+      {
+        badgeLabel: "IRON HANDS",
+        badgeType: "IRON_HANDS",
+        playerName: gkB.name,
+        teamCode: teamBCode,
+        posGroup: "GOALKEEPER",
+        statValue: `${cleanSheetsB} CLEAN SHEETS`
+      }
+    ];
+
+    cells.forEach(cell => {
+      const cellDiv = document.createElement("div");
+      cellDiv.className = "award-cell";
+      cellDiv.style.cssText = `
+        padding: 14px 16px;
+        border-right: 1px solid #0a0a0a;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      `;
+
+      const badgeBg = cell.badgeType === "LIVE_WIRE" ? "#1a0808" : "#0a1208";
+      const badgeColor = cell.badgeType === "LIVE_WIRE" ? "#ef4444" : "#22c55e";
+      const badgeBorder = cell.badgeType === "LIVE_WIRE" ? "1px solid #ef444422" : "1px solid #22c55e22";
+      const statColor = cell.badgeType === "LIVE_WIRE" ? "#ef4444" : "#22c55e";
+
+      cellDiv.innerHTML = `
+        <span style="
+          display: inline-block;
+          font-size: 7px;
+          letter-spacing: 0.15em;
+          padding: 2px 7px;
+          margin-bottom: 8px;
+          background: ${badgeBg};
+          color: ${badgeColor};
+          border: ${badgeBorder};
+          font-family: var(--font-label);
+          text-transform: uppercase;
+        ">${cell.badgeLabel}</span>
+        <span style="font-family: var(--font-display); font-size: 11px; color: #e8e8e8; font-weight: 500; margin-bottom: 2px; text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">${cell.playerName}</span>
+        <span style="font-family: var(--font-label); font-size: 9px; color: #666; text-transform: uppercase;">${cell.teamCode} · ${cell.posGroup}</span>
+        <span style="font-family: var(--font-data); font-size: 13px; font-weight: 600; margin-top: auto; color: ${statColor}; text-transform: uppercase; padding-top: 6px;">${cell.statValue}</span>
+      `;
+      container.appendChild(cellDiv);
+    });
+  }
+
+  let lastCompletedCount = 0;
+
+  async function initVerificationTab() {
+    const notesConsole = document.getElementById("backtest-engine-notes");
+    notesConsole.innerHTML = '<div class="loading-box">[RUNNING LIVE BACKTEST ENGINE...]</div>';
+
+    try {
+      const { results, metrics } = await runLiveBacktest();
+
+      // Store count of completed matches for auto-refresh checks
+      lastCompletedCount = results.length;
+
+      renderBacktestTable(results);
+      renderMetricsSummary(metrics);
+      renderEngineNotes(metrics, results);
+
+      // Show timestamp
+      document.getElementById('backtest-timestamp').textContent = 
+        'Last computed: ' + new Date().toLocaleTimeString() + ' · ' + results.length + ' matches analysed';
+    } catch (err) {
+      console.error(err);
+      notesConsole.innerHTML = `<div class="console-line error-line">> ERROR RUNNING LIVE BACKTEST: ${err.message}</div>`;
+    }
+  }
+
+  function renderBacktestTable(results) {
     const tableBody = document.getElementById("backtest-results-body");
     tableBody.innerHTML = "";
-    backtestResults.forEach(match => {
+
+    results.forEach(match => {
       const row = document.createElement("tr");
-      
+      row.dataset.correct = match.outcomeCorrect.toString();
+      row.dataset.actualOutcome = match.actualOutcome;
+      row.style.cursor = "pointer";
+
+      const teamAObj = TEAMS.find(t => t.id === match.homeTeam) || { flag: '', name: match.homeTeam };
+      const teamBObj = TEAMS.find(t => t.id === match.awayTeam) || { flag: '', name: match.awayTeam };
+
+      // Matchup Cell
       const matchupCell = document.createElement("td");
-      matchupCell.textContent = `${match.teamA} vs ${match.teamB}`;
+      matchupCell.textContent = `${teamAObj.flag} ${match.homeTeam} vs ${teamBObj.flag} ${match.awayTeam}`;
       row.appendChild(matchupCell);
 
+      // Predicted WinA/Draw/WinB Pct Cell
       const predCell = document.createElement("td");
-      predCell.textContent = `${match.predictedWinA.toFixed(1)}% / ${match.predictedDraw.toFixed(1)}% / ${match.predictedWinB.toFixed(1)}%`;
+      predCell.textContent = `${match.winA_pct.toFixed(1)}% / ${match.draw_pct.toFixed(1)}% / ${match.winB_pct.toFixed(1)}%`;
       row.appendChild(predCell);
 
+      // Predicted Scoreline Cell
+      const predScoreCell = document.createElement("td");
+      predScoreCell.textContent = match.mostLikelyScoreline;
+      predScoreCell.style.color = "var(--text-muted)";
+      row.appendChild(predScoreCell);
+
+      // Actual Score Cell
       const actualCell = document.createElement("td");
-      actualCell.textContent = `${match.actualGoalsA}-${match.actualGoalsB}`;
+      actualCell.textContent = match.actualScore;
       row.appendChild(actualCell);
 
+      // Outcome Cell
       const outcomeCell = document.createElement("td");
       outcomeCell.style.textAlign = "center";
-      if (match.correct) {
-        outcomeCell.textContent = "✓";
-        outcomeCell.className = "correct-cell";
+      
+      let outcomeSymbol = "✗";
+      if (match.outcomeCorrect) {
+        outcomeSymbol = "✓";
+        outcomeCell.style.color = "var(--accent-green)";
+        outcomeCell.style.fontWeight = "bold";
+      } else if (match.actualOutcome === "DRAW") {
+        outcomeSymbol = "~";
+        outcomeCell.style.color = "#ffb000";
+        outcomeCell.style.fontWeight = "bold";
       } else {
-        outcomeCell.textContent = "✗";
-        outcomeCell.className = "incorrect-cell";
+        outcomeCell.style.color = "var(--accent-red)";
       }
+      outcomeCell.textContent = outcomeSymbol;
       row.appendChild(outcomeCell);
 
       tableBody.appendChild(row);
+
+      // Simple Expandable Row details
+      const detailRow = document.createElement("tr");
+      detailRow.className = "details-row hidden";
+      detailRow.style.backgroundColor = "var(--bg-secondary)";
+      
+      const top5Html = match.top5.map((c, i) => `${i+1}. ${c.scoreA}-${c.scoreB} (${(c.probability * 100).toFixed(1)}%)`).join(" | ");
+      detailRow.innerHTML = `
+        <td colspan="5" style="font-family: var(--font-data); font-size: 10px; padding: 10px; border-bottom: 1px solid var(--border-color);">
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <div><strong>TOP 5 PROBABILITIES:</strong> ${top5Html}</div>
+            <div><strong>ENGINE LAMBDAS:</strong> Home λ: ${match.lambda_A.toFixed(2)} | Away λ: ${match.lambda_B.toFixed(2)}</div>
+            <div><strong>DATA SOURCE:</strong> ${match.hasLiveData ? "LIVE DATA STREAM INJECTED" : "HISTORICAL BASELINES ONLY"}</div>
+          </div>
+        </td>
+      `;
+      tableBody.appendChild(detailRow);
+
+      row.addEventListener("click", () => {
+        detailRow.classList.toggle("hidden");
+      });
     });
 
-    // 2. Render Metrics Summary
+    // Re-apply active filter to rows
+    const activeFilterBtn = document.querySelector("#filter-all.active, #filter-correct.active, #filter-incorrect.active, #filter-draws.active");
+    if (activeFilterBtn) {
+      const typeMap = {
+        'filter-all': 'all',
+        'filter-correct': 'true',
+        'filter-incorrect': 'false',
+        'filter-draws': 'draws'
+      };
+      const filterType = typeMap[activeFilterBtn.id] || 'all';
+      
+      const rows = tableBody.querySelectorAll("tr");
+      rows.forEach(row => {
+        if (row.classList.contains("details-row")) {
+          row.classList.add("hidden");
+          return;
+        }
+        if (filterType === "all") {
+          row.classList.remove("hidden");
+        } else if (filterType === "draws") {
+          if (row.dataset.actualOutcome === "DRAW") {
+            row.classList.remove("hidden");
+          } else {
+            row.classList.add("hidden");
+          }
+        } else {
+          if (row.dataset.correct === filterType) {
+            row.classList.remove("hidden");
+          } else {
+            row.classList.add("hidden");
+          }
+        }
+      });
+    }
+  }
+
+  function renderMetricsSummary(metrics) {
     const metricsContainer = document.getElementById("metrics-summary-container");
     metricsContainer.innerHTML = "";
 
-    // Outcome Accuracy block
-    const accuracyRow = document.createElement("div");
-    accuracyRow.className = "metric-row-flat";
-    
-    const accuracyLabel = document.createElement("span");
-    accuracyLabel.className = "flat-label";
-    accuracyLabel.textContent = "OUTCOME ACCURACY:";
-    accuracyRow.appendChild(accuracyLabel);
+    const formatDiff = (diff) => (diff >= 0 ? `+${diff.toFixed(1)}%` : `${diff.toFixed(1)}%`);
+    const verdictColor = metrics.verdict === 'STRONG SIGNAL' ? 'var(--accent-green)' : (metrics.verdict === 'MODERATE SIGNAL' ? 'var(--accent-blue)' : 'var(--accent-red)');
 
-    const accuracyVal = document.createElement("span");
-    accuracyVal.className = "flat-value";
-    accuracyVal.textContent = `${metrics.outcomeAccuracy.toFixed(1)}%`;
-    if (metrics.outcomeAccuracy > 60) {
-      accuracyVal.classList.add("accuracy-green");
-    } else if (metrics.outcomeAccuracy < 50) {
-      accuracyVal.classList.add("accuracy-red");
-    }
-    accuracyRow.appendChild(accuracyVal);
-    metricsContainer.appendChild(accuracyRow);
+    metricsContainer.innerHTML = `
+      <div class="metric-row-flat">
+        <span class="flat-label">OUTCOME ACCURACY:</span>
+        <span class="flat-value" style="font-weight: bold; ${metrics.overall.outcomeAccuracy >= 60 ? 'color: var(--accent-green);' : (metrics.overall.outcomeAccuracy < 50 ? 'color: var(--accent-red);' : '')}">${metrics.overall.outcomeAccuracy.toFixed(1)}% (${metrics.overall.outcomeCorrect}/${metrics.overall.totalMatches})</span>
+      </div>
+      <div class="metric-row-flat">
+        <span class="flat-label">HOME WIN ACCURACY:</span>
+        <span class="flat-value">${metrics.byOutcome.HOME.accuracy.toFixed(1)}%</span>
+      </div>
+      <div class="metric-row-flat">
+        <span class="flat-label">DRAW ACCURACY:</span>
+        <span class="flat-value">${metrics.byOutcome.DRAW.accuracy.toFixed(1)}%</span>
+      </div>
+      <div class="metric-row-flat">
+        <span class="flat-label">AWAY WIN ACCURACY:</span>
+        <span class="flat-value">${metrics.byOutcome.AWAY.accuracy.toFixed(1)}%</span>
+      </div>
+      <div class="metric-row-flat">
+        <span class="flat-label">EXACT SCORE:</span>
+        <span class="flat-value">${metrics.overall.exactScoreAccuracy.toFixed(1)}% (${metrics.overall.exactScoreCorrect}/${metrics.overall.totalMatches})</span>
+      </div>
+      <div class="metric-row-flat">
+        <span class="flat-label">SCORE IN TOP 5:</span>
+        <span class="flat-value">${metrics.overall.top5Accuracy.toFixed(1)}% (${metrics.overall.inTop5}/${metrics.overall.totalMatches})</span>
+      </div>
+      <div class="metric-row-flat">
+        <span class="flat-label">BRIER SCORE:</span>
+        <span class="flat-value">${metrics.brier.score.toFixed(3)} (${metrics.brier.interpretation})</span>
+      </div>
+      <div class="metric-row-flat">
+        <span class="flat-label">vs RANDOM:</span>
+        <span class="flat-value">${formatDiff(metrics.baselines.vsRandom)}</span>
+      </div>
+      <div class="metric-row-flat">
+        <span class="flat-label">vs NAIVE:</span>
+        <span class="flat-value">${formatDiff(metrics.baselines.vsFIFA)}</span>
+      </div>
+      <div class="metric-row-flat">
+        <span class="flat-label">CALIBRATION:</span>
+        <span class="flat-value">${metrics.calibration.trend}</span>
+      </div>
+      <div class="metric-row-flat" style="border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px;">
+        <span class="flat-label" style="font-weight: bold;">VERDICT:</span>
+        <span class="flat-value" style="font-weight: bold; color: ${verdictColor};">${metrics.verdict}</span>
+      </div>
+    `;
+  }
 
-    // Avg Confidence block
-    const confidenceRow = document.createElement("div");
-    confidenceRow.className = "metric-row-flat";
-    
-    const confidenceLabel = document.createElement("span");
-    confidenceLabel.className = "flat-label";
-    confidenceLabel.textContent = "AVG CONFIDENCE:";
-    confidenceRow.appendChild(confidenceLabel);
-
-    const confidenceVal = document.createElement("span");
-    confidenceVal.className = "flat-value";
-    confidenceVal.textContent = metrics.avgConfidence.toFixed(1);
-    confidenceRow.appendChild(confidenceVal);
-    metricsContainer.appendChild(confidenceRow);
-
-    // Upsets Missed block
-    const upsetsRow = document.createElement("div");
-    upsetsRow.className = "metric-row-flat flex-column";
-    upsetsRow.style.alignItems = "stretch";
-    
-    const upsetsLabel = document.createElement("span");
-    upsetsLabel.className = "flat-label";
-    upsetsLabel.textContent = "UPSETS MISSED:";
-    upsetsRow.appendChild(upsetsLabel);
-
-    const upsetsConsole = document.createElement("div");
-    upsetsConsole.className = "upset-list-console";
-
-    if (metrics.upsets.length === 0) {
-      upsetsConsole.textContent = "NONE";
-    } else {
-      metrics.upsets.forEach(match => {
-        const upsetLine = document.createElement("div");
-        upsetLine.className = "upset-item-line";
-        
-        const actualWinnerProb =
-          match.actualOutcome === 'A' ? match.predictedWinA :
-          match.actualOutcome === 'B' ? match.predictedWinB :
-          match.predictedDraw;
-        
-        upsetLine.textContent = `> ${match.teamA} vs ${match.teamB} — predicted ${match.predictedOutcome}, actual ${match.actualOutcome} (prob: ${actualWinnerProb.toFixed(1)}%)`;
-        upsetsConsole.appendChild(upsetLine);
-      });
-    }
-    upsetsRow.appendChild(upsetsConsole);
-    metricsContainer.appendChild(upsetsRow);
-
-    // Goal Prediction Delta block
-    const goalDeltaRow = document.createElement("div");
-    goalDeltaRow.className = "metric-row-flat";
-    
-    const goalDeltaLabel = document.createElement("span");
-    goalDeltaLabel.className = "flat-label";
-    goalDeltaLabel.textContent = "GOAL PREDICTION DELTA:";
-    goalDeltaRow.appendChild(goalDeltaLabel);
-
-    const goalDeltaVal = document.createElement("span");
-    goalDeltaVal.className = "flat-value";
-    goalDeltaVal.textContent = `ΔA=${metrics.avgGoalDeltaA.toFixed(1)}  ΔB=${metrics.avgGoalDeltaB.toFixed(1)}`;
-    goalDeltaRow.appendChild(goalDeltaVal);
-    metricsContainer.appendChild(goalDeltaRow);
-
-    // 3. Render Engine Notes - Backtesting (Top 3 Misses & Weaknesses)
+  function renderEngineNotes(metrics, results) {
     const notesConsole = document.getElementById("backtest-engine-notes");
     notesConsole.innerHTML = "";
 
-    const misses = backtestResults.map(match => {
-      const actualOutcomeProb =
-        match.actualOutcome === 'A' ? match.predictedWinA :
-        match.actualOutcome === 'B' ? match.predictedWinB :
-        match.predictedDraw;
-      
-      const gap = 100 - actualOutcomeProb;
-      return { ...match, gap };
-    });
+    const drawsMissed = results.filter(r => r.actualOutcome === 'DRAW' && !r.outcomeCorrect).length;
 
-    misses.sort((a, b) => b.gap - a.gap);
-    const top3Misses = misses.slice(0, 3);
+    let totalPredGoals = 0;
+    let totalActualGoals = 0;
+    results.forEach(r => {
+      totalPredGoals += (r.lambda_A + r.lambda_B);
+      totalActualGoals += (r.actualGoalsA + r.actualGoalsB);
+    });
+    const avgPredGoals = results.length > 0 ? (totalPredGoals / results.length).toFixed(2) : "0.00";
+    const avgActualGoals = results.length > 0 ? (totalActualGoals / results.length).toFixed(2) : "0.00";
+
+    const misses = results.filter(r => !r.outcomeCorrect);
+    const missCounts = {};
+    misses.forEach(r => {
+      const key = `${r.actualOutcome} predicted wrong as ${r.predictedOutcome}`;
+      missCounts[key] = (missCounts[key] || 0) + 1;
+    });
+    let mostCommonMiss = "NONE";
+    let maxMissCount = 0;
+    for (const [key, count] of Object.entries(missCounts)) {
+      if (count > maxMissCount) {
+        maxMissCount = count;
+        mostCommonMiss = key;
+      }
+    }
+
+    let strongestMatchup = "N/A";
+    let strongestAcc = -1;
+    let weakestMatchup = "N/A";
+    let weakestAcc = 101;
+    for (const [key, item] of Object.entries(metrics.byTierMatchup)) {
+      const parts = key.split('v');
+      const label = `Tier ${parts[0]} vs Tier ${parts[1]}`;
+      if (item.accuracy > strongestAcc) {
+        strongestAcc = item.accuracy;
+        strongestMatchup = `${label} at ${item.accuracy.toFixed(1)}%`;
+      }
+      if (item.accuracy < weakestAcc) {
+        weakestAcc = item.accuracy;
+        weakestMatchup = `${label} at ${item.accuracy.toFixed(1)}%`;
+      }
+    }
 
     const now = new Date();
-    const timestamp = now.toISOString().replace("T", " ").substring(0, 19);
+    const timestamp = now.toLocaleTimeString();
 
-    const logHeader = document.createElement("div");
-    logHeader.className = "console-line muted-line";
-    logHeader.textContent = `SYS LOG: BACKTEST ENGINE ANALYSIS COMPLETE [${timestamp}]`;
-    notesConsole.appendChild(logHeader);
+    const lines = [
+      `LIVE BACKTEST COMPLETE [${timestamp}]`,
+      `Matches analysed: ${results.length}`,
+      `Draw accuracy issue: ${drawsMissed} draws missed`,
+      `Goal delta: model predicts ${avgPredGoals} avg, actual avg is ${avgActualGoals}`,
+      `Most common miss: ${mostCommonMiss.toUpperCase()}`,
+      `Strongest matchup: ${strongestMatchup.toUpperCase()}`,
+      `Weakest matchup: ${weakestMatchup.toUpperCase()}`,
+      `--- TOP 3 LARGEST PREDICTION MISSES ---`
+    ];
 
-    // Call diagnoseWeaknesses and print them
-    const diagnosisHeader = document.createElement("div");
-    diagnosisHeader.className = "console-line muted-line";
-    diagnosisHeader.style.marginTop = "8px";
-    diagnosisHeader.textContent = "--- SYSTEM DIAGNOSTIC REPORT ---";
-    notesConsole.appendChild(diagnosisHeader);
-
-    const weaknesses = diagnoseWeaknesses(backtestResults);
-    weaknesses.forEach(weakness => {
-      const weaknessLine = document.createElement("div");
-      weaknessLine.className = "console-line";
-      weaknessLine.textContent = `> ${weakness}`;
-      notesConsole.appendChild(weaknessLine);
+    const sortedMisses = [...results].sort((a, b) => b.error - a.error);
+    const top3Misses = sortedMisses.slice(0, 3);
+    top3Misses.forEach((match, idx) => {
+      lines.push(`#${idx + 1} ${match.homeTeam} vs ${match.awayTeam} — ERROR GAP: ${match.error.toFixed(1)}%`);
+      lines.push(`  ACTUAL: ${match.actualOutcome} (${match.actualScore}) | PREDICTED: ${match.predictedOutcome} (A:${match.winA_pct.toFixed(1)}% D:${match.draw_pct.toFixed(1)}% B:${match.winB_pct.toFixed(1)}%)`);
     });
 
-    const subHeader = document.createElement("div");
-    subHeader.className = "console-line muted-line";
-    subHeader.style.marginTop = "12px";
-    subHeader.textContent = "--- TOP 3 LARGEST PREDICTION MISSES ---";
-    notesConsole.appendChild(subHeader);
+    typewriterLines(notesConsole, lines, "> ");
+  }
 
-    top3Misses.forEach((match, idx) => {
-      const rankLine = document.createElement("div");
-      rankLine.className = "console-line warning-line";
-      rankLine.style.marginTop = "8px";
-      rankLine.textContent = `> #${idx + 1} ${match.teamA} vs ${match.teamB} — ERROR GAP: ${match.gap.toFixed(1)}%`;
-      notesConsole.appendChild(rankLine);
+  function showRecomputeBanner() {
+    if (document.getElementById("recompute-notification-banner")) return;
 
-      const detailLine = document.createElement("div");
-      detailLine.className = "console-line";
-      detailLine.textContent = `  ACTUAL: ${match.actualOutcome} (${match.actualGoalsA}-${match.actualGoalsB}) | PREDICTED: ${match.predictedOutcome} (A:${match.predictedWinA.toFixed(1)}% D:${match.predictedDraw.toFixed(1)}% B:${match.predictedWinB.toFixed(1)}%)`;
-      notesConsole.appendChild(detailLine);
+    const banner = document.createElement("div");
+    banner.id = "recompute-notification-banner";
+    banner.style.cssText = `
+      background-color: var(--accent-blue);
+      color: black;
+      font-family: var(--font-data);
+      font-size: 11px;
+      font-weight: bold;
+      text-align: center;
+      padding: 8px;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      margin: 8px 12px 0 12px;
+      animation: pulse 2s infinite;
+    `;
+    banner.innerHTML = `⚡ NEW MATCH DATA DETECTED — CLICK HERE TO [RECOMPUTE]`;
+    
+    const tabControlBar = document.querySelector(".tab-control-bar");
+    if (tabControlBar) {
+      tabControlBar.parentNode.insertBefore(banner, tabControlBar.nextSibling);
+    } else {
+      document.body.prepend(banner);
+    }
+
+    banner.addEventListener("click", () => {
+      initVerificationTab();
+      banner.remove();
     });
   }
+
+  // Set refresh button listener
+  const btnRefreshBacktest = document.getElementById("btn-refresh-backtest");
+  if (btnRefreshBacktest) {
+    btnRefreshBacktest.addEventListener("click", initVerificationTab);
+  }
+
+  // Silent check for new matches every 10 minutes
+  setInterval(async () => {
+    try {
+      const cache = await getCache();
+      const completed = cache.computed?.completedMatches || [];
+      if (completed.length > lastCompletedCount) {
+        showRecomputeBanner();
+      }
+    } catch (e) {
+      console.warn("Failed to check cache refresh silently:", e);
+    }
+  }, 10 * 60 * 1000);
 
   // Pre-Match Flags Rendering in Match Prediction
   function renderPreMatchFlags() {
@@ -1227,8 +1715,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function populateSquadDropdowns() {
+    if (!squadTeamASelect || !squadTeamBSelect) return;
+    [squadTeamASelect, squadTeamBSelect].forEach(select => {
+      select.innerHTML = "";
+      
+      for (let t = 1; t <= 4; t++) {
+        const optgroup = document.createElement("optgroup");
+        optgroup.label = TIERS[t].toUpperCase();
+        
+        const tierTeams = TEAMS.filter(team => team.tier === t);
+        tierTeams.sort((a, b) => a.name.localeCompare(b.name));
+        
+        tierTeams.forEach(team => {
+          const option = document.createElement("option");
+          option.value = team.id;
+          option.textContent = `${team.flag} ${team.name} [${team.id}]`;
+          optgroup.appendChild(option);
+        });
+        
+        select.appendChild(optgroup);
+      }
+    });
+
+    squadTeamASelect.value = teamASelect.value || "FRA";
+    squadTeamBSelect.value = teamBSelect.value || "ARG";
+  }
+
+  if (squadTeamASelect && squadTeamBSelect) {
+    squadTeamASelect.addEventListener("change", renderSquadAnalysis);
+    squadTeamBSelect.addEventListener("change", renderSquadAnalysis);
+  }
+
   // Initialize data on load
   populateDropdowns();
+  populateSquadDropdowns();
   validateTeamSelection();
   updateResolvedFixture();
   renderPreMatchFlags();
