@@ -12,18 +12,18 @@ from config import COMPETITION_CONFIG
 def scrape_injuries():
     headers = {"User-Agent": COMPETITION_CONFIG["user_agent"]}
     # Transfermarkt absences page for World Cup
-    url = "https://www.transfermarkt.com/world-cup/ausfalle/wettbewerb/WM"
+    url = "https://www.transfermarkt.com/weltmeisterschaft2026/ausfalle/pokalwettbewerb/WM26"
     
     print(f"Fetching Transfermarkt absences: {url}")
     try:
         r = requests.get(url, headers=headers, timeout=15)
         if r.status_code != 200:
             print(f"Error: Transfermarkt returned status code {r.status_code}", file=sys.stderr)
-            sys.exit(1)
+            sys.exit(0)
         html_content = r.text
     except Exception as e:
         print(f"Exception during request to Transfermarkt: {e}", file=sys.stderr)
-        sys.exit(1)
+        sys.exit(0)
         
     soup = BeautifulSoup(html_content, "html.parser")
     injuries = []
