@@ -24,11 +24,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4
 
+      - name: Run Lineup Bot
+        run: python scripts/bots/lineup_bot.py
+
       - name: Run Fixture Bot
         run: python scripts/bots/fixture_bot.py
 
+      - name: Run Squad Bot
+        run: python scripts/bots/squad_bot.py
+
       - name: Run Injury Bot
         run: python scripts/bots/injury_bot.py
+
+      - name: Run Match Bot
+        run: python scripts/bots/match_bot.py
 
       - name: Print record counts
         run: |

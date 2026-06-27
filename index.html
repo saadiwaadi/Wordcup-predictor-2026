@@ -42,40 +42,182 @@
       </div>
     </header>
 
-    <!-- TAB CONTROLS -->
-    <div class="tab-control-bar">
-      <button class="tab-btn active" id="btn-tab-predictor">[01] MATCH PREDICTION</button>
-      <button class="tab-btn" id="btn-tab-squad">[02] ▣ SQUAD ANALYSIS</button>
-      <button class="tab-btn" id="btn-tab-verification">[03] MODEL VERIFICATION</button>
-      <button class="tab-btn" id="btn-tab-settings">[04] DATA SETTINGS</button>
-      <button id="btn-system-info" 
-        style="
-          margin-left: auto;
-          font-family: var(--font-data);
-          font-size: 9px;
-          letter-spacing: 0.1em;
-          padding: 6px 12px;
-          background: transparent;
-          border: 1px solid #222;
-          color: #444;
-          cursor: pointer;
-          transition: all 0.15s;
-        "
-        onmouseover="this.style.borderColor='#444';
-          this.style.color='#888'"
-        onmouseout="this.style.borderColor='#222';
-          this.style.color='#444'"
-      >
-        [?] SYSTEM INFO
-      </button>
+    <!-- TOP CONTROL BAR -->
+    <div class="top-control-bar">
+      <span class="wordmark-mini">ORACLE-26 // WC26</span>
+      <div class="top-bar-right">
+        <button id="btn-tab-verification">[03] VERIFY</button>
+        <button id="btn-tab-settings">[04] DATA</button>
+        <button id="btn-system-info">[?]</button>
+      </div>
     </div>
 
-    <!-- MAIN GRID LAYOUT -->
-    <main class="grid-layout" id="predictor-view">
+    <!-- FIXTURES MAIN VIEW -->
+    <main id="fixtures-main-view" style="width: 100%;">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>[01] WORLD CUP FIXTURES & PROBABILITY MATRIX</h2>
+          <span class="corner-label">SYS // SCHEDULE</span>
+        </div>
+        <div class="panel-body" style="padding: 16px; overflow-y: auto; max-height: 80vh;" id="fixtures-list-container">
+          <!-- Filled dynamically by JS -->
+        </div>
+      </section>
+    </main>
 
+    <!-- MATCH DETAIL VIEW -->
+    <main id="match-detail-view" class="hidden" style="width: 100%;">
+      <section class="panel">
+        <!-- TOP BAR -->
+        <div class="match-detail-topbar">
+          <button id="btn-back-fixtures">← FIXTURES</button>
+          <span id="match-detail-title">MEX vs RSA · Jun 11</span>
+          <div class="match-detail-subnav">
+            <button class="subnav-btn active" id="subnav-prediction">PREDICTION</button>
+            <button class="subnav-btn" id="subnav-squad">SQUAD ANALYSIS</button>
+          </div>
+        </div>
+
+        <div class="panel-body" style="padding: 16px; overflow-y: auto; max-height: 80vh;">
+          <!-- PREDICTION PANE -->
+          <div id="match-detail-prediction-pane">
+            <!-- panel-result-section will be moved here dynamically or statically -->
+          </div>
+
+          <!-- SQUAD PANE -->
+          <div id="match-detail-squad-pane" class="hidden">
+            <!-- SQUAD ANALYSIS VIEW (moved here) -->
+            <div id="squad-analysis-view" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+              
+              <!-- SQUAD TAB HEADER / CONTROLS -->
+              <div class="squad-header-controls" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 4px;">
+                <div class="squad-header-title" style="font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.05em; text-transform: uppercase;">
+                  [02] ⌁ Squad Analytics & Pitch Simulation
+                </div>
+                <div class="squad-selectors-wrapper" style="display: flex; gap: 12px; align-items: center;">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <label style="font-family: var(--font-label); font-size: 9px; color: var(--text-secondary); text-transform: uppercase;">TEAM A:</label>
+                    <select id="squad-team-a-select" class="terminal-select squad-select-dropdown" style="width: 140px; padding: 4px 20px 4px 8px; font-size: 11px; height: auto;">
+                      <!-- Options filled by JS -->
+                    </select>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <label style="font-family: var(--font-label); font-size: 9px; color: var(--text-secondary); text-transform: uppercase;">TEAM B:</label>
+                    <select id="squad-team-b-select" class="terminal-select squad-select-dropdown" style="width: 140px; padding: 4px 20px 4px 8px; font-size: 11px; height: auto;">
+                      <!-- Options filled by JS -->
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- MAIN THREE COLUMNS -->
+              <div class="squad-three-columns" style="display: flex; gap: 12px; width: 100%; align-items: stretch; margin-bottom: 4px;">
+                <!-- LEFT COLUMN: TEAM A SQUAD -->
+                <div class="squad-side-panel tactical-panel" id="squad-team-a-panel" style="width: 18%; min-width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px;">
+                  <!-- Dynamically populated by JS -->
+                </div>
+
+                <!-- CENTER COLUMN: PITCH SVG -->
+                <div class="squad-pitch-container tactical-panel tactical-bg-grid" id="squad-pitch-container" style="flex: 1 1 64%; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; background-color: #040404; border: 1px solid var(--border-color); padding: 0; position: relative;">
+                  <!-- TACTICAL BOARD SUB-HEADER -->
+                  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111; padding: 6px 12px; background: #060606; z-index: 10; position: relative;">
+                    <div style="font-family: var(--font-label); font-size: 8px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; text-transform: uppercase;">
+                      <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10" stroke="currentColor"><rect x="2" y="2" width="6" height="6" fill="none" stroke-width="1"/><rect x="4" y="4" width="2" height="2" fill="currentColor"/></svg>
+                      TACTICAL BOARD
+                    </div>
+                    <div style="font-family: var(--font-data); font-size: 8px; color: #444; display: flex; align-items: center; gap: 4px; text-transform: uppercase;">
+                      <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10" stroke="currentColor"><polygon points="5,1.5 8.5,5 5,8.5 1.5,5" fill="none" stroke-width="1"/><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg>
+                      FORMATION MATRIX
+                    </div>
+                  </div>
+
+                  <!-- formation-selector hidden to favor team-specific dropdowns -->
+                  <div id="formation-selector" style="display: none !important;">
+                    <button class="formation-btn active" data-formation="4-3-3">4-3-3</button>
+                    <button class="formation-btn" data-formation="4-2-3-1">4-2-3-1</button>
+                    <button class="formation-btn" data-formation="4-4-2">4-4-2</button>
+                    <button class="formation-btn" data-formation="3-5-2">3-5-2</button>
+                    <button class="formation-btn" data-formation="3-4-3">3-4-3</button>
+                    <button class="formation-btn" data-formation="5-3-2">5-3-2</button>
+                    <button class="formation-btn" data-formation="4-5-1">4-5-1</button>
+                  </div>
+
+                  <!-- PITCH SVG WRAPPER -->
+                  <div id="pitch-svg-wrapper" style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 0; min-height: 520px; height: 100%;">
+                    <!-- SVG rendered here dynamically -->
+                  </div>
+
+                  <!-- MODIFICATION BANNER -->
+                  <div id="lineup-modified-banner" 
+                    class="hidden"
+                    style="
+                      font-family: var(--font-data);
+                      font-size: 9px;
+                      letter-spacing: 0.1em;
+                      color: #f59e0b;
+                      border: 1px solid #f59e0b22;
+                      background: #0f0a00;
+                      padding: 6px 12px;
+                      text-align: center;
+                      margin-top: 8px;
+                    ">
+                    LINEUP MODIFIED — CUSTOM SELECTION
+                    <button id="btn-reset-lineup" style="
+                      margin-left: 12px;
+                      background: transparent;
+                      border: 1px solid #333;
+                      color: #555;
+                      font-family: var(--font-data);
+                      font-size: 8px;
+                      letter-spacing: 0.1em;
+                      padding: 2px 8px;
+                      cursor: pointer;
+                    ">[RESET]</button>
+                  </div>
+                </div>
+
+                <!-- RIGHT COLUMN: TEAM B SQUAD -->
+                <div class="squad-side-panel tactical-panel" id="squad-team-b-panel" style="width: 18%; min-width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px;">
+                  <!-- Dynamically populated by JS -->
+                </div>
+              </div>
+
+              <!-- GOLDEN BOOT BAR -->
+              <div class="golden-boot-bar tactical-panel tactical-bg-grid" style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px; padding: 10px 12px;">
+                <div class="golden-boot-header" style="font-family: var(--font-display); font-size: 8px; letter-spacing: 0.2em; color: #444; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
+                  <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><polygon points="5,1.5 8.5,5 5,8.5 1.5,5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg>
+                  TOURNAMENT GOLDEN BOOT MATRIX
+                </div>
+                <div class="golden-boot-chips" id="golden-boot-chips-container" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin;">
+                  <!-- Filled dynamically by JS -->
+                </div>
+              </div>
+
+              <!-- AWARDS BAR -->
+              <div class="squad-awards-bar tactical-panel" id="squad-awards-bar" style="display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid #0e0e0e; background-color: var(--bg-panels); margin-top: 4px;">
+                <!-- 4 Cells filled dynamically by JS -->
+              </div>
+
+              <!-- FOOTER DISCLAIMER -->
+              <div class="squad-footer-disclaimer" style="font-family: var(--font-label); font-size: 7px; letter-spacing: 0.1em; color: #333; text-align: center; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px; text-transform: uppercase;">
+                SOURCE: openfootball worldcup.squads.json · LINEUPS SUGGESTED NOT CONFIRMED · (C) = CAPTAIN · ||||| = DATA VERIFIED
+              </div>
+
+            </div>
+
+            <!-- SQUAD ANALYSIS VIEW PLACEHOLDER -->
+            <div id="squad-analysis-placeholder" class="placeholder-container" style="padding: 80px 40px; text-align: center; font-family: var(--font-display); color: var(--text-secondary); border: 1px dashed var(--border-color); background-color: var(--bg-panels); font-size: 12px; letter-spacing: 0.05em;">
+              &gt; SELECT TEAMS IN MATCH PREDICTION TAB TO VIEW SQUAD LINEUPS
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- MAIN GRID LAYOUT -->
+    <main class="grid-layout hidden" id="predictor-view">
       
       <!-- LEFT PANEL: INPUT & CONTROLS -->
-      <section class="panel panel-input" id="panel-input-section">
+      <section class="panel panel-input hidden" id="panel-input-section">
         <div class="panel-header">
           <h2>[01] MATCH INPUT</h2>
           <span class="corner-label">SYS</span>
@@ -159,222 +301,6 @@
             </button>
             
           </form>
-        </div>
-      </section>
-
-      <!-- RIGHT PANEL: PREDICTION RESULTS -->
-      <section class="panel panel-result" id="panel-result-section">
-        <!-- LOADING INDICATOR -->
-        <div id="loading-state" class="loading-overlay hidden">
-          <div class="loading-box">
-            <span class="loading-bracket">[</span>
-            <span class="loading-text">COMPUTING PREDICTION MODEL...</span>
-            <span class="loading-bracket">]</span>
-          </div>
-        </div>
-
-        <div class="panel-header">
-          <h2>[02] PROBABILITY MODEL</h2>
-          <span class="corner-label">MODEL</span>
-        </div>
-        
-        <div class="panel-body flex-column justify-between height-100">
-          
-          <!-- RESULTS PLACEHOLDER -->
-          <div id="results-placeholder" style="
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 320px;
-            flex-direction: column;
-            gap: 16px;
-            font-family: var(--font-data);
-            color: var(--text-muted);">
-            <div style="font-size: 32px; opacity: 0.15; 
-              letter-spacing: 0.2em;">◈ ◈ ◈</div>
-            <div style="font-size: 10px; letter-spacing: 0.15em; 
-              opacity: 0.5;">SELECT TEAMS AND RUN PREDICTION</div>
-            <div style="font-size: 9px; letter-spacing: 0.1em; 
-              opacity: 0.3;">ENGINE STANDING BY...</div>
-          </div>
-          
-          <!-- RESULTS CONTENT -->
-          <div id="results-content" class="results-content hidden">
-            
-            <!-- [1] PROBABILITY BAR -->
-            <div class="section-block">
-              <div class="prob-labels-row">
-                <div class="prob-label text-left">
-                  <div class="team-name-small" id="prob-team-a-name">FRANCE</div>
-                  <div class="prob-value" id="prob-team-a-val">0.0%</div>
-                </div>
-                <div class="prob-label text-center">
-                  <div class="team-name-small">DRAW</div>
-                  <div class="prob-value" id="prob-draw-val">0.0%</div>
-                </div>
-                <div class="prob-label text-right">
-                  <div class="team-name-small" id="prob-team-b-name">ARGENTINA</div>
-                  <div class="prob-value" id="prob-team-b-val">0.0%</div>
-                </div>
-              </div>
-              
-              <!-- 3-Segment Brutalist Signal Indicator Bar -->
-              <div class="prob-bar-container" id="prob-bar-container">
-                <div class="prob-segment win-a-segment" id="prob-segment-a" style="width: 33.3%;"></div>
-                <div class="prob-segment draw-segment" id="prob-segment-draw" style="width: 33.3%;"></div>
-                <div class="prob-segment win-b-segment" id="prob-segment-b" style="width: 33.3%;"></div>
-              </div>
-              
-              <!-- Venue & Status Details -->
-              <div class="match-meta-details-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 10px; font-family: var(--font-data);">
-                <span id="match-venue-display" style="color: var(--accent-blue);">📍 venue loading...</span>
-                <span id="match-completed-banner" class="hidden" style="color: var(--accent-red); font-weight: bold; background: rgba(177, 32, 32, 0.15); padding: 2px 6px; border: 1px solid var(--accent-red);">⚠️ COMPLETED: 0-0</span>
-              </div>
-            </div>
-
-            <!-- MIDDLE GRID: METRIC CARDS & MATRIX -->
-            <div class="result-middle-grid">
-              
-              <!-- LEFT COLUMN: READOUTS -->
-              <div class="middle-col flex-column gap-md">
-                
-                <!-- [2] METRIC CARDS -->
-                <div class="metrics-container">
-                  <div class="panel-header sub-header">
-                    <h3 class="has-tooltip" data-tip="The model's predicted average goals per team. Computed via Poisson distribution — blends win probability with real 2026 goals when available. Not the same as shot-based xG.">PREDICTED GOALS (λ) &amp; SCORELINE</h3>
-                  </div>
-                  <div class="metrics-grid">
-                    <div class="metric-card">
-                      <div class="metric-label" id="card-xg-a-label">XG FRA</div>
-                      <div class="metric-value" id="card-xg-a-val">1.8</div>
-                    </div>
-                    <div class="metric-card highlight-card">
-                      <div class="metric-label">SCORELINE</div>
-                      <div class="metric-value font-large" id="card-scoreline-val">2-1</div>
-                    </div>
-                    <div class="metric-card">
-                      <div class="metric-label" id="card-xg-b-label">XG ARG</div>
-                      <div class="metric-value" id="card-xg-b-val">1.4</div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- [4] RECENT FORM -->
-                <div class="form-analysis-container">
-                  <div class="panel-header sub-header">
-                    <h3>[04] FORM ANALYSIS</h3>
-                    <span class="corner-label">DATA</span>
-                  </div>
-                  <div class="form-grid">
-                    <div class="form-col text-left">
-                      <div class="form-team-header" id="form-team-a-header">FRANCE</div>
-                      <div class="form-squares-row" id="form-team-a-squares">
-                        <!-- Filled by JS -->
-                      </div>
-                    </div>
-                    <div class="form-col text-right">
-                      <div class="form-team-header" id="form-team-b-header">ARGENTINA</div>
-                      <div class="form-squares-row justify-end" id="form-team-b-squares">
-                        <!-- Filled by JS -->
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- [5] HEAD TO HEAD -->
-                <div class="h2h-container">
-                  <div class="panel-header sub-header">
-                    <h3>[05] HEAD TO HEAD</h3>
-                    <span class="corner-label">DATA</span>
-                  </div>
-                  <div class="h2h-box">
-                    <div class="h2h-record-text" id="h2h-main-record">France 2 — 1 draw — 2 Argentina</div>
-                    <div class="h2h-note" id="h2h-match-note">2022 WC Final — ARG won pens</div>
-                  </div>
-                </div>
-
-              </div>
-
-              <!-- RIGHT COLUMN: SCORE MATRIX -->
-              <div class="middle-col">
-                <!-- [3] TOP 5 SCORELINES -->
-                <div class="score-matrix-panel">
-                  <div class="panel-header sub-header">
-                    <h3 class="has-tooltip" data-tip="Top 5 most likely exact scorelines from Poisson distribution. Each % is that scoreline's individual probability — they do not sum to 100%.">[03] SCORE MATRIX (TOP 5)</h3>
-                    <span class="corner-label">MODEL</span>
-                  </div>
-                  <div class="matrix-list" id="matrix-list-rows">
-                    <!-- Filled by JS -->
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <!-- LOWER GRID: CONFIDENCE & ENGINE NOTES -->
-            <div class="result-lower-grid">
-              
-              <!-- [7] CONFIDENCE METER & LAYER BREAKDOWN -->
-              <div class="lower-col flex-column gap-md">
-                <div class="confidence-box">
-                  <div class="panel-header sub-header">
-                    <h3 class="has-tooltip" data-tip="Prediction trust score out of 100. Penalties: Tier 4 team (-20 each), under 3 WC appearances (-15 each), key injury (-5 each), neutral venue (-5). Under 45 = LOW reliability.">[05] CONFIDENCE</h3>
-                    <span class="corner-label">SYS</span>
-                  </div>
-                  
-                  <div class="confidence-header-row">
-                    <div class="confidence-title">CONFIDENCE</div>
-                    <div class="confidence-value-container">
-                      <span id="stale-badge" class="badge-stale hidden">STALE DATA</span>
-                      <span class="confidence-score-text" id="confidence-score-val">87/100 — HIGH</span>
-                    </div>
-                  </div>
-                  
-                  <!-- Fill block visualization -->
-                  <div class="confidence-meter-container">
-                    <div class="confidence-meter-fill" id="confidence-meter-fill" style="width: 87%;"></div>
-                  </div>
-                </div>
-
-                <!-- [8] LAYER BREAKDOWN -->
-                <div class="layer-breakdown">
-                  <div class="panel-header sub-header">
-                    <h3>[06] LAYER BREAKDOWN</h3>
-                  </div>
-                  <div class="layers-row">
-                    <div class="layer-box has-tooltip" data-tip="Baseline win probability from Elo rating (weight 1.0), FIFA rank (0.5), and squad market value (0.25). Does not update during tournament.">
-                      <div class="layer-lbl">L1: STATIC</div>
-                      <div class="layer-val" id="layer-static-val">P = 0.54</div>
-                    </div>
-                    <div class="layer-box has-tooltip" data-tip="Adjusts L1 using last 5 results and Elo momentum trend. Uses real 2026 match data when the team has played 1+ matches.">
-                      <div class="layer-lbl">L2: FORM</div>
-                      <div class="layer-val" id="layer-form-val">P = 0.58</div>
-                    </div>
-                    <div class="layer-box highlight-blue has-tooltip" data-tip="Final win probability after blending both layers. Feeds into Poisson to generate the scoreline matrix.">
-                      <div class="layer-lbl">P(WIN A)</div>
-                      <div class="layer-val color-blue" id="layer-final-val">54.2%</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- [6] PREDICTION DRIVERS (ENGINE NOTES) -->
-              <div class="lower-col">
-                <div class="engine-notes-panel">
-                  <div class="panel-header sub-header">
-                    <h3>[06] ENGINE NOTES</h3>
-                    <span class="corner-label">LIVE</span>
-                  </div>
-                  <div class="engine-notes-terminal" id="engine-notes-console">
-                    <!-- Filled by JS as command lines -->
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-
         </div>
       </section>
 
@@ -535,140 +461,7 @@
       </section>
     </main>
 
-    <!-- SQUAD ANALYSIS VIEW -->
-    <!-- Modified Section: 8. Reduce empty space, 10. Improve spacing -->
-    <main class="hidden" id="squad-analysis-view" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-      
-      <!-- SQUAD TAB HEADER / CONTROLS -->
-      <!-- Modified Section: 10. Improve spacing (consistent paddings and margins) -->
-      <div class="squad-header-controls" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 4px;">
-        <div class="squad-header-title" style="font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.05em; text-transform: uppercase;">
-          [02] ⌁ Squad Analytics & Pitch Simulation
-        </div>
-        <div class="squad-selectors-wrapper" style="display: flex; gap: 12px; align-items: center;">
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <label style="font-family: var(--font-label); font-size: 9px; color: var(--text-secondary); text-transform: uppercase;">TEAM A:</label>
-            <select id="squad-team-a-select" class="terminal-select squad-select-dropdown" style="width: 140px; padding: 4px 20px 4px 8px; font-size: 11px; height: auto;">
-              <!-- Options filled by JS -->
-            </select>
-          </div>
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <label style="font-family: var(--font-label); font-size: 9px; color: var(--text-secondary); text-transform: uppercase;">TEAM B:</label>
-            <select id="squad-team-b-select" class="terminal-select squad-select-dropdown" style="width: 140px; padding: 4px 20px 4px 8px; font-size: 11px; height: auto;">
-              <!-- Options filled by JS -->
-            </select>
-          </div>
-        </div>
-      </div>
 
-      <!-- MAIN THREE COLUMNS -->
-      <!-- Modified Section: 1. Resize the three-column layout, 3. Align all three columns, 10. Improve spacing -->
-      <div class="squad-three-columns" style="display: flex; gap: 12px; width: 100%; align-items: stretch; margin-bottom: 4px;">
-        <!-- LEFT COLUMN: TEAM A SQUAD -->
-        <!-- Modified Section: 1. Left squad panel 18% width (min-width 180px) -->
-        <div class="squad-side-panel tactical-panel" id="squad-team-a-panel" style="width: 18%; min-width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px;">
-          <!-- Dynamically populated by JS -->
-        </div>
-
-        <!-- CENTER COLUMN: PITCH SVG -->
-        <!-- Modified Section: 1. Center pitch container flex-grow to 64%, 2. Increase pitch area, 3. Align all three columns, 10. Improve spacing -->
-        <div class="squad-pitch-container tactical-panel tactical-bg-grid" id="squad-pitch-container" style="flex: 1 1 64%; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; background-color: #040404; border: 1px solid var(--border-color); padding: 0; position: relative;">
-          <!-- TACTICAL BOARD SUB-HEADER (Requirement 2 & 9) -->
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111; padding: 6px 12px; background: #060606; z-index: 10; position: relative;">
-            <div style="font-family: var(--font-label); font-size: 8px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; text-transform: uppercase;">
-              <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10" stroke="currentColor"><rect x="2" y="2" width="6" height="6" fill="none" stroke-width="1"/><rect x="4" y="4" width="2" height="2" fill="currentColor"/></svg>
-              TACTICAL BOARD
-            </div>
-            <div style="font-family: var(--font-data); font-size: 8px; color: #444; display: flex; align-items: center; gap: 4px; text-transform: uppercase;">
-              <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10" stroke="currentColor"><polygon points="5,1.5 8.5,5 5,8.5 1.5,5" fill="none" stroke-width="1"/><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg>
-              FORMATION MATRIX
-            </div>
-          </div>
-
-          <!-- formation-selector hidden to favor team-specific dropdowns -->
-          <div id="formation-selector" style="display: none !important;">
-            <button class="formation-btn active" data-formation="4-3-3">4-3-3</button>
-            <button class="formation-btn" data-formation="4-2-3-1">4-2-3-1</button>
-            <button class="formation-btn" data-formation="4-4-2">4-4-2</button>
-            <button class="formation-btn" data-formation="3-5-2">3-5-2</button>
-            <button class="formation-btn" data-formation="3-4-3">3-4-3</button>
-            <button class="formation-btn" data-formation="5-3-2">5-3-2</button>
-            <button class="formation-btn" data-formation="4-5-1">4-5-1</button>
-          </div>
-
-          <!-- PITCH SVG WRAPPER -->
-          <!-- Modified Section: 2. Increase pitch area, 6. Increase pitch scale -->
-          <div id="pitch-svg-wrapper" style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 0; min-height: 520px; height: 100%;">
-            <!-- SVG rendered here dynamically -->
-          </div>
-
-          <!-- MODIFICATION BANNER -->
-          <div id="lineup-modified-banner" 
-            class="hidden"
-            style="
-              font-family: var(--font-data);
-              font-size: 9px;
-              letter-spacing: 0.1em;
-              color: #f59e0b;
-              border: 1px solid #f59e0b22;
-              background: #0f0a00;
-              padding: 6px 12px;
-              text-align: center;
-              margin-top: 8px;
-            ">
-            LINEUP MODIFIED — CUSTOM SELECTION
-            <button id="btn-reset-lineup" style="
-              margin-left: 12px;
-              background: transparent;
-              border: 1px solid #333;
-              color: #555;
-              font-family: var(--font-data);
-              font-size: 8px;
-              letter-spacing: 0.1em;
-              padding: 2px 8px;
-              cursor: pointer;
-            ">[RESET]</button>
-          </div>
-        </div>
-
-        <!-- RIGHT COLUMN: TEAM B SQUAD -->
-        <!-- Modified Section: 1. Right squad panel 18% width (min-width 180px) -->
-        <div class="squad-side-panel tactical-panel" id="squad-team-b-panel" style="width: 18%; min-width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px;">
-          <!-- Dynamically populated by JS -->
-        </div>
-      </div>
-
-      <!-- GOLDEN BOOT BAR -->
-      <!-- Modified Section: 9. Move tournament widgets (moved below three-column layout), 10. Improve spacing -->
-      <div class="golden-boot-bar tactical-panel tactical-bg-grid" style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px; padding: 10px 12px;">
-        <div class="golden-boot-header" style="font-family: var(--font-display); font-size: 8px; letter-spacing: 0.2em; color: #444; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
-          <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><polygon points="5,1.5 8.5,5 5,8.5 1.5,5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg>
-          TOURNAMENT GOLDEN BOOT MATRIX
-        </div>
-        <div class="golden-boot-chips" id="golden-boot-chips-container" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin;">
-          <!-- Filled dynamically by JS -->
-        </div>
-      </div>
-
-      <!-- AWARDS BAR -->
-      <!-- Modified Section: 9. Move tournament widgets (moved below three-column layout) -->
-      <div class="squad-awards-bar tactical-panel" id="squad-awards-bar" style="display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid #0e0e0e; background-color: var(--bg-panels); margin-top: 4px;">
-        <!-- 4 Cells filled dynamically by JS -->
-      </div>
-
-      <!-- FOOTER DISCLAIMER -->
-      <!-- Modified Section: 10. Improve spacing -->
-      <div class="squad-footer-disclaimer" style="font-family: var(--font-label); font-size: 7px; letter-spacing: 0.1em; color: #333; text-align: center; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px; text-transform: uppercase;">
-        SOURCE: openfootball worldcup.squads.json · LINEUPS SUGGESTED NOT CONFIRMED · (C) = CAPTAIN · ||||| = DATA VERIFIED
-      </div>
-
-    </main>
-
-
-    <!-- SQUAD ANALYSIS VIEW PLACEHOLDER -->
-    <div id="squad-analysis-placeholder" class="placeholder-container hidden" style="padding: 80px 40px; text-align: center; font-family: var(--font-display); color: var(--text-secondary); border: 1px dashed var(--border-color); background-color: var(--bg-panels); font-size: 12px; letter-spacing: 0.05em;">
-      &gt; SELECT TEAMS IN MATCH PREDICTION TAB TO VIEW SQUAD LINEUPS
-    </div>
 
     <!-- DATA SETTINGS VIEW (TAB 4) -->
     <main class="grid-layout hidden" id="settings-view">
@@ -770,6 +563,30 @@
               <!-- JS populated rows -->
             </tbody>
           </table>
+        </div>
+      </section>
+    </main>
+ 
+    <!-- SCHEDULE VIEW -->
+    <main class="hidden" id="schedule-view" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+      <section class="panel">
+        <div class="panel-header">
+          <h2>[05] WORLD CUP 2026 SCHEDULE & RESULTS</h2>
+          <span class="corner-label">SYS // SCHEDULE</span>
+        </div>
+        <div class="panel-body" style="padding: 16px; overflow-y: auto; max-height: 75vh; display: flex; flex-direction: column; gap: 20px;">
+          <div id="upcoming-fixtures-section">
+            <h3 style="font-family: var(--font-display); font-size: 11px; margin-bottom: 12px; color: var(--accent-blue); border-bottom: 1px solid #202020; padding-bottom: 6px;">◈ UPCOMING FIXTURES</h3>
+            <div id="upcoming-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px;">
+              <!-- Upcoming fixtures render here -->
+            </div>
+          </div>
+          <div id="completed-fixtures-section" style="margin-top: 12px; border-top: 1px dashed #202020; padding-top: 16px;">
+            <h3 style="font-family: var(--font-display); font-size: 11px; margin-bottom: 12px; color: var(--accent-green); border-bottom: 1px solid #202020; padding-bottom: 6px;">◈ MATCH RESULTS</h3>
+            <div id="completed-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px;">
+              <!-- Completed fixtures render here -->
+            </div>
+          </div>
         </div>
       </section>
     </main>

@@ -2,7 +2,7 @@ import os
 
 # Base directory setup relative to this file
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_DIR = os.path.join(BASE_DIR, "data", "scraped")
+DATA_DIR = os.path.join(BASE_DIR, "public", "data", "scraped")
 
 COMPETITION_CONFIG = {
     "competition_name": "FIFA World Cup 2026",

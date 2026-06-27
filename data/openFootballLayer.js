@@ -1,4 +1,5 @@
 // Run with: node data/openFootballLayer.js
+import { getScrapedSquad } from './scrapedAdapter.js';
 
 // Check environment
 const isNode = typeof window === 'undefined';
@@ -515,6 +516,33 @@ export async function getFixture(team1Code, team2Code) {
 }
 
 export async function getTeamSquad(teamCode) {
+  if (typeof window !== 'undefined') {
+    const teamName = Object.keys(teamNameToCode).find(k => teamNameToCode[k] === teamCode);
+    if (teamName) {
+      const scraped = getScrapedSquad(teamName);
+      if (scraped && scraped.length > 0) {
+        return scraped.map((p, idx) => {
+          let posGroup = "FORWARDS";
+          if (p.position === "GK") posGroup = "GOALKEEPERS";
+          else if (p.position === "DF") posGroup = "DEFENDERS";
+          else if (p.position === "MF") posGroup = "MIDFIELDERS";
+
+          const number = p.number || (idx + 1);
+          const starter = number <= 11;
+
+          return {
+            number,
+            pos: p.position || "FW",
+            name: p.name,
+            age: p.age || 26,
+            posGroup,
+            starter
+          };
+        });
+      }
+    }
+  }
+
   const cache = await getCache();
   const squads = cache.squads || [];
   const teamSquad = squads.find(s => s.fifa_code === teamCode);

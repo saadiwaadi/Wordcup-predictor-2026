@@ -65,7 +65,7 @@ def bootstrap_squads():
     output_path = COMPETITION_CONFIG["squads_path"]
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(squads_by_team, f, indent=2, ensure_ascii=False)
+        json.dump(squads_by_team, f, separators=(',', ':'), ensure_ascii=False)
         
     print(f"\nBootstrap conclude. Total teams: {len(squads_by_team)}, Total players written: {total_players_written}")
 

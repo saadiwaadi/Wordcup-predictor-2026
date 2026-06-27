@@ -4,6 +4,7 @@ import { FORM as form } from './form.js';
 import { H2H as h2h } from './h2h.js';
 import { TOURNAMENT as tournament } from './tournament.js';
 import { simpleHash } from './deltaSync.js';
+import { getScrapedSquad, getCompletedFixtures, normalizeName } from './scrapedAdapter.js';
 const WC_48_TEAMS = new Set([
   "BRA", "FRA", "ENG", "GER", "ESP", "ARG", "POR", "NED", "BEL", "CRO",
   "SEN", "MAR", "JPN", "USA", "MEX", "CAN", "COL", "URU", "SUI", "SRB",
@@ -79,7 +80,8 @@ export function getTeamData(teamId) {
   const team = teams[teamId];
   if (!team) return null;
   const rating = ratings[teamId] || {};
-  const teamForm = form[teamId] || [];
+  const dynamicForm = getForm();
+  const teamForm = dynamicForm[teamId] || [];
   
   let squad = team.players || [];
   let injuries = team.injuries || [];
@@ -91,7 +93,7 @@ export function getTeamData(teamId) {
     if (cachedInjuries) injuries = cachedInjuries.injured_players;
   }
   
-  return {
+  const baseTeam = {
     id: team.id,
     name: team.name,
     flag: team.flag,
@@ -108,6 +110,33 @@ export function getTeamData(teamId) {
     confederation: team.confederation,
     players: squad
   };
+
+  const scraped = getScrapedSquad(team.name);
+  if (scraped && scraped.length > 0) {
+    baseTeam.players = scraped.map((p, idx) => {
+      const staticPlayer = (squad || []).find(sp => sp.name.toLowerCase() === p.name.toLowerCase()) || {};
+      const hasMatch = !!staticPlayer.name;
+
+      return {
+        id: staticPlayer.id || `${teamId}_scraped_${idx}`,
+        name: p.name,
+        position: staticPlayer.position || p.position || "FW",
+        caps: hasMatch ? (staticPlayer.caps !== undefined ? staticPlayer.caps : 0) : null,
+        data_quality: hasMatch ? (staticPlayer.data_quality || "UNKNOWN") : "UNKNOWN",
+        is_starter: hasMatch ? (staticPlayer.is_starter !== undefined ? staticPlayer.is_starter : false) : false,
+        xG_intl_per90: hasMatch ? (staticPlayer.xG_intl_per90 !== undefined ? staticPlayer.xG_intl_per90 : 0) : null,
+        xG_club_per90: hasMatch ? (staticPlayer.xG_club_per90 !== undefined ? staticPlayer.xG_club_per90 : 0) : null,
+        league_difficulty_coeff: hasMatch ? (staticPlayer.league_difficulty_coeff !== undefined ? staticPlayer.league_difficulty_coeff : 1.0) : null,
+        xG_best_single_match: hasMatch ? (staticPlayer.xG_best_single_match !== undefined ? staticPlayer.xG_best_single_match : 0) : null,
+        mean_xG_per90: hasMatch ? (staticPlayer.mean_xG_per90 !== undefined ? staticPlayer.mean_xG_per90 : 0) : null,
+        xG_approx: hasMatch ? (staticPlayer.xG_approx !== undefined ? staticPlayer.xG_approx : 0) : null,
+        xG_source: hasMatch ? (staticPlayer.xG_source || null) : null,
+        club: p.club || null
+      };
+    });
+  }
+
+  return baseTeam;
 }
 
 export function getRatings() {
@@ -115,7 +144,55 @@ export function getRatings() {
 }
 
 export function getForm() {
-  return form;
+  const completed = getCompletedFixtures();
+  if (!completed || completed.length === 0) {
+    return form;
+  }
+
+  // Sort by kickoff_utc ascending (oldest first)
+  const sorted = [...completed].sort((a, b) => new Date(a.kickoff_utc) - new Date(b.kickoff_utc));
+
+  // Build liveResults map: { teamName: ["W"/"D"/"L", ...] }
+  const liveResults = {};
+  
+  sorted.forEach(f => {
+    const home = normalizeName(f.home_team);
+    const away = normalizeName(f.away_team);
+    
+    if (f.result && f.result.ft) {
+      const [homeGoals, awayGoals] = f.result.ft;
+      
+      let homeRes = "D";
+      let awayRes = "D";
+      if (homeGoals > awayGoals) {
+        homeRes = "W";
+        awayRes = "L";
+      } else if (homeGoals < awayGoals) {
+        homeRes = "L";
+        awayRes = "W";
+      }
+      
+      if (!liveResults[home]) liveResults[home] = [];
+      if (!liveResults[away]) liveResults[away] = [];
+      
+      liveResults[home].push(homeRes);
+      liveResults[away].push(awayRes);
+    }
+  });
+
+  const finalForm = {};
+  Object.keys(teams).forEach(id => {
+    const t = teams[id];
+    const staticArray = form[id] || [];
+    
+    const normName = normalizeName(t.name);
+    const liveArray = liveResults[normName] || [];
+    
+    const reversedLive = [...liveArray].reverse();
+    finalForm[id] = [...reversedLive, ...staticArray].slice(0, 6);
+  });
+
+  return finalForm;
 }
 
 export function getH2H(teamA, teamB) {

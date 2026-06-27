@@ -7,6 +7,7 @@ import { runPreMatchFlags } from './engine/preMatchFlags.js';
 import { deltaUpdateTeam } from './data/deltaSync.js';
 import { enrichMatchup, getLambdaOverride, recomputeScorelines } from './data/enrichTeam.js';
 import { getTeamForm, getTeamSquad, getTopScorers, getTeamCleanSheets } from './data/openFootballLayer.js';
+import { initScrapedData, getCompletedFixtures, getUpcomingFixtures, normalizeName, getLineup } from './data/scrapedAdapter.js';
 
 
 
@@ -23,7 +24,14 @@ const TACTICAL_ICONS = {
   simulation: `<svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><polyline points="1.5,5 3,5 4,2 6,8 7,5 8.5,5" fill="none" stroke="currentColor" stroke-width="1"/></svg>`
 };
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    await initScrapedData();
+    reloadTeams();
+  } catch (error) {
+    console.warn("Failed to initialize scraped data:", error);
+  }
+
   const FORMATIONS = {
     "4-3-3": {
       label: "4-3-3",
@@ -155,14 +163,39 @@ document.addEventListener("DOMContentLoaded", () => {
       bench: []
     },
     modified: false,
-    selectedPlayer: null
+    selectedPlayer: null,
+    currentFixtureLineup: null
   };
 
+  function isPlayerInLineupList(playerName, lineupList) {
+    if (!lineupList) return false;
+    const norm = normalizeName(playerName).toLowerCase();
+    return lineupList.some(lp => {
+      const lpNorm = normalizeName(lp.name || lp).toLowerCase();
+      return lpNorm === norm || lpNorm.includes(norm) || norm.includes(lpNorm);
+    });
+  }
+
   function initializeLineupState(teamCode, rawSquad, teamKey) {
-    const players = rawSquad.map(p => ({
-      ...p,
-      isStarter: p.starter !== undefined ? p.starter : false
-    }));
+    const lineup = lineupState.currentFixtureLineup;
+    const players = rawSquad.map(p => {
+      let isStarter = p.starter !== undefined ? p.starter : false;
+      if (lineup) {
+        const isHomeInLineup = (teamCode === lineup.home || normalizeName(teamCode) === normalizeName(lineup.home));
+        const startersList = isHomeInLineup ? lineup.home_starters : lineup.away_starters;
+        const subsList = isHomeInLineup ? lineup.home_subs : lineup.away_subs;
+
+        if (isPlayerInLineupList(p.name, startersList)) {
+          isStarter = true;
+        } else if (isPlayerInLineupList(p.name, subsList)) {
+          isStarter = false;
+        }
+      }
+      return {
+        ...p,
+        isStarter
+      };
+    });
     lineupState[teamKey] = {
       code: teamCode,
       formation: lineupState[teamKey].formation || '4-3-3',
@@ -170,7 +203,9 @@ document.addEventListener("DOMContentLoaded", () => {
       starters: players.filter(p => p.isStarter),
       bench: players.filter(p => !p.isStarter)
     };
-    adjustStartersForFormation(lineupState[teamKey], lineupState[teamKey].formation);
+    if (!lineup) {
+      adjustStartersForFormation(lineupState[teamKey], lineupState[teamKey].formation);
+    }
   }
 
   function adjustStartersForFormation(teamState, targetFormation) {
@@ -835,70 +870,154 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Tab Switching logic
-  const btnTabPredictor = document.getElementById("btn-tab-predictor");
-  const btnTabSquad = document.getElementById("btn-tab-squad");
+  // Routing elements
+  const fixturesMainView = document.getElementById("fixtures-main-view");
+  const matchDetailView = document.getElementById("match-detail-view");
   const btnTabVerification = document.getElementById("btn-tab-verification");
   const btnTabSettings = document.getElementById("btn-tab-settings");
-  const predictorView = document.getElementById("predictor-view");
-  const squadAnalysisView = document.getElementById("squad-analysis-view");
+  const btnBackFixtures = document.getElementById("btn-back-fixtures");
+  const subnavPrediction = document.getElementById("subnav-prediction");
+  const subnavSquad = document.getElementById("subnav-squad");
+  const panePrediction = document.getElementById("match-detail-prediction-pane");
+  const paneSquad = document.getElementById("match-detail-squad-pane");
+
   const verificationView = document.getElementById("verification-view");
   const settingsView = document.getElementById("settings-view");
 
-  btnTabPredictor.addEventListener("click", () => {
-    btnTabPredictor.classList.add("active");
-    btnTabSquad.classList.remove("active");
+  function setActiveNavBtn(btn) {
     btnTabVerification.classList.remove("active");
     btnTabSettings.classList.remove("active");
-    predictorView.classList.remove("hidden");
-    squadAnalysisView.classList.add("hidden");
-    document.getElementById("squad-analysis-placeholder").classList.add("hidden");
-    verificationView.classList.add("hidden");
-    settingsView.classList.add("hidden");
-  });
+    if (btn) btn.classList.add("active");
+  }
 
-  btnTabSquad.addEventListener("click", () => {
-    btnTabSquad.classList.add("active");
-    btnTabPredictor.classList.remove("active");
-    btnTabVerification.classList.remove("active");
-    btnTabSettings.classList.remove("active");
-    squadAnalysisView.classList.remove("hidden");
-    predictorView.classList.add("hidden");
+  function hideAllMainViews() {
+    fixturesMainView.classList.add("hidden");
+    matchDetailView.classList.add("hidden");
     verificationView.classList.add("hidden");
     settingsView.classList.add("hidden");
-    
-    // Render squad analysis
-    renderSquadAnalysis();
-  });
+  }
+
+  function showFixturesMain() {
+    hideAllMainViews();
+    setActiveNavBtn(null);
+    fixturesMainView.classList.remove("hidden");
+    renderFixturesList();
+  }
 
   btnTabVerification.addEventListener("click", () => {
-    btnTabVerification.classList.add("active");
-    btnTabPredictor.classList.remove("active");
-    btnTabSquad.classList.remove("active");
-    btnTabSettings.classList.remove("active");
+    hideAllMainViews();
+    setActiveNavBtn(btnTabVerification);
     verificationView.classList.remove("hidden");
-    predictorView.classList.add("hidden");
-    squadAnalysisView.classList.add("hidden");
-    document.getElementById("squad-analysis-placeholder").classList.add("hidden");
-    settingsView.classList.add("hidden");
-    
-    // Execute live backtest dynamically
     initVerificationTab();
   });
 
   btnTabSettings.addEventListener("click", () => {
-    btnTabSettings.classList.add("active");
-    btnTabPredictor.classList.remove("active");
-    btnTabSquad.classList.remove("active");
-    btnTabVerification.classList.remove("active");
+    hideAllMainViews();
+    setActiveNavBtn(btnTabSettings);
     settingsView.classList.remove("hidden");
-    predictorView.classList.add("hidden");
-    squadAnalysisView.classList.add("hidden");
-    document.getElementById("squad-analysis-placeholder").classList.add("hidden");
-    verificationView.classList.add("hidden");
-    
     updateSettingsPanel();
   });
+
+  btnBackFixtures.addEventListener("click", () => {
+    subnavPrediction.classList.add("active");
+    subnavSquad.classList.remove("active");
+    panePrediction.classList.remove("hidden");
+    paneSquad.classList.add("hidden");
+    lineupState.currentFixtureLineup = null;
+    showFixturesMain();
+  });
+
+  subnavPrediction.addEventListener("click", () => {
+    subnavPrediction.classList.add("active");
+    subnavSquad.classList.remove("active");
+    panePrediction.classList.remove("hidden");
+    paneSquad.classList.add("hidden");
+    renderSquadAnalysis();
+  });
+
+  subnavSquad.addEventListener("click", () => {
+    subnavSquad.classList.add("active");
+    subnavPrediction.classList.remove("active");
+    paneSquad.classList.remove("hidden");
+    panePrediction.classList.add("hidden");
+    renderSquadAnalysis();
+  });
+
+  function renderFixturesList() {
+    const container = document.getElementById("fixtures-list-container");
+    if (!container) return;
+    container.innerHTML = "";
+
+    const upcoming = getUpcomingFixtures();
+    const completed = getCompletedFixtures();
+
+    const allFixtures = [...upcoming, ...completed].sort((a, b) => new Date(a.kickoff_utc) - new Date(b.kickoff_utc));
+
+    if (allFixtures.length === 0) {
+      container.innerHTML = `<div style="font-family: var(--font-data); font-size: 11px; color: var(--text-muted); padding: 12px;">NO FIXTURES AVAILABLE.</div>`;
+      return;
+    }
+
+    allFixtures.forEach(fixture => {
+      const row = document.createElement("div");
+      row.className = "fixture-row";
+      
+      const isCompleted = fixture.result && fixture.result.ft;
+      const kickoffDate = new Date(fixture.kickoff_utc);
+      const formattedDate = kickoffDate.toLocaleDateString([], { month: 'short', day: 'numeric' });
+      const formattedTime = kickoffDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      let scoreDisplay = "VS";
+      let statusClass = "status-upcoming";
+      let statusText = "UPCOMING";
+
+      if (isCompleted) {
+        scoreDisplay = `${fixture.result.ft[0]} — ${fixture.result.ft[1]}`;
+        statusClass = "status-completed";
+        statusText = "COMPLETED";
+      }
+
+      row.innerHTML = `
+        <span class="fixture-date">${formattedDate} · ${formattedTime}</span>
+        <div class="fixture-teams">
+          <span class="fixture-team-name home-name">${fixture.home_team}</span>
+          <span class="fixture-score">${scoreDisplay}</span>
+          <span class="fixture-team-name away-name">${fixture.away_team}</span>
+        </div>
+        <span class="fixture-status ${statusClass}">${statusText}</span>
+      `;
+
+      row.addEventListener("click", () => {
+        const homeTeamObj = TEAMS.find(t => t.name.toLowerCase() === fixture.home_team.toLowerCase() || normalizeName(t.name).toLowerCase() === normalizeName(fixture.home_team).toLowerCase());
+        const awayTeamObj = TEAMS.find(t => t.name.toLowerCase() === fixture.away_team.toLowerCase() || normalizeName(t.name).toLowerCase() === normalizeName(fixture.away_team).toLowerCase());
+
+        if (!homeTeamObj || !awayTeamObj) {
+          console.warn(`One or both teams (${fixture.home_team} vs ${fixture.away_team}) not found in the prediction system database.`);
+          return;
+        }
+
+        teamASelect.value = homeTeamObj.id;
+        teamBSelect.value = awayTeamObj.id;
+        squadTeamASelect.value = homeTeamObj.id;
+        squadTeamBSelect.value = awayTeamObj.id;
+
+        document.getElementById("match-detail-title").textContent = `${fixture.home_team} vs ${fixture.away_team} · ${formattedDate}`;
+
+        const matchLineup = getLineup(fixture.match_id);
+        lineupState.currentFixtureLineup = matchLineup;
+        lineupState.modified = false;
+
+        hideAllMainViews();
+        matchDetailView.classList.remove("hidden");
+        
+        runLoadingSequence(() => {
+          updateDashboard();
+        });
+      });
+
+      container.appendChild(row);
+    });
+  }
 
   // Backtest filter buttons click event listeners
   const filterAll = document.getElementById("filter-all");
@@ -992,8 +1111,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const teamAId = squadTeamASelect.value;
     const teamBId = squadTeamBSelect.value;
 
-    const btnTabSquad = document.getElementById("btn-tab-squad");
-    const isSquadTabActive = btnTabSquad && btnTabSquad.classList.contains("active");
+    const subnavSquad = document.getElementById("subnav-squad");
+    const isSquadTabActive = subnavSquad && subnavSquad.classList.contains("active");
 
     if (!teamAId || !teamBId) {
       document.getElementById("squad-analysis-view").classList.add("hidden");
@@ -2439,6 +2558,194 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 
+  // Schedule View Rendering
+  async function renderScheduleTab() {
+    const upcomingList = document.getElementById("upcoming-list");
+    const completedList = document.getElementById("completed-list");
+    if (!upcomingList || !completedList) return;
+
+    upcomingList.innerHTML = "";
+    completedList.innerHTML = "";
+
+    const upcoming = getUpcomingFixtures();
+    const completed = getCompletedFixtures();
+
+    if (upcoming.length === 0) {
+      upcomingList.innerHTML = `<div style="font-family: var(--font-data); font-size: 11px; color: var(--text-muted); padding: 12px;">NO UPCOMING FIXTURES PLANNED.</div>`;
+    } else {
+      // Group upcoming by stage
+      const sortedUpcoming = [...upcoming].sort((a, b) => new Date(a.kickoff_utc) - new Date(b.kickoff_utc));
+      
+      const stages = {};
+      sortedUpcoming.forEach(f => {
+        const stage = f.stage || "GROUP STAGE";
+        if (!stages[stage]) stages[stage] = [];
+        stages[stage].push(f);
+      });
+
+      Object.keys(stages).forEach(stage => {
+        const stageHeader = document.createElement("div");
+        stageHeader.style.gridColumn = "1 / -1";
+        stageHeader.style.fontFamily = "var(--font-display)";
+        stageHeader.style.fontSize = "10px";
+        stageHeader.style.letterSpacing = "0.1em";
+        stageHeader.style.color = "var(--text-secondary)";
+        stageHeader.style.borderBottom = "1px solid #1a1a1a";
+        stageHeader.style.padding = "12px 0 6px 0";
+        stageHeader.style.textTransform = "uppercase";
+        stageHeader.textContent = `[STAGE: ${stage}]`;
+        upcomingList.appendChild(stageHeader);
+
+        stages[stage].forEach(fixture => {
+          const card = document.createElement("div");
+          card.className = "schedule-card";
+          card.style.border = "1px solid var(--border-color)";
+          card.style.backgroundColor = "var(--bg-secondary)";
+          card.style.padding = "12px";
+          card.style.display = "flex";
+          card.style.flexDirection = "column";
+          card.style.gap = "8px";
+          card.style.fontFamily = "var(--font-data)";
+
+          const localTimeStr = new Date(fixture.kickoff_utc).toLocaleString([], {
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+          });
+
+          card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); border-bottom: 1px solid #111; padding-bottom: 4px; text-transform: uppercase;">
+              <span>${fixture.match_id ? 'ID: ' + fixture.match_id.substring(0, 8) : ''}</span>
+              <span>${localTimeStr}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: bold; margin: 4px 0;">
+              <span style="flex: 1; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${fixture.home_team}</span>
+              <span style="margin: 0 12px; font-size: 9px; color: var(--text-muted); font-weight: normal;">VS</span>
+              <span style="flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${fixture.away_team}</span>
+            </div>
+            <div style="font-size: 9px; color: var(--text-muted); text-align: center; margin-bottom: 4px; text-transform: uppercase;">
+              📍 ${fixture.venue || 'TBD Venue'}
+            </div>
+            <button class="predict-btn btn-predict" style="font-size: 9px; padding: 6px 12px; cursor: pointer; text-transform: uppercase; width: 100%;">
+              Predict Match ↗
+            </button>
+            <div class="prediction-inline-result hidden" style="border-top: 1px dashed #202020; padding-top: 8px; margin-top: 4px; font-size: 10px; line-height: 1.4; color: var(--text-secondary);">
+              <!-- Inline prediction results -->
+            </div>
+          `;
+
+          const predictBtn = card.querySelector(".predict-btn");
+          const resultDiv = card.querySelector(".prediction-inline-result");
+
+          predictBtn.addEventListener("click", async () => {
+            const homeTeamObj = TEAMS.find(t => t.name.toLowerCase() === fixture.home_team.toLowerCase() || normalizeName(t.name).toLowerCase() === normalizeName(fixture.home_team).toLowerCase());
+            const awayTeamObj = TEAMS.find(t => t.name.toLowerCase() === fixture.away_team.toLowerCase() || normalizeName(t.name).toLowerCase() === normalizeName(fixture.away_team).toLowerCase());
+
+            if (!homeTeamObj || !awayTeamObj) {
+              resultDiv.innerHTML = `<span style="color: var(--accent-red); font-weight: bold;">&gt; PREDICTION UNAVAILABLE: Teams not found in system</span>`;
+              resultDiv.classList.remove("hidden");
+              return;
+            }
+
+            try {
+              predictBtn.disabled = true;
+              predictBtn.textContent = "[COMPUTING MODEL...]";
+              
+              const { enrichedA, enrichedB } = await enrichMatchup(homeTeamObj, awayTeamObj);
+              const options = {
+                staleData: !(enrichedA.hasLiveData || enrichedB.hasLiveData),
+                injureKeyA: false,
+                injureKeyB: false,
+                stage: fixture.stage || "Group"
+              };
+
+              const results = runPrediction(enrichedA, enrichedB, options);
+              
+              const newLambdaA = getLambdaOverride(enrichedA, results.P_dynamic_A, enrichedA.isHome);
+              const newLambdaB = getLambdaOverride(enrichedB, results.P_dynamic_B, enrichedB.isHome);
+              if (newLambdaA !== results.lambda_A || newLambdaB !== results.lambda_B) {
+                results.lambda_A = newLambdaA;
+                results.lambda_B = newLambdaB;
+                const recomputed = recomputeScorelines(newLambdaA, newLambdaB);
+                results.top5 = recomputed.top5;
+                results.mostLikelyScoreline = recomputed.mostLikelyScoreline;
+              }
+
+              resultDiv.innerHTML = `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-family: var(--font-display); font-weight: bold;">
+                  <span style="color: var(--accent-green);">${homeTeamObj.name}: ${results.winA_pct.toFixed(1)}%</span>
+                  <span style="color: var(--accent-gray);">Draw: ${results.draw_pct.toFixed(1)}%</span>
+                  <span style="color: var(--text-primary);">${awayTeamObj.name}: ${results.winB_pct.toFixed(1)}%</span>
+                </div>
+                <div style="text-align: center; font-weight: bold; color: var(--accent-blue); border-top: 1px solid #151515; padding-top: 4px; margin-top: 4px;">
+                  PROJECTED SCORELINE: ${results.mostLikelyScoreline}
+                </div>
+                <div style="font-size: 8px; color: var(--text-muted); text-align: center; margin-top: 2px;">
+                  CONFIDENCE: ${results.confidence}/100 — ${results.confidenceBand}
+                </div>
+              `;
+              resultDiv.classList.remove("hidden");
+            } catch (err) {
+              console.error("Prediction failed:", err);
+              resultDiv.innerHTML = `<span style="color: var(--accent-red); font-weight: bold;">&gt; ERROR: Prediction calculation failed</span>`;
+              resultDiv.classList.remove("hidden");
+            } finally {
+              predictBtn.disabled = false;
+              predictBtn.textContent = "Predict Match ↗";
+            }
+          });
+
+          upcomingList.appendChild(card);
+        });
+      });
+    }
+
+    if (completed.length === 0) {
+      completedList.innerHTML = `<div style="font-family: var(--font-data); font-size: 11px; color: var(--text-muted); padding: 12px;">NO COMPLETED MATCH RESULTS FOUND.</div>`;
+    } else {
+      const sortedCompleted = [...completed].sort((a, b) => new Date(b.kickoff_utc) - new Date(a.kickoff_utc));
+
+      sortedCompleted.forEach(fixture => {
+        const card = document.createElement("div");
+        card.style.border = "1px solid var(--border-color)";
+        card.style.backgroundColor = "var(--bg-secondary)";
+        card.style.padding = "12px";
+        card.style.display = "flex";
+        card.style.flexDirection = "column";
+        card.style.gap = "6px";
+        card.style.fontFamily = "var(--font-data)";
+
+        const localTimeStr = new Date(fixture.kickoff_utc).toLocaleString([], {
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+
+        card.innerHTML = `
+          <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); border-bottom: 1px solid #111; padding-bottom: 4px; text-transform: uppercase;">
+            <span>${fixture.stage}</span>
+            <span>${localTimeStr}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin: 4px 0;">
+            <span style="flex: 1; text-align: right; font-weight: ${fixture.result.ft[0] > fixture.result.ft[1] ? 'bold' : 'normal'}; color: ${fixture.result.ft[0] > fixture.result.ft[1] ? 'var(--text-primary)' : 'var(--text-secondary)'};">${fixture.home_team}</span>
+            <span style="margin: 0 10px; font-family: var(--font-display); font-size: 13px; font-weight: bold; color: var(--accent-green); background: #000; padding: 2px 8px; border: 1px solid #222;">
+              ${fixture.result.ft[0]} - ${fixture.result.ft[1]}
+            </span>
+            <span style="flex: 1; text-align: left; font-weight: ${fixture.result.ft[1] > fixture.result.ft[0] ? 'bold' : 'normal'}; color: ${fixture.result.ft[1] > fixture.result.ft[0] ? 'var(--text-primary)' : 'var(--text-secondary)'};">${fixture.away_team}</span>
+          </div>
+          <div style="font-size: 8px; color: var(--text-muted); text-align: center;">
+            FINAL SCORE (FT) ${fixture.result.ht ? `· HT: ${fixture.result.ht[0]}-${fixture.result.ht[1]}` : ''}
+          </div>
+        `;
+
+        completedList.appendChild(card);
+      });
+    }
+  }
+
+
   // System Info Modal Listeners
   const btnSystemInfo = document.getElementById('btn-system-info');
   const systemInfoModal = document.getElementById('system-info-modal');
@@ -2477,4 +2784,5 @@ document.addEventListener("DOMContentLoaded", () => {
   updateResolvedFixture();
   renderPreMatchFlags();
   syncLocalWithServerCache();
+  showFixturesMain();
 });
