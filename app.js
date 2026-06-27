@@ -11,9 +11,375 @@ import { getTeamForm, getTeamSquad, getTopScorers, getTeamCleanSheets } from './
 
 
 
+const TACTICAL_ICONS = {
+  empty: `<svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><circle cx="5" cy="5" r="4" fill="none" stroke="currentColor" stroke-width="1"/></svg>`,
+  active: `<svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><circle cx="5" cy="5" r="4" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="5" cy="5" r="1.8" fill="currentColor"/></svg>`,
+  selected: `<svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><circle cx="5" cy="5" r="4" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="5" cy="5" r="2.5" fill="none" stroke="currentColor" stroke-dasharray="1.5 1" stroke-width="0.8"/><circle cx="5" cy="5" r="1" fill="currentColor"/></svg>`,
+  captain: `<svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><circle cx="5" cy="5" r="4" fill="none" stroke="currentColor" stroke-width="1"/><line x1="5" y1="2.5" x2="5" y2="7.5" stroke="currentColor" stroke-width="1"/><line x1="2.5" y1="5" x2="7.5" y2="5" stroke="currentColor" stroke-width="1"/></svg>`,
+  warning: `<svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><polygon points="5,2 8.5,8 1.5,8" fill="none" stroke="currentColor" stroke-width="1"/></svg>`,
+  locked: `<svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><rect x="2" y="2" width="6" height="6" fill="none" stroke="currentColor" stroke-width="1"/><rect x="4" y="4" width="2" height="2" fill="currentColor"/></svg>`,
+  loading: `<svg class="tactical-icon spin" viewBox="0 0 10 10" width="10" height="10"><circle cx="5" cy="5" r="4" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="6 4"/></svg>`,
+  intelligence: `<svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><polygon points="5,1.5 8.5,5 5,8.5 1.5,5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg>`,
+  simulation: `<svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><polyline points="1.5,5 3,5 4,2 6,8 7,5 8.5,5" fill="none" stroke="currentColor" stroke-width="1"/></svg>`
+};
+
 document.addEventListener("DOMContentLoaded", () => {
+  const FORMATIONS = {
+    "4-3-3": {
+      label: "4-3-3",
+      slots: [
+        { pos: "GK", x: 100, y: 15 },
+        { pos: "DF", x: 22,  y: 48 },
+        { pos: "DF", x: 68,  y: 48 },
+        { pos: "DF", x: 132, y: 48 },
+        { pos: "DF", x: 178, y: 48 },
+        { pos: "MF", x: 44,  y: 88 },
+        { pos: "MF", x: 100, y: 88 },
+        { pos: "MF", x: 156, y: 88 },
+        { pos: "FW", x: 28,  y: 125 },
+        { pos: "FW", x: 100, y: 125 },
+        { pos: "FW", x: 172, y: 125 },
+      ]
+    },
+    "4-2-3-1": {
+      label: "4-2-3-1",
+      slots: [
+        { pos: "GK", x: 100, y: 15 },
+        { pos: "DF", x: 22,  y: 48 },
+        { pos: "DF", x: 68,  y: 48 },
+        { pos: "DF", x: 132, y: 48 },
+        { pos: "DF", x: 178, y: 48 },
+        { pos: "MF", x: 65,  y: 78 },
+        { pos: "MF", x: 135, y: 78 },
+        { pos: "MF", x: 28,  y: 98 },
+        { pos: "MF", x: 100, y: 98 },
+        { pos: "MF", x: 172, y: 98 },
+        { pos: "FW", x: 100, y: 125 },
+      ]
+    },
+    "4-4-2": {
+      label: "4-4-2",
+      slots: [
+        { pos: "GK", x: 100, y: 15 },
+        { pos: "DF", x: 22,  y: 48 },
+        { pos: "DF", x: 68,  y: 48 },
+        { pos: "DF", x: 132, y: 48 },
+        { pos: "DF", x: 178, y: 48 },
+        { pos: "MF", x: 28,  y: 88 },
+        { pos: "MF", x: 76,  y: 88 },
+        { pos: "MF", x: 124, y: 88 },
+        { pos: "MF", x: 172, y: 88 },
+        { pos: "FW", x: 65,  y: 125 },
+        { pos: "FW", x: 135, y: 125 },
+      ]
+    },
+    "3-5-2": {
+      label: "3-5-2",
+      slots: [
+        { pos: "GK", x: 100, y: 15 },
+        { pos: "DF", x: 44,  y: 48 },
+        { pos: "DF", x: 100, y: 48 },
+        { pos: "DF", x: 156, y: 48 },
+        { pos: "MF", x: 16,  y: 88 },
+        { pos: "MF", x: 58,  y: 88 },
+        { pos: "MF", x: 100, y: 88 },
+        { pos: "MF", x: 142, y: 88 },
+        { pos: "MF", x: 184, y: 88 },
+        { pos: "FW", x: 65,  y: 125 },
+        { pos: "FW", x: 135, y: 125 },
+      ]
+    },
+    "3-4-3": {
+      label: "3-4-3",
+      slots: [
+        { pos: "GK", x: 100, y: 15 },
+        { pos: "DF", x: 44,  y: 48 },
+        { pos: "DF", x: 100, y: 48 },
+        { pos: "DF", x: 156, y: 48 },
+        { pos: "MF", x: 28,  y: 88 },
+        { pos: "MF", x: 76,  y: 88 },
+        { pos: "MF", x: 124, y: 88 },
+        { pos: "MF", x: 172, y: 88 },
+        { pos: "FW", x: 28,  y: 125 },
+        { pos: "FW", x: 100, y: 125 },
+        { pos: "FW", x: 172, y: 125 },
+      ]
+    },
+    "5-3-2": {
+      label: "5-3-2",
+      slots: [
+        { pos: "GK", x: 100, y: 15 },
+        { pos: "DF", x: 16,  y: 48 },
+        { pos: "DF", x: 58,  y: 48 },
+        { pos: "DF", x: 100, y: 48 },
+        { pos: "DF", x: 142, y: 48 },
+        { pos: "DF", x: 184, y: 48 },
+        { pos: "MF", x: 44,  y: 88 },
+        { pos: "MF", x: 100, y: 88 },
+        { pos: "MF", x: 156, y: 88 },
+        { pos: "FW", x: 65,  y: 125 },
+        { pos: "FW", x: 135, y: 125 },
+      ]
+    },
+    "4-5-1": {
+      label: "4-5-1",
+      slots: [
+        { pos: "GK", x: 100, y: 15 },
+        { pos: "DF", x: 22,  y: 48 },
+        { pos: "DF", x: 68,  y: 48 },
+        { pos: "DF", x: 132, y: 48 },
+        { pos: "DF", x: 178, y: 48 },
+        { pos: "MF", x: 16,  y: 88 },
+        { pos: "MF", x: 58,  y: 88 },
+        { pos: "MF", x: 100, y: 88 },
+        { pos: "MF", x: 142, y: 88 },
+        { pos: "MF", x: 184, y: 88 },
+        { pos: "FW", x: 100, y: 125 },
+      ]
+    }
+  };
+
+  let lineupState = {
+    teamA: {
+      code: '',
+      formation: '4-3-3',
+      players: [],
+      starters: [],
+      bench: []
+    },
+    teamB: {
+      code: '',
+      formation: '4-3-3',
+      players: [],
+      starters: [],
+      bench: []
+    },
+    modified: false,
+    selectedPlayer: null
+  };
+
+  function initializeLineupState(teamCode, rawSquad, teamKey) {
+    const players = rawSquad.map(p => ({
+      ...p,
+      isStarter: p.starter !== undefined ? p.starter : false
+    }));
+    lineupState[teamKey] = {
+      code: teamCode,
+      formation: lineupState[teamKey].formation || '4-3-3',
+      players: players,
+      starters: players.filter(p => p.isStarter),
+      bench: players.filter(p => !p.isStarter)
+    };
+    adjustStartersForFormation(lineupState[teamKey], lineupState[teamKey].formation);
+  }
+
+  function adjustStartersForFormation(teamState, targetFormation) {
+    const formation = FORMATIONS[targetFormation];
+    if (!formation) return;
+
+    teamState.formation = targetFormation;
+
+    const gkSlots = formation.slots.filter(s => s.pos === "GK");
+    const dfSlots = formation.slots.filter(s => s.pos === "DF");
+    const mfSlots = formation.slots.filter(s => s.pos === "MF");
+    const fwSlots = formation.slots.filter(s => s.pos === "FW");
+
+    const requiredGK = gkSlots.length;
+    const requiredDF = dfSlots.length;
+    const requiredMF = mfSlots.length;
+    const requiredFW = fwSlots.length;
+
+    function adjustPositionGroup(posGroup, requiredCount) {
+      const currentStarters = teamState.players.filter(p => p.isStarter && p.posGroup === posGroup);
+      
+      if (currentStarters.length < requiredCount) {
+        const needed = requiredCount - currentStarters.length;
+        const benchPlayers = teamState.players.filter(p => !p.isStarter && p.posGroup === posGroup);
+        benchPlayers.sort((a, b) => a.number - b.number);
+        
+        for (let i = 0; i < Math.min(needed, benchPlayers.length); i++) {
+          benchPlayers[i].isStarter = true;
+        }
+      } else if (currentStarters.length > requiredCount) {
+        const extra = currentStarters.length - requiredCount;
+        currentStarters.sort((a, b) => b.number - a.number);
+        
+        for (let i = 0; i < Math.min(extra, currentStarters.length); i++) {
+          currentStarters[i].isStarter = false;
+        }
+      }
+    }
+
+    adjustPositionGroup("GOALKEEPERS", requiredGK);
+    adjustPositionGroup("DEFENDERS", requiredDF);
+    adjustPositionGroup("MIDFIELDERS", requiredMF);
+    adjustPositionGroup("FORWARDS", requiredFW);
+
+    teamState.starters = teamState.players.filter(p => p.isStarter);
+    teamState.bench = teamState.players.filter(p => !p.isStarter);
+  }
+
+  function getStartersCoords(starters, formationKey, isTeamB) {
+    const formation = FORMATIONS[formationKey];
+    if (!formation) return new Map();
+
+    const gkSlots = formation.slots.filter(s => s.pos === "GK");
+    const dfSlots = formation.slots.filter(s => s.pos === "DF");
+    const mfSlots = formation.slots.filter(s => s.pos === "MF");
+    const fwSlots = formation.slots.filter(s => s.pos === "FW");
+
+    gkSlots.sort((a, b) => a.x - b.x);
+    dfSlots.sort((a, b) => a.x - b.x);
+    mfSlots.sort((a, b) => a.x - b.x);
+    fwSlots.sort((a, b) => a.x - b.x);
+
+    const gks = starters.filter(p => p.posGroup === 'GOALKEEPERS');
+    const dfs = starters.filter(p => p.posGroup === 'DEFENDERS');
+    const mfs = starters.filter(p => p.posGroup === 'MIDFIELDERS');
+    const fws = starters.filter(p => p.posGroup === 'FORWARDS');
+
+    const coords = new Map();
+
+    gks.forEach((p, idx) => {
+      const slot = gkSlots[idx] || gkSlots[0];
+      if (slot) {
+        coords.set(p.name, {
+          x: slot.x,
+          y: isTeamB ? (295 - slot.y) : slot.y
+        });
+      }
+    });
+
+    dfs.forEach((p, idx) => {
+      const slot = dfSlots[idx] || dfSlots[0];
+      if (slot) {
+        coords.set(p.name, {
+          x: slot.x,
+          y: isTeamB ? (295 - slot.y) : slot.y
+        });
+      }
+    });
+
+    mfs.forEach((p, idx) => {
+      const slot = mfSlots[idx] || mfSlots[0];
+      if (slot) {
+        coords.set(p.name, {
+          x: slot.x,
+          y: isTeamB ? (295 - slot.y) : slot.y
+        });
+      }
+    });
+
+    fws.forEach((p, idx) => {
+      const slot = fwSlots[idx] || fwSlots[0];
+      if (slot) {
+        coords.set(p.name, {
+          x: slot.x,
+          y: isTeamB ? (295 - slot.y) : slot.y
+        });
+      }
+    });
+
+    return coords;
+  }
+
+  function selectPlayer(player, teamSide, rowElement) {
+    clearPlayerSelection();
+
+    lineupState.selectedPlayer = {
+      teamSide,
+      name: player.name,
+      number: player.number,
+      pos: player.pos,
+      posGroup: player.posGroup,
+      isStarter: player.isStarter,
+      element: rowElement
+    };
+
+    rowElement.classList.add("selected");
+    const teamColor = teamSide === 'a' ? '#22c55e' : '#3b82f6';
+    const bgColor = teamSide === 'a' ? '#0a1a0a' : '#080d14';
+    rowElement.style.background = bgColor;
+    rowElement.style.borderLeft = `2px solid ${teamColor}`;
+    rowElement.style.color = teamColor;
+
+    // Trigger pitch redraw to display selection ring
+    renderSquadAnalysis();
+
+    // Highlight candidates
+    const team = lineupState[teamSide === 'a' ? 'teamA' : 'teamB'];
+    const candidates = team.players.filter(p => p.isStarter !== player.isStarter && p.posGroup === player.posGroup);
+
+    candidates.forEach(c => {
+      const candidateRow = findRowElement(c.name, teamSide);
+      if (candidateRow) {
+        candidateRow.classList.add("swap-candidate");
+        candidateRow.style.borderLeft = "2px solid #f59e0b44";
+        candidateRow.style.color = "#f59e0b";
+        
+        if (!candidateRow.querySelector(".swap-label")) {
+          const swapLabel = document.createElement("span");
+          swapLabel.className = "swap-label";
+          swapLabel.style.cssText = "font-size: 8px; color: #f59e0b; margin-left: auto; padding-left: 6px;";
+          swapLabel.textContent = "[SWAP]";
+          candidateRow.appendChild(swapLabel);
+        }
+      }
+    });
+  }
+
+  function clearPlayerSelection() {
+    if (!lineupState.selectedPlayer) return;
+
+    document.querySelectorAll(".squad-player-row").forEach(row => {
+      row.classList.remove("selected", "swap-candidate");
+      row.style.background = "";
+      row.style.borderLeft = "";
+      row.style.color = "";
+      const swapLabel = row.querySelector(".swap-label");
+      if (swapLabel) swapLabel.remove();
+    });
+
+    lineupState.selectedPlayer = null;
+    renderSquadAnalysis();
+  }
+
+  function swapPlayers(p1Name, p2Name, teamSide) {
+    const team = lineupState[teamSide === 'a' ? 'teamA' : 'teamB'];
+    const player1 = team.players.find(p => p.name === p1Name);
+    const player2 = team.players.find(p => p.name === p2Name);
+
+    if (player1 && player2) {
+      const tempIsStarter = player1.isStarter;
+      player1.isStarter = player2.isStarter;
+      player2.isStarter = tempIsStarter;
+
+      team.starters = team.players.filter(p => p.isStarter);
+      team.bench = team.players.filter(p => !p.isStarter);
+
+      lineupState.modified = true;
+      clearPlayerSelection();
+    }
+  }
+
+  function resetTeamLineup(teamState) {
+    teamState.players.sort((a, b) => a.number - b.number);
+    teamState.players.forEach((p, idx) => {
+      p.isStarter = idx < 11;
+    });
+    teamState.starters = teamState.players.filter(p => p.isStarter);
+    teamState.bench = teamState.players.filter(p => !p.isStarter);
+    teamState.formation = '4-3-3';
+  }
+
+  function findRowElement(playerName, side) {
+    return document.querySelector(`.squad-player-row[data-player-name="${playerName}"][data-team-side="${side}"]`);
+  }
+
+
   const teamASelect = document.getElementById("team-a-select");
   const teamBSelect = document.getElementById("team-b-select");
+
   const squadTeamASelect = document.getElementById("squad-team-a-select");
   const squadTeamBSelect = document.getElementById("squad-team-b-select");
   const squadAnalysisPlaceholder = document.getElementById("squad-analysis-placeholder");
@@ -486,6 +852,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btnTabSettings.classList.remove("active");
     predictorView.classList.remove("hidden");
     squadAnalysisView.classList.add("hidden");
+    document.getElementById("squad-analysis-placeholder").classList.add("hidden");
     verificationView.classList.add("hidden");
     settingsView.classList.add("hidden");
   });
@@ -512,6 +879,7 @@ document.addEventListener("DOMContentLoaded", () => {
     verificationView.classList.remove("hidden");
     predictorView.classList.add("hidden");
     squadAnalysisView.classList.add("hidden");
+    document.getElementById("squad-analysis-placeholder").classList.add("hidden");
     settingsView.classList.add("hidden");
     
     // Execute live backtest dynamically
@@ -526,6 +894,7 @@ document.addEventListener("DOMContentLoaded", () => {
     settingsView.classList.remove("hidden");
     predictorView.classList.add("hidden");
     squadAnalysisView.classList.add("hidden");
+    document.getElementById("squad-analysis-placeholder").classList.add("hidden");
     verificationView.classList.add("hidden");
     
     updateSettingsPanel();
@@ -604,7 +973,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function getSortedStarters(squad) {
-    const starters = squad.filter(p => p.starter);
+    const starters = squad.filter(p => p.isStarter !== undefined ? p.isStarter : p.starter);
     
     const gks = starters.filter(p => p.posGroup === 'GOALKEEPERS');
     const dfs = starters.filter(p => p.posGroup === 'DEFENDERS');
@@ -623,18 +992,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const teamAId = squadTeamASelect.value;
     const teamBId = squadTeamBSelect.value;
 
+    const btnTabSquad = document.getElementById("btn-tab-squad");
+    const isSquadTabActive = btnTabSquad && btnTabSquad.classList.contains("active");
+
     if (!teamAId || !teamBId) {
       document.getElementById("squad-analysis-view").classList.add("hidden");
-      document.getElementById("squad-analysis-placeholder").classList.remove("hidden");
+      if (isSquadTabActive) {
+        document.getElementById("squad-analysis-placeholder").classList.remove("hidden");
+      } else {
+        document.getElementById("squad-analysis-placeholder").classList.add("hidden");
+      }
       return;
     }
 
-    document.getElementById("squad-analysis-placeholder").classList.add("hidden");
-    document.getElementById("squad-analysis-view").classList.remove("hidden");
+    if (isSquadTabActive) {
+      document.getElementById("squad-analysis-placeholder").classList.add("hidden");
+      document.getElementById("squad-analysis-view").classList.remove("hidden");
+    } else {
+      document.getElementById("squad-analysis-placeholder").classList.add("hidden");
+      document.getElementById("squad-analysis-view").classList.add("hidden");
+    }
 
-    // Load squads
-    const squadA = await getTeamSquad(teamAId);
-    const squadB = await getTeamSquad(teamBId);
+    // Load squads if code changed
+    if (lineupState.teamA.code !== teamAId) {
+      const squadA = await getTeamSquad(teamAId);
+      initializeLineupState(teamAId, squadA, 'teamA');
+    }
+    if (lineupState.teamB.code !== teamBId) {
+      const squadB = await getTeamSquad(teamBId);
+      initializeLineupState(teamBId, squadB, 'teamB');
+    }
 
     // Get clean sheets
     const cleanSheetsA = await getTeamCleanSheets(teamAId);
@@ -648,11 +1035,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Render components
     renderGoldenBootBar(topScorersList, teamAId, teamBId);
-    renderSingleTeamSquad(teamAId, squadA, 'a');
-    renderSingleTeamSquad(teamBId, squadB, 'b');
-    renderPitchSVG(squadA, squadB, teamAId, teamBId, topScorerA, topScorerB);
+    renderSingleTeamSquad(teamAId, lineupState.teamA.players, 'a');
+    renderSingleTeamSquad(teamBId, lineupState.teamB.players, 'b');
+    renderPitchSVG(lineupState.teamA.players, lineupState.teamB.players, teamAId, teamBId, topScorerA, topScorerB);
     await renderAwardsBar(teamAId, teamBId, topScorerA, topScorerB, cleanSheetsA, cleanSheetsB);
+
+    // Show/hide modified banner
+    const banner = document.getElementById("lineup-modified-banner");
+    if (banner) {
+      if (lineupState.modified) {
+        banner.classList.remove("hidden");
+      } else {
+        banner.classList.add("hidden");
+      }
+    }
+
+    // Update active formation button styling
+    const formationSelector = document.getElementById("formation-selector");
+    if (formationSelector) {
+      const activeFormation = lineupState.teamA.formation || "4-3-3";
+      formationSelector.querySelectorAll(".formation-btn").forEach(btn => {
+        if (btn.dataset.formation === activeFormation) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+    }
   }
+
 
   function renderGoldenBootBar(scorers, teamACode, teamBCode) {
     const container = document.getElementById("golden-boot-chips-container");
@@ -705,7 +1116,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const team = TEAMS.find(t => t.id === teamCode) || {};
     const teamName = team.name || teamCode;
-    const formation = side === 'a' ? "4-2-3-1" : "4-3-3";
+    const formation = side === 'a' ? lineupState.teamA.formation : lineupState.teamB.formation;
 
     const headerDiv = document.createElement("div");
     headerDiv.className = "squad-panel-header";
@@ -716,12 +1127,41 @@ document.addEventListener("DOMContentLoaded", () => {
         <span style="font-family: var(--font-display); font-size: 11px; font-weight: bold; color: var(--text-primary); text-transform: uppercase;">${team.flag || ''} ${teamName}</span>
         <span style="font-family: var(--font-label); font-size: 9px; color: #444;">${teamCode}</span>
       </div>
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <span style="font-size: 9px; color: #666; font-family: var(--font-label);">${formation}</span>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+        <div style="display: flex; align-items: center; gap: 4px;">
+          <span style="font-size: 8px; color: var(--text-secondary); font-family: var(--font-label); text-transform: uppercase;">◈ FORMATION:</span>
+          <select class="terminal-select squad-formation-select" data-side="${side}" style="padding: 2px 4px; font-size: 9px; height: auto; font-family: var(--font-data); background: #000; border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer;">
+            <option value="4-3-3" ${formation === '4-3-3' ? 'selected' : ''}>${formation === '4-3-3' ? '▣' : '○'} 4-3-3</option>
+            <option value="4-2-3-1" ${formation === '4-2-3-1' ? 'selected' : ''}>${formation === '4-2-3-1' ? '▣' : '○'} 4-2-3-1</option>
+            <option value="4-4-2" ${formation === '4-4-2' ? 'selected' : ''}>${formation === '4-4-2' ? '▣' : '○'} 4-4-2</option>
+            <option value="3-5-2" ${formation === '3-5-2' ? 'selected' : ''}>${formation === '3-5-2' ? '▣' : '○'} 3-5-2</option>
+            <option value="3-4-3" ${formation === '3-4-3' ? 'selected' : ''}>${formation === '3-4-3' ? '▣' : '○'} 3-4-3</option>
+            <option value="5-3-2" ${formation === '5-3-2' ? 'selected' : ''}>${formation === '5-3-2' ? '▣' : '○'} 5-3-2</option>
+            <option value="4-5-1" ${formation === '4-5-1' ? 'selected' : ''}>${formation === '4-5-1' ? '▣' : '○'} 4-5-1</option>
+          </select>
+        </div>
         <span style="font-size: 8px; color: #444; font-family: var(--font-label); text-transform: uppercase;">${team.confederation || ''}</span>
       </div>
     `;
     container.appendChild(headerDiv);
+
+    // Add starting XI section header symbol (Requirement 2 & 3)
+    const startingHeader = document.createElement("div");
+    startingHeader.className = "tactical-divider";
+    startingHeader.innerHTML = `${TACTICAL_ICONS.empty} STARTING XI`;
+    container.appendChild(startingHeader);
+
+    // Modified Section: 1. Independent formations, 2. Separate formation controls
+    const selectEl = headerDiv.querySelector(".squad-formation-select");
+    if (selectEl) {
+      selectEl.addEventListener("change", (e) => {
+        const selectedFormation = e.target.value;
+        const teamKey = side === 'a' ? 'teamA' : 'teamB';
+        adjustStartersForFormation(lineupState[teamKey], selectedFormation);
+        lineupState.modified = true;
+        renderSquadAnalysis();
+      });
+    }
 
     const posGroups = ["GOALKEEPERS", "DEFENDERS", "MIDFIELDERS", "FORWARDS"];
     const grouped = {
@@ -739,180 +1179,384 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    // Modified Section: 5. Reduce player list height (collapsible Bench details container)
+    const benchDetails = document.createElement("details");
+    benchDetails.style.cssText = "margin-top: 8px; width: 100%; border: 1px solid #111; background: #030303;";
+    
+    const benchSummary = document.createElement("summary");
+    benchSummary.style.cssText = "font-family: var(--font-label); font-size: 8px; letter-spacing: 0.15em; color: #888; text-transform: uppercase; padding: 6px 8px; cursor: pointer; outline: none; list-style: none; user-select: none; border-bottom: 1px solid #111; display: flex; align-items: center; gap: 4px;";
+    benchSummary.innerHTML = `${TACTICAL_ICONS.warning} RESERVE UNIT ▼`;
+    
+    const benchContainer = document.createElement("div");
+    benchContainer.style.cssText = "display: flex; flex-direction: column; gap: 4px; padding: 4px 6px;";
+    
+    benchDetails.appendChild(benchSummary);
+    benchDetails.appendChild(benchContainer);
+
+    let hasBenchPlayers = false;
+
+    function buildPlayerRow(player, idx) {
+      const isCaptain = player.number === CAPTAINS_MAP[teamCode];
+      const verified = isPlayerVerified(teamCode, player.name);
+
+      const row = document.createElement("div");
+      row.className = "squad-player-row";
+      row.style.cssText = `
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 3px 4px;
+        border-bottom: 1px solid #0a0a0a;
+        cursor: pointer;
+        transition: background 0.15s ease;
+        animation: slideIn 0.2s ease forwards;
+        opacity: 0;
+        animation-delay: ${idx * 0.025}s;
+      `;
+
+      const isSelected = lineupState.selectedPlayer && lineupState.selectedPlayer.name === player.name && lineupState.selectedPlayer.teamSide === side;
+      const isCandidate = lineupState.selectedPlayer && lineupState.selectedPlayer.teamSide === side && player.isStarter !== lineupState.selectedPlayer.isStarter && player.posGroup === lineupState.selectedPlayer.posGroup;
+
+      row.dataset.playerName = player.name;
+      row.dataset.teamSide = side;
+
+      if (isSelected) {
+        row.classList.add("selected");
+        const teamColor = side === 'a' ? '#22c55e' : '#3b82f6';
+        const bgColor = side === 'a' ? '#0a1a0a' : '#080d14';
+        row.style.background = bgColor;
+        row.style.borderLeft = `2px solid ${teamColor}`;
+        row.style.color = teamColor;
+      } else if (isCandidate) {
+        row.classList.add("swap-candidate");
+        row.style.borderLeft = "2px solid #f59e0b44";
+        row.style.color = "#f59e0b";
+      }
+
+      // Modified Section: 7. Bench visibility
+      if (!player.isStarter) {
+        row.classList.add("bench-player");
+      }
+
+      row.onmouseover = () => {
+        if (!row.classList.contains("selected") && !row.classList.contains("swap-candidate")) {
+          row.style.background = "#0d0d0d";
+        }
+      };
+      row.onmouseout = () => {
+        if (!row.classList.contains("selected") && !row.classList.contains("swap-candidate")) {
+          row.style.background = "transparent";
+        }
+      };
+
+      row.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        if (isCandidate) {
+          swapPlayers(lineupState.selectedPlayer.name, player.name, side);
+          renderSquadAnalysis();
+        } else if (isSelected) {
+          lineupState.selectedPlayer = null;
+          renderSquadAnalysis();
+        } else {
+          lineupState.selectedPlayer = {
+            teamSide: side,
+            name: player.name,
+            number: player.number,
+            pos: player.pos,
+            posGroup: player.posGroup,
+            isStarter: player.isStarter
+          };
+          renderSquadAnalysis();
+        }
+      });
+
+      const captainBadge = isCaptain ? `
+        <span style="color: #f59e0b; margin-left: 2px; display: inline-flex; align-items: center; justify-content: center;" title="Captain">${TACTICAL_ICONS.captain}</span>
+      ` : "";
+
+      // Modified Section: 10. Data Indicators (monochrome progress ticks instead of badge)
+      const dataIndicator = verified ? `
+        <span style="color: var(--accent-green); font-size: 8px; font-family: var(--font-data); margin-left: auto; letter-spacing: -1px;" title="Verified Data">|||||</span>
+      ` : `
+        <span style="color: #333; font-size: 8px; font-family: var(--font-data); margin-left: auto; letter-spacing: -1px;" title="Unverified Data">|||</span>
+      `;
+
+      // Modified Section: 7. Player Selection (small tactical marker beside player name)
+      const selectedMarker = isSelected ? `
+        <span style="color: ${side === 'a' ? '#22c55e' : '#3b82f6'}; display: inline-flex; align-items: center; justify-content: center;">${TACTICAL_ICONS.selected}</span>
+      ` : (isCandidate ? `
+        <span style="color: #f59e0b; display: inline-flex; align-items: center; justify-content: center;">${TACTICAL_ICONS.active}</span>
+      ` : `
+        <span style="color: #333; display: inline-flex; align-items: center; justify-content: center;">${TACTICAL_ICONS.empty}</span>
+      `);
+
+      // Modified Section: 7. Bench visibility (using var(--text-secondary) for bench player text)
+      const nameColor = isSelected ? (side === 'a' ? '#22c55e' : '#3b82f6') : (isCandidate ? '#f59e0b' : (player.isStarter ? '#e8e8e8' : 'var(--text-secondary)'));
+      const swapLabel = isCandidate ? `
+        <span class="swap-label" style="font-size: 8px; color: #f59e0b; margin-left: auto; padding-left: 6px;">[SWAP]</span>
+      ` : "";
+
+      row.innerHTML = `
+        ${selectedMarker}
+        <span style="width: 14px; text-align: right; font-size: 9px; color: #888; font-family: var(--font-data); margin-right: 4px;">${player.number}</span>
+        <span style="flex: 1; font-size: 10px; color: ${nameColor}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${player.name}</span>
+        <span style="font-size: 8px; color: #555; font-family: var(--font-data); margin-right: 4px;">${player.age}y</span>
+        ${captainBadge}
+        ${isCandidate ? swapLabel : dataIndicator}
+      `;
+
+      return row;
+    }
+
+    const categoryLabels = {
+      GOALKEEPERS: `${TACTICAL_ICONS.empty} GOALKEEPERS`,
+      DEFENDERS: `${TACTICAL_ICONS.warning} DEFENDERS`,
+      MIDFIELDERS: `${TACTICAL_ICONS.intelligence} MIDFIELDERS`,
+      FORWARDS: `${TACTICAL_ICONS.simulation} FORWARDS`
+    };
+
     posGroups.forEach(groupKey => {
       const playersInGroup = grouped[groupKey];
       if (playersInGroup.length === 0) return;
 
-      const groupHeader = document.createElement("div");
-      groupHeader.style.cssText = `
-        font-family: var(--font-label);
-        font-size: 7px;
-        letter-spacing: 0.2em;
-        color: #444444;
-        text-transform: uppercase;
-        margin-top: 10px;
-        margin-bottom: 6px;
-        border-bottom: 1px solid #111;
-        padding-bottom: 2px;
-      `;
-      groupHeader.textContent = groupKey;
-      container.appendChild(groupHeader);
+      const startersInGroup = playersInGroup.filter(p => p.isStarter);
+      const benchInGroup = playersInGroup.filter(p => !p.isStarter);
 
-      playersInGroup.forEach((player, idx) => {
-        const isCaptain = player.number === CAPTAINS_MAP[teamCode];
-        const verified = isPlayerVerified(teamCode, player.name);
+      if (startersInGroup.length > 0) {
+        const groupHeader = document.createElement("div");
+        groupHeader.className = "tactical-divider";
+        groupHeader.innerHTML = categoryLabels[groupKey] || groupKey;
+        container.appendChild(groupHeader);
 
-        const row = document.createElement("div");
-        row.className = "squad-player-row";
-        row.style.cssText = `
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          padding: 3px 4px;
-          border-bottom: 1px solid #0a0a0a;
-          cursor: pointer;
-          transition: background 0.15s ease;
-          animation: slideIn 0.2s ease forwards;
-          opacity: 0;
-          animation-delay: ${idx * 0.025}s;
-        `;
-        
-        row.onmouseover = () => { row.style.background = "#0d0d0d"; };
-        row.onmouseout = () => { row.style.background = "transparent"; };
+        startersInGroup.forEach((player, idx) => {
+          const row = buildPlayerRow(player, idx);
+          container.appendChild(row);
+        });
+      }
 
-        const captainBadge = isCaptain ? `
-          <span style="color: #f59e0b; font-family: var(--font-label); font-size: 9px; font-weight: bold; margin-left: 2px;">[C]</span>
-        ` : "";
-
-        const verifyBadge = verified ? `
-          <span style="color: #22c55e; font-family: var(--font-label); font-size: 9px; font-weight: bold; margin-left: 2px;">[✓]</span>
-        ` : `
-          <span style="color: #444; font-family: var(--font-label); font-size: 9px; font-weight: bold; margin-left: 2px;">[?]</span>
-        `;
-
-        const nameColor = player.starter ? "#e8e8e8" : "#333333";
-
-        row.innerHTML = `
-          <span style="width: 14px; text-align: right; font-size: 9px; color: #888; font-family: var(--font-data);">${player.number}</span>
-          <span style="flex: 1; font-size: 10px; color: ${nameColor}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${player.name}</span>
-          <span style="font-size: 8px; color: #555; font-family: var(--font-data); margin-right: 4px;">${player.age}y</span>
-          ${captainBadge}
-          ${verifyBadge}
-        `;
-
-        container.appendChild(row);
-      });
+      if (benchInGroup.length > 0) {
+        hasBenchPlayers = true;
+        benchInGroup.forEach((player, idx) => {
+          const row = buildPlayerRow(player, idx);
+          benchContainer.appendChild(row);
+        });
+      }
     });
+
+    if (hasBenchPlayers) {
+      container.appendChild(benchDetails);
+    }
+  }
+
+
+  function getPitchShortName(fullName) {
+    if (!fullName) return "";
+    const name = fullName.trim();
+    const parts = name.split(/\s+/);
+    
+    if (parts.length <= 1) {
+      return name;
+    }
+    
+    // Check for initials like "L. Messi"
+    if (parts[0].length <= 2 && parts[0].includes('.')) {
+      return parts.slice(1).join(' ');
+    }
+    
+    // For names with 3 or more parts (e.g. Alexis Mac Allister, Kevin De Bruyne)
+    if (parts.length >= 3) {
+      const lastTwo = parts.slice(-2).join(' ');
+      return lastTwo;
+    }
+    
+    // For 2-part names (e.g. Kylian Mbappé, Lionel Messi)
+    return parts[1];
   }
 
   function renderPitchSVG(squadA, squadB, teamACode, teamBCode, topScorerA, topScorerB) {
-    const container = document.getElementById("squad-pitch-container");
-    if (!container) return;
+    const svgWrapper = document.getElementById("pitch-svg-wrapper");
+    if (!svgWrapper) return;
 
-    const coordsA = [
-      { x: 150, y: 40 },   // GK
-      { x: 45,  y: 95 },   // LB
-      { x: 115, y: 95 },   // LCB
-      { x: 185, y: 95 },   // RCB
-      { x: 255, y: 95 },   // RB
-      { x: 105, y: 140 },  // LDM
-      { x: 195, y: 140 },  // RDM
-      { x: 50,  y: 180 },  // LAM
-      { x: 150, y: 175 },  // CAM
-      { x: 250, y: 180 },  // RAM
-      { x: 150, y: 210 }   // ST
-    ];
-
-    const coordsB = [
-      { x: 150, y: 410 },  // GK
-      { x: 45,  y: 355 },  // LB
-      { x: 115, y: 355 },  // LCB
-      { x: 185, y: 355 },  // RCB
-      { x: 255, y: 355 },  // RB
-      { x: 80,  y: 310 },  // LCM
-      { x: 150, y: 320 },  // CM
-      { x: 220, y: 310 },  // RCM
-      { x: 60,  y: 260 },  // LW
-      { x: 150, y: 250 },  // ST
-      { x: 240, y: 260 }   // RW
-    ];
+    const formationA = lineupState.teamA.formation || "4-3-3";
+    const formationB = lineupState.teamB.formation || "4-3-3";
 
     const startersA = getSortedStarters(squadA);
     const startersB = getSortedStarters(squadB);
 
-    let svgHtml = `
-      <svg viewBox="0 0 300 450" width="100%" height="100%" style="max-height: 480px; font-family: var(--font-data); display: block;">
-        <!-- Pitch Background -->
-        <rect x="0" y="0" width="300" height="450" fill="#040404" />
-        
-        <!-- Boundary lines -->
-        <rect x="10" y="10" width="280" height="430" fill="none" stroke="#111111" stroke-width="2" />
-        
-        <!-- Center line -->
-        <line x1="10" y1="225" x2="290" y2="225" stroke="#111111" stroke-width="1.5" />
-        
-        <!-- Center Circle -->
-        <circle cx="150" cy="225" r="40" fill="none" stroke="#111111" stroke-width="1.5" />
-        <circle cx="150" cy="225" r="2" fill="#111111" />
-        
-        <!-- Top Goal/Penalty Area -->
-        <rect x="60" y="10" width="180" height="70" fill="none" stroke="#111111" stroke-width="1.5" />
-        <rect x="110" y="10" width="80" height="25" fill="none" stroke="#111111" stroke-width="1.5" />
-        <circle cx="150" cy="55" r="2" fill="#111111" />
-        <path d="M 115 80 A 40 40 0 0 0 185 80" fill="none" stroke="#111111" stroke-width="1.5" />
-        
-        <!-- Bottom Goal/Penalty Area -->
-        <rect x="60" y="370" width="180" height="70" fill="none" stroke="#111111" stroke-width="1.5" />
-        <rect x="110" y="415" width="80" height="25" fill="none" stroke="#111111" stroke-width="1.5" />
-        <circle cx="150" cy="395" r="2" fill="#111111" />
-        <path d="M 115 370 A 40 40 0 0 1 185 370" fill="none" stroke="#111111" stroke-width="1.5" />
-    `;
+    const coordsA = getStartersCoords(startersA, formationA, false);
+    const coordsB = getStartersCoords(startersB, formationB, true);
 
-    startersA.forEach((player, idx) => {
-      const coord = coordsA[idx] || { x: 150, y: 225 };
+    const labels = [];
+    
+    startersA.forEach((player) => {
+      const coord = coordsA.get(player.name) || { x: 100, y: 147.5 };
       const isGK = player.posGroup === 'GOALKEEPERS';
       const isStar = topScorerA && player.name === topScorerA.name;
-      const isCaptain = player.number === CAPTAINS_MAP[teamACode];
+      const r = isStar ? 11 : 7;
       
-      const r = isStar ? 13 : 8;
-      const pulseClass = isGK ? 'class="gk-pulse"' : '';
+      const shortName = getPitchShortName(player.name);
       
-      let labelText = player.name;
-      if (isCaptain) labelText += ' (C)';
-      
-      svgHtml += `
-        <g>
-          <circle cx="${coord.x}" cy="${coord.y}" r="${r}" stroke="#22c55e" stroke-width="1.5" fill="#08130a" ${pulseClass} />
-          <text x="${coord.x}" y="${coord.y + 3}" font-size="8px" fill="#22c55e" font-weight="bold" text-anchor="middle">${player.number}</text>
-          <text x="${coord.x}" y="${coord.y - (r + 4)}" font-size="6px" fill="#22c55e" fill-opacity="0.7" text-anchor="middle" font-weight="500">${labelText}</text>
-        </g>
-      `;
+      labels.push({
+        side: 'a',
+        player,
+        coord,
+        r,
+        text: shortName,
+        isGK,
+        isStar,
+        x: coord.x,
+        y: coord.y - (r + 4),
+        width: Math.max(25, shortName.length * 3.5),
+        height: 7
+      });
     });
 
-    startersB.forEach((player, idx) => {
-      const coord = coordsB[idx] || { x: 150, y: 225 };
+    startersB.forEach((player) => {
+      const coord = coordsB.get(player.name) || { x: 100, y: 147.5 };
       const isGK = player.posGroup === 'GOALKEEPERS';
       const isStar = topScorerB && player.name === topScorerB.name;
-      const isCaptain = player.number === CAPTAINS_MAP[teamBCode];
+      const r = isStar ? 11 : 7;
       
-      const r = isStar ? 13 : 8;
-      const pulseClass = isGK ? 'class="gk-pulse"' : '';
+      const shortName = getPitchShortName(player.name);
       
-      let labelText = player.name;
-      if (isCaptain) labelText += ' (C)';
+      labels.push({
+        side: 'b',
+        player,
+        coord,
+        r,
+        text: shortName,
+        isGK,
+        isStar,
+        x: coord.x,
+        y: coord.y - (r + 4),
+        width: Math.max(25, shortName.length * 3.5),
+        height: 7
+      });
+    });
+
+    // Modified Section: 3. Fix player overlap (Collision handling pass)
+    for (let pass = 0; pass < 8; pass++) {
+      for (let i = 0; i < labels.length; i++) {
+        for (let j = i + 1; j < labels.length; j++) {
+          const l1 = labels[i];
+          const l2 = labels[j];
+          
+          const dx = Math.abs(l1.x - l2.x);
+          const dy = Math.abs(l1.y - l2.y);
+          
+          const minX = (l1.width + l2.width) / 2 + 3;
+          const minY = 9;
+          
+          if (dx < minX && dy < minY) {
+            const shiftY = minY - dy;
+            if (l1.y <= l2.y) {
+              l1.y -= shiftY / 2 + 1.5;
+              l2.y += shiftY / 2 + 1.5;
+            } else {
+              l1.y += shiftY / 2 + 1.5;
+              l2.y -= shiftY / 2 + 1.5;
+            }
+            
+            if (dx < 6) {
+              if (l1.x <= l2.x) {
+                l1.x -= 4;
+                l2.x += 4;
+              } else {
+                l1.x += 4;
+                l2.x -= 4;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Modified Section: 9. Prevent clipping (Clamp label positions inside SVG viewport boundaries)
+    labels.forEach(l => {
+      const halfW = l.width / 2;
+      if (l.x - halfW < 8) {
+        l.x = 8 + halfW;
+      }
+      if (l.x + halfW > 192) {
+        l.x = 192 - halfW;
+      }
+      if (l.y < 12) {
+        l.y = 12;
+      }
+      if (l.y > 287) {
+        l.y = 287;
+      }
+    });
+
+    // Modified Section: 4. Dynamic pitch scaling, 6. Zoom support
+    let svgHtml = `
+      <svg viewBox="0 0 200 295" width="100%" height="auto" style="display: block; width: 100%; height: auto; aspect-ratio: 200 / 295; font-family: var(--font-data);">
+        <!-- Pitch Background -->
+        <rect x="0" y="0" width="200" height="295" fill="#040404" />
+        
+        <!-- Boundary lines -->
+        <rect x="8" y="8" width="184" height="279" fill="none" stroke="#111111" stroke-width="1.5" />
+        
+        <!-- Center line -->
+        <line x1="8" y1="147.5" x2="192" y2="147.5" stroke="#111111" stroke-width="1" />
+        
+        <!-- Center Circle -->
+        <circle cx="100" cy="147.5" r="28" fill="none" stroke="#111111" stroke-width="1" />
+        <circle cx="100" cy="147.5" r="1.5" fill="#111111" />
+        
+        <!-- Top Goal/Penalty Area -->
+        <rect x="40" y="8" width="120" height="46" fill="none" stroke="#111111" stroke-width="1" />
+        <rect x="75" y="8" width="50" height="16" fill="none" stroke="#111111" stroke-width="1" />
+        <circle cx="100" cy="38" r="1.5" fill="#111111" />
+        <path d="M 77 54 A 28 28 0 0 0 123 54" fill="none" stroke="#111111" stroke-width="1" />
+        
+        <!-- Bottom Goal/Penalty Area -->
+        <rect x="40" y="241" width="120" height="46" fill="none" stroke="#111111" stroke-width="1" />
+        <rect x="75" y="271" width="50" height="16" fill="none" stroke="#111111" stroke-width="1" />
+        <circle cx="100" cy="257" r="1.5" fill="#111111" />
+        <path d="M 77 241 A 28 28 0 0 1 123 241" fill="none" stroke="#111111" stroke-width="1" />
+    `;
+
+    labels.forEach(l => {
+      const pulseClass = l.isGK ? 'class="gk-pulse"' : '';
+      
+      let selectedVisuals = '';
+      if (lineupState.selectedPlayer && lineupState.selectedPlayer.name === l.player.name && lineupState.selectedPlayer.teamSide === l.side) {
+        const strokeColor = l.side === 'a' ? '#22c55e' : '#3b82f6';
+        const rTicks = 12;
+        selectedVisuals = `
+          <circle cx="${l.coord.x}" cy="${l.coord.y}" r="22" fill="none" 
+            stroke="${strokeColor}" stroke-width="0.8" 
+            style="animation: pulseRing 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; transform-origin: ${l.coord.x}px ${l.coord.y}px;" opacity="0.5"/>
+          <circle cx="${l.coord.x}" cy="${l.coord.y}" r="16" fill="none" 
+            stroke="${strokeColor}" stroke-width="0.8" stroke-dasharray="3 3" 
+            style="animation: spin 6s linear infinite; transform-origin: ${l.coord.x}px ${l.coord.y}px;"/>
+          <line x1="${l.coord.x - rTicks}" y1="${l.coord.y}" x2="${l.coord.x - rTicks + 2}" y2="${l.coord.y}" stroke="${strokeColor}" stroke-width="0.8" />
+          <line x1="${l.coord.x + rTicks - 2}" y1="${l.coord.y}" x2="${l.coord.x + rTicks}" y2="${l.coord.y}" stroke="${strokeColor}" stroke-width="0.8" />
+          <line x1="${l.coord.x}" y1="${l.coord.y - rTicks}" x2="${l.coord.x}" y2="${l.coord.y - rTicks + 2}" stroke="${strokeColor}" stroke-width="0.8" />
+          <line x1="${l.coord.x}" y1="${l.coord.y + rTicks - 2}" x2="${l.coord.x}" y2="${l.coord.y + rTicks}" stroke="${strokeColor}" stroke-width="0.8" />
+        `;
+      }
+      
+      const strokeColor = l.side === 'a' ? '#22c55e' : '#3b82f6';
+      const textColor = l.side === 'a' ? '#22c55e' : '#60a5fa';
+      const bgColor = l.side === 'a' ? '#08130a' : '#080d14';
       
       svgHtml += `
         <g>
-          <circle cx="${coord.x}" cy="${coord.y}" r="${r}" stroke="#3b82f6" stroke-width="1.5" fill="#080d14" ${pulseClass} />
-          <text x="${coord.x}" y="${coord.y + 3}" font-size="8px" fill="#60a5fa" font-weight="bold" text-anchor="middle">${player.number}</text>
-          <text x="${coord.x}" y="${coord.y - (r + 4)}" font-size="6px" fill="#60a5fa" fill-opacity="0.7" text-anchor="middle" font-weight="500">${labelText}</text>
+          ${selectedVisuals}
+          <circle cx="${l.coord.x}" cy="${l.coord.y}" r="${l.r}" stroke="${strokeColor}" stroke-width="1.5" fill="${bgColor}" ${pulseClass} />
+          <text x="${l.coord.x}" y="${l.coord.y + 3}" font-size="8px" fill="${textColor}" font-weight="bold" text-anchor="middle">${l.player.number}</text>
+          <text x="${l.x}" y="${l.y}" font-size="6px" fill="${textColor}" fill-opacity="0.9" text-anchor="middle" font-weight="500">${l.text}</text>
         </g>
       `;
     });
 
     svgHtml += `</svg>`;
-    container.innerHTML = svgHtml;
+    svgWrapper.innerHTML = svgHtml;
   }
+
 
   async function renderAwardsBar(teamACode, teamBCode, topScorerA, topScorerB, cleanSheetsA, cleanSheetsB) {
     const container = document.getElementById("squad-awards-bar");
@@ -971,10 +1615,10 @@ document.addEventListener("DOMContentLoaded", () => {
         align-items: flex-start;
       `;
 
-      const badgeBg = cell.badgeType === "LIVE_WIRE" ? "#1a0808" : "#0a1208";
-      const badgeColor = cell.badgeType === "LIVE_WIRE" ? "#ef4444" : "#22c55e";
-      const badgeBorder = cell.badgeType === "LIVE_WIRE" ? "1px solid #ef444422" : "1px solid #22c55e22";
-      const statColor = cell.badgeType === "LIVE_WIRE" ? "#ef4444" : "#22c55e";
+      const badgeBg = cell.badgeType === "LIVE_WIRE" ? "#0f0f0f" : "rgba(34, 197, 94, 0.05)";
+      const badgeColor = cell.badgeType === "LIVE_WIRE" ? "#888" : "var(--accent-green)";
+      const badgeBorder = cell.badgeType === "LIVE_WIRE" ? "1px solid #222" : "1px solid rgba(34, 197, 94, 0.15)";
+      const statColor = cell.badgeType === "LIVE_WIRE" ? "#e8e8e8" : "var(--accent-green)";
 
       cellDiv.innerHTML = `
         <span style="
@@ -1743,8 +2387,87 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (squadTeamASelect && squadTeamBSelect) {
-    squadTeamASelect.addEventListener("change", renderSquadAnalysis);
-    squadTeamBSelect.addEventListener("change", renderSquadAnalysis);
+    squadTeamASelect.addEventListener("change", () => {
+      lineupState.selectedPlayer = null;
+      renderSquadAnalysis();
+    });
+    squadTeamBSelect.addEventListener("change", () => {
+      lineupState.selectedPlayer = null;
+      renderSquadAnalysis();
+    });
+  }
+
+  const btnResetLineup = document.getElementById("btn-reset-lineup");
+  if (btnResetLineup) {
+    btnResetLineup.addEventListener("click", () => {
+      resetTeamLineup(lineupState.teamA);
+      resetTeamLineup(lineupState.teamB);
+      lineupState.modified = false;
+      lineupState.selectedPlayer = null;
+      renderSquadAnalysis();
+    });
+  }
+
+  const formationSelector = document.getElementById("formation-selector");
+  if (formationSelector) {
+    formationSelector.addEventListener("click", (e) => {
+      const btn = e.target.closest(".formation-btn");
+      if (!btn) return;
+
+      formationSelector.querySelectorAll(".formation-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const formation = btn.dataset.formation;
+      
+      adjustStartersForFormation(lineupState.teamA, formation);
+      adjustStartersForFormation(lineupState.teamB, formation);
+      lineupState.modified = true;
+      lineupState.selectedPlayer = null;
+      renderSquadAnalysis();
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    if (lineupState.selectedPlayer) {
+      const isPanelClick = e.target.closest(".squad-side-panel");
+      const isPitchClick = e.target.closest("#pitch-svg-wrapper");
+      if (!isPanelClick && !isPitchClick) {
+        lineupState.selectedPlayer = null;
+        renderSquadAnalysis();
+      }
+    }
+  });
+
+
+  // System Info Modal Listeners
+  const btnSystemInfo = document.getElementById('btn-system-info');
+  const systemInfoModal = document.getElementById('system-info-modal');
+  const btnCloseModal = document.getElementById('btn-close-modal');
+
+  if (btnSystemInfo && systemInfoModal && btnCloseModal) {
+    btnSystemInfo.addEventListener('click', () => {
+      systemInfoModal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    });
+
+    btnCloseModal.addEventListener('click', () => {
+      systemInfoModal.style.display = 'none';
+      document.body.style.overflow = '';
+    });
+
+    systemInfoModal.addEventListener('click', (e) => {
+      if (e.target === systemInfoModal) {
+        systemInfoModal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && systemInfoModal.style.display === 'block') {
+        systemInfoModal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
   }
 
   // Initialize data on load

@@ -45,9 +45,29 @@
     <!-- TAB CONTROLS -->
     <div class="tab-control-bar">
       <button class="tab-btn active" id="btn-tab-predictor">[01] MATCH PREDICTION</button>
-      <button class="tab-btn" id="btn-tab-squad">[02] SQUAD ANALYSIS [BETA]</button>
+      <button class="tab-btn" id="btn-tab-squad">[02] ▣ SQUAD ANALYSIS</button>
       <button class="tab-btn" id="btn-tab-verification">[03] MODEL VERIFICATION</button>
       <button class="tab-btn" id="btn-tab-settings">[04] DATA SETTINGS</button>
+      <button id="btn-system-info" 
+        style="
+          margin-left: auto;
+          font-family: var(--font-data);
+          font-size: 9px;
+          letter-spacing: 0.1em;
+          padding: 6px 12px;
+          background: transparent;
+          border: 1px solid #222;
+          color: #444;
+          cursor: pointer;
+          transition: all 0.15s;
+        "
+        onmouseover="this.style.borderColor='#444';
+          this.style.color='#888'"
+        onmouseout="this.style.borderColor='#222';
+          this.style.color='#444'"
+      >
+        [?] SYSTEM INFO
+      </button>
     </div>
 
     <!-- MAIN GRID LAYOUT -->
@@ -433,7 +453,74 @@
           </div>
         </div>
 
+        <div class="panel margin-top-md">
+          <div class="panel-header">
+            <h2>[03] WHAT THESE NUMBERS MEAN</h2>
+            <span class="corner-label">GUIDE</span>
+          </div>
+          <div class="panel-body flex-column" 
+            style="gap: 10px; padding: 14px 16px; 
+            font-family: var(--font-data); font-size: 10px;
+            line-height: 1.6;">
+            
+            <div class="metric-explanation">
+              <div class="exp-label">OUTCOME ACCURACY</div>
+              <div class="exp-text">
+                Win / Draw / Loss prediction. The model picks 
+                whichever outcome has the highest probability. 
+                60% means 6 in 10 matches called correctly.
+                Random chance = 33%.
+              </div>
+            </div>
+
+            <div class="metric-explanation">
+              <div class="exp-label">BRIER SCORE</div>
+              <div class="exp-text">
+                Measures probability quality, not just the 
+                winner call. Penalises confident wrong 
+                predictions. Perfect = 0.000, Random = 0.667.
+                Our 0.551 beats random — probabilities have 
+                real signal.
+              </div>
+            </div>
+
+            <div class="metric-explanation">
+              <div class="exp-label">CALIBRATION</div>
+              <div class="exp-text">
+                When the model says 60% confidence, does it 
+                win ~60% of those matches? IMPROVING means 
+                higher confidence = higher actual accuracy.
+                This is the strongest sign the model is 
+                doing real work.
+              </div>
+            </div>
+
+            <div class="metric-explanation">
+              <div class="exp-label">VS RANDOM / VS NAIVE</div>
+              <div class="exp-text">
+                Random = predict HOME/DRAW/AWAY randomly 
+                (~33%). Naive = always pick better FIFA rank.
+                Our model must beat both to prove it adds 
+                value beyond simple heuristics.
+              </div>
+            </div>
+
+            <div class="metric-explanation">
+              <div class="exp-label">WHY DRAW ACCURACY = 0%</div>
+              <div class="exp-text">
+                Poisson models structurally under-predict 
+                draws. Draw probability (~30%) rarely exceeds 
+                win probability (~40-60%), so the model never 
+                picks draws as its top outcome. This is a 
+                known mathematical limitation — not a bug.
+              </div>
+            </div>
+
+          </div>
+        </div>
+
         <!-- ENGINE NOTES - BACKTESTING -->
+
         <div class="panel">
           <div class="panel-header">
             <h2>[06] ENGINE NOTES</h2>
@@ -449,12 +536,14 @@
     </main>
 
     <!-- SQUAD ANALYSIS VIEW -->
-    <main class="hidden" id="squad-analysis-view" style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
+    <!-- Modified Section: 8. Reduce empty space, 10. Improve spacing -->
+    <main class="hidden" id="squad-analysis-view" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
       
       <!-- SQUAD TAB HEADER / CONTROLS -->
-      <div class="squad-header-controls" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 4px;">
+      <!-- Modified Section: 10. Improve spacing (consistent paddings and margins) -->
+      <div class="squad-header-controls" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 4px;">
         <div class="squad-header-title" style="font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.05em; text-transform: uppercase;">
-          [02] Squad Analytics & Pitch Simulation
+          [02] ⌁ Squad Analytics & Pitch Simulation
         </div>
         <div class="squad-selectors-wrapper" style="display: flex; gap: 12px; align-items: center;">
           <div style="display: flex; align-items: center; gap: 6px;">
@@ -472,45 +561,109 @@
         </div>
       </div>
 
+      <!-- MAIN THREE COLUMNS -->
+      <!-- Modified Section: 1. Resize the three-column layout, 3. Align all three columns, 10. Improve spacing -->
+      <div class="squad-three-columns" style="display: flex; gap: 12px; width: 100%; align-items: stretch; margin-bottom: 4px;">
+        <!-- LEFT COLUMN: TEAM A SQUAD -->
+        <!-- Modified Section: 1. Left squad panel 18% width (min-width 180px) -->
+        <div class="squad-side-panel tactical-panel" id="squad-team-a-panel" style="width: 18%; min-width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px;">
+          <!-- Dynamically populated by JS -->
+        </div>
+
+        <!-- CENTER COLUMN: PITCH SVG -->
+        <!-- Modified Section: 1. Center pitch container flex-grow to 64%, 2. Increase pitch area, 3. Align all three columns, 10. Improve spacing -->
+        <div class="squad-pitch-container tactical-panel tactical-bg-grid" id="squad-pitch-container" style="flex: 1 1 64%; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; background-color: #040404; border: 1px solid var(--border-color); padding: 0; position: relative;">
+          <!-- TACTICAL BOARD SUB-HEADER (Requirement 2 & 9) -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111; padding: 6px 12px; background: #060606; z-index: 10; position: relative;">
+            <div style="font-family: var(--font-label); font-size: 8px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; text-transform: uppercase;">
+              <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10" stroke="currentColor"><rect x="2" y="2" width="6" height="6" fill="none" stroke-width="1"/><rect x="4" y="4" width="2" height="2" fill="currentColor"/></svg>
+              TACTICAL BOARD
+            </div>
+            <div style="font-family: var(--font-data); font-size: 8px; color: #444; display: flex; align-items: center; gap: 4px; text-transform: uppercase;">
+              <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10" stroke="currentColor"><polygon points="5,1.5 8.5,5 5,8.5 1.5,5" fill="none" stroke-width="1"/><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg>
+              FORMATION MATRIX
+            </div>
+          </div>
+
+          <!-- formation-selector hidden to favor team-specific dropdowns -->
+          <div id="formation-selector" style="display: none !important;">
+            <button class="formation-btn active" data-formation="4-3-3">4-3-3</button>
+            <button class="formation-btn" data-formation="4-2-3-1">4-2-3-1</button>
+            <button class="formation-btn" data-formation="4-4-2">4-4-2</button>
+            <button class="formation-btn" data-formation="3-5-2">3-5-2</button>
+            <button class="formation-btn" data-formation="3-4-3">3-4-3</button>
+            <button class="formation-btn" data-formation="5-3-2">5-3-2</button>
+            <button class="formation-btn" data-formation="4-5-1">4-5-1</button>
+          </div>
+
+          <!-- PITCH SVG WRAPPER -->
+          <!-- Modified Section: 2. Increase pitch area, 6. Increase pitch scale -->
+          <div id="pitch-svg-wrapper" style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 0; min-height: 520px; height: 100%;">
+            <!-- SVG rendered here dynamically -->
+          </div>
+
+          <!-- MODIFICATION BANNER -->
+          <div id="lineup-modified-banner" 
+            class="hidden"
+            style="
+              font-family: var(--font-data);
+              font-size: 9px;
+              letter-spacing: 0.1em;
+              color: #f59e0b;
+              border: 1px solid #f59e0b22;
+              background: #0f0a00;
+              padding: 6px 12px;
+              text-align: center;
+              margin-top: 8px;
+            ">
+            LINEUP MODIFIED — CUSTOM SELECTION
+            <button id="btn-reset-lineup" style="
+              margin-left: 12px;
+              background: transparent;
+              border: 1px solid #333;
+              color: #555;
+              font-family: var(--font-data);
+              font-size: 8px;
+              letter-spacing: 0.1em;
+              padding: 2px 8px;
+              cursor: pointer;
+            ">[RESET]</button>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: TEAM B SQUAD -->
+        <!-- Modified Section: 1. Right squad panel 18% width (min-width 180px) -->
+        <div class="squad-side-panel tactical-panel" id="squad-team-b-panel" style="width: 18%; min-width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px;">
+          <!-- Dynamically populated by JS -->
+        </div>
+      </div>
+
       <!-- GOLDEN BOOT BAR -->
-      <div class="golden-boot-bar" style="display: flex; flex-direction: column; gap: 6px;">
-        <div class="golden-boot-header" style="font-family: var(--font-display); font-size: 8px; letter-spacing: 0.2em; color: #444; text-transform: uppercase;">
-          TOURNAMENT GOLDEN BOOT RACE
+      <!-- Modified Section: 9. Move tournament widgets (moved below three-column layout), 10. Improve spacing -->
+      <div class="golden-boot-bar tactical-panel tactical-bg-grid" style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px; padding: 10px 12px;">
+        <div class="golden-boot-header" style="font-family: var(--font-display); font-size: 8px; letter-spacing: 0.2em; color: #444; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
+          <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><polygon points="5,1.5 8.5,5 5,8.5 1.5,5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg>
+          TOURNAMENT GOLDEN BOOT MATRIX
         </div>
         <div class="golden-boot-chips" id="golden-boot-chips-container" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin;">
           <!-- Filled dynamically by JS -->
         </div>
       </div>
 
-      <!-- MAIN THREE COLUMNS -->
-      <div class="squad-three-columns" style="display: flex; gap: 16px; width: 100%; align-items: stretch;">
-        <!-- LEFT COLUMN: TEAM A SQUAD -->
-        <div class="squad-side-panel" id="squad-team-a-panel" style="width: 190px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px;">
-          <!-- Dynamically populated by JS -->
-        </div>
-
-        <!-- CENTER COLUMN: PITCH SVG -->
-        <div class="squad-pitch-container" id="squad-pitch-container" style="flex: 1; min-width: 280px; display: flex; justify-content: center; align-items: center; background-color: #040404; border: 1px solid var(--border-color); padding: 12px; position: relative;">
-          <!-- SVG rendered here dynamically -->
-        </div>
-
-        <!-- RIGHT COLUMN: TEAM B SQUAD -->
-        <div class="squad-side-panel" id="squad-team-b-panel" style="width: 190px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px;">
-          <!-- Dynamically populated by JS -->
-        </div>
-      </div>
-
       <!-- AWARDS BAR -->
-      <div class="squad-awards-bar" id="squad-awards-bar" style="display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid #0e0e0e; background-color: var(--bg-panels);">
+      <!-- Modified Section: 9. Move tournament widgets (moved below three-column layout) -->
+      <div class="squad-awards-bar tactical-panel" id="squad-awards-bar" style="display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid #0e0e0e; background-color: var(--bg-panels); margin-top: 4px;">
         <!-- 4 Cells filled dynamically by JS -->
       </div>
 
       <!-- FOOTER DISCLAIMER -->
-      <div class="squad-footer-disclaimer" style="font-family: var(--font-label); font-size: 7px; letter-spacing: 0.1em; color: #333; text-align: center; border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 8px; text-transform: uppercase;">
-        SOURCE: openfootball worldcup.squads.json · LINEUPS SUGGESTED NOT CONFIRMED · (C) = CAPTAIN · [?] = DATA UNVERIFIED
+      <!-- Modified Section: 10. Improve spacing -->
+      <div class="squad-footer-disclaimer" style="font-family: var(--font-label); font-size: 7px; letter-spacing: 0.1em; color: #333; text-align: center; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px; text-transform: uppercase;">
+        SOURCE: openfootball worldcup.squads.json · LINEUPS SUGGESTED NOT CONFIRMED · (C) = CAPTAIN · ||||| = DATA VERIFIED
       </div>
 
     </main>
+
 
     <!-- SQUAD ANALYSIS VIEW PLACEHOLDER -->
     <div id="squad-analysis-placeholder" class="placeholder-container hidden" style="padding: 80px 40px; text-align: center; font-family: var(--font-display); color: var(--text-secondary); border: 1px dashed var(--border-color); background-color: var(--bg-panels); font-size: 12px; letter-spacing: 0.05em;">
@@ -668,6 +821,260 @@
         </div>
       </div>
     </footer>
+
+    <div id="system-info-modal" 
+      style="
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.85);
+        z-index: 1000;
+        overflow-y: auto;
+        padding: 40px 20px;
+        box-sizing: border-box;
+      ">
+      <div style="
+        max-width: 680px;
+        margin: 0 auto;
+        background: #080808;
+        border: 1px solid #1a1a1a;
+        font-family: var(--font-data);
+      ">
+        <!-- MODAL HEADER -->
+        <div style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 14px 20px;
+          border-bottom: 1px solid #111;
+        ">
+          <span style="font-size: 11px; 
+            letter-spacing: 0.1em; color: #e8e8e8;
+            font-weight: 600;">
+            ORACLE-26 // SYSTEM ARCHITECTURE
+          </span>
+          <button id="btn-close-modal" style="
+            background: transparent;
+            border: 1px solid #222;
+            color: #555;
+            font-family: var(--font-data);
+            font-size: 10px;
+            padding: 4px 10px;
+            cursor: pointer;
+            letter-spacing: 0.1em;
+          ">[X] CLOSE</button>
+        </div>
+
+        <!-- MODAL CONTENT -->
+        <div style="padding: 20px; 
+          display: flex; flex-direction: column; 
+          gap: 20px;">
+
+          <div class="modal-section">
+            <div class="modal-section-label">
+              WHAT IS ORACLE-26?
+            </div>
+            <div class="modal-section-text">
+              ORACLE-26 is a mathematical match prediction 
+              system for the 2026 FIFA World Cup. It uses 
+              three layers of data to generate win 
+              probabilities and expected scorelines for 
+              any matchup between the 48 competing nations.
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section-label">
+              LAYER 1 — STATIC STRENGTH
+            </div>
+            <div class="modal-section-text">
+              Pre-tournament baseline derived from three 
+              signals weighted and combined:
+            </div>
+            <div class="modal-code-block">
+              Elo rating      × 1.00 weight
+              FIFA rank       × 0.50 weight  
+              Market value    × 0.25 weight
+              ─────────────────────────────
+              P_static = weighted average → [0.05, 0.95]
+              
+              Host nation bonus: +8% additive
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section-label">
+              LAYER 2 — DYNAMIC FORM
+            </div>
+            <div class="modal-section-text">
+              Adjusts static strength using live 
+              tournament data and recent results:
+            </div>
+            <div class="modal-code-block">
+              Form ratio = points from last 6 / 18
+              Elo momentum = elo_delta_90 / 100
+              Injury penalty = -5% if key player out
+              
+              P_dynamic = P_static × 0.65
+                        + form_signal × 0.35
+                        + momentum × 0.02
+                        - injury_penalty
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section-label">
+              LAYER 3 — POISSON GOAL MODEL
+            </div>
+            <div class="modal-section-text">
+              Converts win probability into expected 
+              goals (lambda) and generates a 7x7 
+              scoreline probability matrix:
+            </div>
+            <div class="modal-code-block">
+              IF team has 2+ matches played:
+                λ = avgGoalsFor × 0.6
+                  + (1.8 × P_dynamic + 0.27) × 0.4
+
+              IF no live data yet:
+                λ = 1.8 × P_dynamic + 0.27
+
+              Residual correction:
+                Home: λ += +0.162 (from backtest)
+                Away: λ += -0.081 (from backtest)
+
+              Dixon-Coles tau correction applied
+              to 0-0, 1-0, 0-1, 1-1 scorelines.
+              RHO = -0.04
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section-label">
+              DRAW PROBABILITY
+            </div>
+            <div class="modal-section-text">
+              Computed via Gaussian distribution 
+              centred at 0.5 (even matchups):
+            </div>
+            <div class="modal-code-block">
+              P_draw = (1/3) × e^(
+                -(P_dynamic - 0.5)² / (2 × 0.28²)
+              )
+              
+              Note: Poisson models structurally 
+              under-predict draws. Draw accuracy 
+              is a known limitation of this approach.
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section-label">
+              CONFIDENCE SCORE
+            </div>
+            <div class="modal-section-text">
+              Trust score from 0-100 based on 
+              data quality penalties:
+            </div>
+            <div class="modal-code-block">
+              Start:              100
+              Tier 4 team:        -20 each
+              Under 3 WC apps:    -15 each
+              No H2H record:      -10
+              Stale data:         -15
+              Key injury:         -5 each
+              Neutral venue:      -5 always
+              ─────────────────────────────
+              85+ = HIGH
+              65+ = MEDIUM
+              45+ = LOW
+              0+  = VERY LOW
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section-label">
+              DATA SOURCES
+            </div>
+            <div class="modal-code-block">
+              openfootball/worldcup.json
+                Scores, results, goalscorers
+                Updated: live, cached 6 hours
+              
+              eloratings.net/World.tsv
+                Current Elo ratings all 48 teams
+                Updated: cached 24 hours
+              
+              openfootball/worldcup.squads.json
+                26-man squads all 48 teams
+                Updated: once at tournament start
+              
+              data/teams.js (static)
+                Pre-tournament xG estimates
+                Market values, historical form
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section-label">
+              ACCURACY BENCHMARK (60 matches)
+            </div>
+            <div class="modal-code-block">
+              Outcome accuracy:   60.0% (36/60)
+              vs Random:          +26.4%
+              vs Naive (FIFA rk): +0.0%
+              Brier score:        0.551 (FAIR)
+              Calibration:        IMPROVING
+              Verdict:            MODERATE SIGNAL
+              
+              Exact scoreline:    6.7%
+              Score in top 5:     51.7%
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section-label">
+              MATHEMATICAL LIMITATIONS
+            </div>
+            <div class="modal-section-text">
+              Known weaknesses in current model:
+            </div>
+            <div class="modal-code-block">
+              1. Lambda circularity — probability 
+                 feeds lambda which generates 
+                 probability. Attack/defence 
+                 parameters planned for v2.
+
+              2. Draw under-prediction — Poisson 
+                 structurally misses draws. 
+                 0% draw accuracy is expected.
+
+              3. Small sample — 60 matches is 
+                 statistically limited. Calibration 
+                 improves as tournament progresses.
+
+              4. No live player data — xG values 
+                 are pre-tournament estimates for 
+                 most teams except FRA and ARG.
+            </div>
+          </div>
+
+        </div>
+
+        <div style="
+          padding: 12px 20px;
+          border-top: 1px solid #111;
+          font-size: 8px;
+          color: #333;
+          letter-spacing: 0.1em;
+        ">
+          ORACLE-26 // BUILT WITH OPENFOOTBALL · 
+          ELORATINGS.NET · POISSON DISTRIBUTION · 
+          DIXON-COLES CORRECTION
+        </div>
+      </div>
+    </div>
 
   </div>
 
