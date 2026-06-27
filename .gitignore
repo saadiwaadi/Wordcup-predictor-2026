@@ -43,6 +43,5 @@ out/
 .parcel-cache/
 .eslintcache
 
-# cache/
-# cache/openfootball_cache.json
+/cache/
 

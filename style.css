@@ -1516,3 +1516,233 @@ body {
   animation: gkPulse 2.5s ease-in-out infinite;
 }
 
+@media (max-width: 768px) {
+  html, body {
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+  }
+
+  /* 1. TAB CONTROL BAR */
+  .tab-control-bar {
+    overflow-x: auto;
+    scrollbar-width: none;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab-control-bar::-webkit-scrollbar {
+    display: none;
+  }
+  .tab-btn {
+    flex-shrink: 0;
+    font-size: 9px;
+    padding: 8px 10px;
+  }
+
+  /* 2. MAIN PREDICTOR VIEW */
+  .grid-layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .panel-input {
+    border-bottom: 1px solid var(--border-color);
+  }
+  .panel-result {
+    min-height: auto;
+  }
+
+  /* 3. TEAM SELECTOR ROW */
+  .team-selector-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .vs-label {
+    text-align: center;
+    padding: 4px 0;
+  }
+
+  /* 4. RESULT MIDDLE GRID */
+  .result-middle-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .middle-col {
+    width: 100%;
+  }
+
+  /* 5. RESULT LOWER GRID */
+  .result-lower-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .lower-col {
+    width: 100%;
+  }
+
+  /* 6. PROBABILITY BAR LABELS */
+  .prob-labels-row {
+    font-size: 10px;
+  }
+  .prob-value {
+    font-size: 13px;
+  }
+
+  /* 7. METRICS GRID (xG cards) */
+  .metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .metric-value {
+    font-size: 16px;
+  }
+
+  /* 8. LAYERS ROW */
+  .layers-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .layer-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    border-right: none;
+  }
+  .layer-lbl {
+    margin-bottom: 0;
+  }
+
+  /* 9. SQUAD TAB */
+  .squad-grid-layout {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+  #squad-team-a-panel,
+  #squad-team-b-panel {
+    width: 100% !important;
+    border-right: none !important;
+    border-left: none !important;
+    border-bottom: 1px solid var(--border-color) !important;
+  }
+  #squad-pitch-container {
+    flex-direction: column !important;
+    overflow-x: auto !important;
+    min-width: 0 !important;
+  }
+  #squad-pitch-container::before {
+    content: '> PITCH VIEW AVAILABLE ON DESKTOP';
+    display: block;
+    font-family: var(--font-data);
+    font-size: 9px;
+    color: #333;
+    letter-spacing: 0.1em;
+    padding: 20px;
+    text-align: center;
+  }
+  .sq2-main,
+  .squad-three-columns {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+
+  /* 10. VERIFICATION VIEW */
+  #verification-view.grid-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* 11. SETTINGS VIEW */
+  #settings-view.grid-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* 12. FUTURE SLOTS FOOTER */
+  .slots-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .slot-card {
+    padding: 10px 12px;
+  }
+  .slot-name {
+    font-size: 9px;
+  }
+
+  /* 13. HEADER BAR */
+  .header-bar {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 8px 12px;
+  }
+  .header-right {
+    font-size: 9px;
+  }
+  .muted-info {
+    display: none;
+  }
+
+  /* 14. FORM SQUARES ROW */
+  .form-squares-row {
+    flex-wrap: wrap;
+    gap: 3px;
+  }
+
+  /* 15. MATRIX LIST ROWS */
+  .matrix-list,
+  .matrix-score,
+  .matrix-pct {
+    font-size: 10px;
+  }
+
+  /* 16. PANEL BODY PADDING */
+  .panel-body {
+    padding: 10px 12px;
+  }
+  .panel-header {
+    padding: 6px 12px;
+  }
+  .panel-header h2 {
+    font-size: 11px;
+  }
+
+  /* 17. ENGINE NOTES TERMINAL */
+  .engine-notes-terminal {
+    font-size: 10px;
+    min-height: 80px;
+  }
+
+  /* 18. SCORE MATRIX PANEL */
+  .score-matrix-panel {
+    margin-top: 0;
+  }
+
+  /* 19. GOLDEN BOOT BAR (squad tab) */
+  .sq2-scorers,
+  .golden-boot-bar {
+    padding: 10px 12px;
+  }
+  .sq2-scorer-row,
+  .golden-boot-chips {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .sq2-scorer-row::-webkit-scrollbar,
+  .golden-boot-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 20. AWARDS BAR (squad tab) */
+  .sq2-awards,
+  .squad-awards-bar {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .sq2-award,
+  .award-cell {
+    padding: 10px 12px !important;
+  }
+}
+
+
