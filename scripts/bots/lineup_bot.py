@@ -16,7 +16,7 @@ def run_lineup_bot():
     try:
         # Determine paths relative to this file
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        lineups_path = os.path.join(base_dir, "data", "scraped", "lineups.json")
+        lineups_path = os.path.join(base_dir, "public", "data", "scraped", "lineups.json")
         os.makedirs(os.path.dirname(lineups_path), exist_ok=True)
 
         # Load existing lineups

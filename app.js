@@ -7,7 +7,7 @@ import { runPreMatchFlags } from './engine/preMatchFlags.js';
 import { deltaUpdateTeam } from './data/deltaSync.js';
 import { enrichMatchup, getLambdaOverride, recomputeScorelines } from './data/enrichTeam.js';
 import { getTeamForm, getTeamSquad, getTopScorers, getTeamCleanSheets } from './data/openFootballLayer.js';
-import { initScrapedData, getCompletedFixtures, getUpcomingFixtures, normalizeName, getLineup } from './data/scrapedAdapter.js';
+import { normalizeName, getCompletedFixtures, getUpcomingFixtures, getMatchEvents, initScrapedData } from './data/scrapedAdapter.js';
 
 
 
@@ -24,27 +24,26 @@ const TACTICAL_ICONS = {
   simulation: `<svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><polyline points="1.5,5 3,5 4,2 6,8 7,5 8.5,5" fill="none" stroke="currentColor" stroke-width="1"/></svg>`
 };
 
-document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    await initScrapedData();
-    reloadTeams();
-  } catch (error) {
-    console.warn("Failed to initialize scraped data:", error);
-  }
+document.addEventListener("DOMContentLoaded", () => {
+  // Load match events keyed by FIFA ID into window cache
+  fetch('/data/scraped/match_events.json')
+    .then(r => r.json())
+    .then(d => { window._allMatchEvents = d; })
+    .catch(() => { window._allMatchEvents = {}; });
 
   const FORMATIONS = {
     "4-3-3": {
       label: "4-3-3",
       slots: [
         { pos: "GK", x: 100, y: 15 },
-        { pos: "DF", x: 22,  y: 48 },
-        { pos: "DF", x: 68,  y: 48 },
+        { pos: "DF", x: 22, y: 48 },
+        { pos: "DF", x: 68, y: 48 },
         { pos: "DF", x: 132, y: 48 },
         { pos: "DF", x: 178, y: 48 },
-        { pos: "MF", x: 44,  y: 88 },
+        { pos: "MF", x: 44, y: 88 },
         { pos: "MF", x: 100, y: 88 },
         { pos: "MF", x: 156, y: 88 },
-        { pos: "FW", x: 28,  y: 125 },
+        { pos: "FW", x: 28, y: 125 },
         { pos: "FW", x: 100, y: 125 },
         { pos: "FW", x: 172, y: 125 },
       ]
@@ -53,13 +52,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       label: "4-2-3-1",
       slots: [
         { pos: "GK", x: 100, y: 15 },
-        { pos: "DF", x: 22,  y: 48 },
-        { pos: "DF", x: 68,  y: 48 },
+        { pos: "DF", x: 22, y: 48 },
+        { pos: "DF", x: 68, y: 48 },
         { pos: "DF", x: 132, y: 48 },
         { pos: "DF", x: 178, y: 48 },
-        { pos: "MF", x: 65,  y: 78 },
+        { pos: "MF", x: 65, y: 78 },
         { pos: "MF", x: 135, y: 78 },
-        { pos: "MF", x: 28,  y: 98 },
+        { pos: "MF", x: 28, y: 98 },
         { pos: "MF", x: 100, y: 98 },
         { pos: "MF", x: 172, y: 98 },
         { pos: "FW", x: 100, y: 125 },
@@ -69,15 +68,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       label: "4-4-2",
       slots: [
         { pos: "GK", x: 100, y: 15 },
-        { pos: "DF", x: 22,  y: 48 },
-        { pos: "DF", x: 68,  y: 48 },
+        { pos: "DF", x: 22, y: 48 },
+        { pos: "DF", x: 68, y: 48 },
         { pos: "DF", x: 132, y: 48 },
         { pos: "DF", x: 178, y: 48 },
-        { pos: "MF", x: 28,  y: 88 },
-        { pos: "MF", x: 76,  y: 88 },
+        { pos: "MF", x: 28, y: 88 },
+        { pos: "MF", x: 76, y: 88 },
         { pos: "MF", x: 124, y: 88 },
         { pos: "MF", x: 172, y: 88 },
-        { pos: "FW", x: 65,  y: 125 },
+        { pos: "FW", x: 65, y: 125 },
         { pos: "FW", x: 135, y: 125 },
       ]
     },
@@ -85,15 +84,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       label: "3-5-2",
       slots: [
         { pos: "GK", x: 100, y: 15 },
-        { pos: "DF", x: 44,  y: 48 },
+        { pos: "DF", x: 44, y: 48 },
         { pos: "DF", x: 100, y: 48 },
         { pos: "DF", x: 156, y: 48 },
-        { pos: "MF", x: 16,  y: 88 },
-        { pos: "MF", x: 58,  y: 88 },
+        { pos: "MF", x: 16, y: 88 },
+        { pos: "MF", x: 58, y: 88 },
         { pos: "MF", x: 100, y: 88 },
         { pos: "MF", x: 142, y: 88 },
         { pos: "MF", x: 184, y: 88 },
-        { pos: "FW", x: 65,  y: 125 },
+        { pos: "FW", x: 65, y: 125 },
         { pos: "FW", x: 135, y: 125 },
       ]
     },
@@ -101,14 +100,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       label: "3-4-3",
       slots: [
         { pos: "GK", x: 100, y: 15 },
-        { pos: "DF", x: 44,  y: 48 },
+        { pos: "DF", x: 44, y: 48 },
         { pos: "DF", x: 100, y: 48 },
         { pos: "DF", x: 156, y: 48 },
-        { pos: "MF", x: 28,  y: 88 },
-        { pos: "MF", x: 76,  y: 88 },
+        { pos: "MF", x: 28, y: 88 },
+        { pos: "MF", x: 76, y: 88 },
         { pos: "MF", x: 124, y: 88 },
         { pos: "MF", x: 172, y: 88 },
-        { pos: "FW", x: 28,  y: 125 },
+        { pos: "FW", x: 28, y: 125 },
         { pos: "FW", x: 100, y: 125 },
         { pos: "FW", x: 172, y: 125 },
       ]
@@ -117,15 +116,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       label: "5-3-2",
       slots: [
         { pos: "GK", x: 100, y: 15 },
-        { pos: "DF", x: 16,  y: 48 },
-        { pos: "DF", x: 58,  y: 48 },
+        { pos: "DF", x: 16, y: 48 },
+        { pos: "DF", x: 58, y: 48 },
         { pos: "DF", x: 100, y: 48 },
         { pos: "DF", x: 142, y: 48 },
         { pos: "DF", x: 184, y: 48 },
-        { pos: "MF", x: 44,  y: 88 },
+        { pos: "MF", x: 44, y: 88 },
         { pos: "MF", x: 100, y: 88 },
         { pos: "MF", x: 156, y: 88 },
-        { pos: "FW", x: 65,  y: 125 },
+        { pos: "FW", x: 65, y: 125 },
         { pos: "FW", x: 135, y: 125 },
       ]
     },
@@ -133,12 +132,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       label: "4-5-1",
       slots: [
         { pos: "GK", x: 100, y: 15 },
-        { pos: "DF", x: 22,  y: 48 },
-        { pos: "DF", x: 68,  y: 48 },
+        { pos: "DF", x: 22, y: 48 },
+        { pos: "DF", x: 68, y: 48 },
         { pos: "DF", x: 132, y: 48 },
         { pos: "DF", x: 178, y: 48 },
-        { pos: "MF", x: 16,  y: 88 },
-        { pos: "MF", x: 58,  y: 88 },
+        { pos: "MF", x: 16, y: 88 },
+        { pos: "MF", x: 58, y: 88 },
         { pos: "MF", x: 100, y: 88 },
         { pos: "MF", x: 142, y: 88 },
         { pos: "MF", x: 184, y: 88 },
@@ -163,39 +162,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       bench: []
     },
     modified: false,
-    selectedPlayer: null,
-    currentFixtureLineup: null
+    selectedPlayer: null
   };
 
-  function isPlayerInLineupList(playerName, lineupList) {
-    if (!lineupList) return false;
-    const norm = normalizeName(playerName).toLowerCase();
-    return lineupList.some(lp => {
-      const lpNorm = normalizeName(lp.name || lp).toLowerCase();
-      return lpNorm === norm || lpNorm.includes(norm) || norm.includes(lpNorm);
-    });
-  }
-
   function initializeLineupState(teamCode, rawSquad, teamKey) {
-    const lineup = lineupState.currentFixtureLineup;
-    const players = rawSquad.map(p => {
-      let isStarter = p.starter !== undefined ? p.starter : false;
-      if (lineup) {
-        const isHomeInLineup = (teamCode === lineup.home || normalizeName(teamCode) === normalizeName(lineup.home));
-        const startersList = isHomeInLineup ? lineup.home_starters : lineup.away_starters;
-        const subsList = isHomeInLineup ? lineup.home_subs : lineup.away_subs;
-
-        if (isPlayerInLineupList(p.name, startersList)) {
-          isStarter = true;
-        } else if (isPlayerInLineupList(p.name, subsList)) {
-          isStarter = false;
-        }
-      }
-      return {
-        ...p,
-        isStarter
-      };
-    });
+    const players = rawSquad.map(p => ({
+      ...p,
+      isStarter: p.starter !== undefined ? p.starter : false
+    }));
     lineupState[teamKey] = {
       code: teamCode,
       formation: lineupState[teamKey].formation || '4-3-3',
@@ -203,9 +177,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       starters: players.filter(p => p.isStarter),
       bench: players.filter(p => !p.isStarter)
     };
-    if (!lineup) {
-      adjustStartersForFormation(lineupState[teamKey], lineupState[teamKey].formation);
-    }
+    adjustStartersForFormation(lineupState[teamKey], lineupState[teamKey].formation);
   }
 
   function adjustStartersForFormation(teamState, targetFormation) {
@@ -226,19 +198,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function adjustPositionGroup(posGroup, requiredCount) {
       const currentStarters = teamState.players.filter(p => p.isStarter && p.posGroup === posGroup);
-      
+
       if (currentStarters.length < requiredCount) {
         const needed = requiredCount - currentStarters.length;
         const benchPlayers = teamState.players.filter(p => !p.isStarter && p.posGroup === posGroup);
         benchPlayers.sort((a, b) => a.number - b.number);
-        
+
         for (let i = 0; i < Math.min(needed, benchPlayers.length); i++) {
           benchPlayers[i].isStarter = true;
         }
       } else if (currentStarters.length > requiredCount) {
         const extra = currentStarters.length - requiredCount;
         currentStarters.sort((a, b) => b.number - a.number);
-        
+
         for (let i = 0; i < Math.min(extra, currentStarters.length); i++) {
           currentStarters[i].isStarter = false;
         }
@@ -351,7 +323,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         candidateRow.classList.add("swap-candidate");
         candidateRow.style.borderLeft = "2px solid #f59e0b44";
         candidateRow.style.color = "#f59e0b";
-        
+
         if (!candidateRow.querySelector(".swap-label")) {
           const swapLabel = document.createElement("span");
           swapLabel.className = "swap-label";
@@ -419,50 +391,50 @@ document.addEventListener("DOMContentLoaded", async () => {
   const squadTeamBSelect = document.getElementById("squad-team-b-select");
   const squadAnalysisPlaceholder = document.getElementById("squad-analysis-placeholder");
   const stageSelect = document.getElementById("stage-select");
-  
+
   const staleToggle = document.getElementById("toggle-stale");
   const injuryAToggle = document.getElementById("toggle-injury-a");
   const injuryBToggle = document.getElementById("toggle-injury-b");
-  
+
   const predictBtn = document.getElementById("predict-btn");
   const selectionError = document.getElementById("selection-error");
   const loadingState = document.getElementById("loading-state");
-  
+
   // Results Elements
   const probTeamAName = document.getElementById("prob-team-a-name");
   const probTeamBName = document.getElementById("prob-team-b-name");
   const probTeamAVal = document.getElementById("prob-team-a-val");
   const probTeamBVal = document.getElementById("prob-team-b-val");
   const probDrawVal = document.getElementById("prob-draw-val");
-  
+
   const probSegmentA = document.getElementById("prob-segment-a");
   const probSegmentDraw = document.getElementById("prob-segment-draw");
   const probSegmentB = document.getElementById("prob-segment-b");
-  
+
   const cardXgALabel = document.getElementById("card-xg-a-label");
   const cardXgAVal = document.getElementById("card-xg-a-val");
   const cardXgBLabel = document.getElementById("card-xg-b-label");
   const cardXgBVal = document.getElementById("card-xg-b-val");
   const cardScorelineVal = document.getElementById("card-scoreline-val");
-  
+
   const formTeamAHeader = document.getElementById("form-team-a-header");
   const formTeamBHeader = document.getElementById("form-team-b-header");
   const formTeamASquares = document.getElementById("form-team-a-squares");
   const formTeamBSquares = document.getElementById("form-team-b-squares");
-  
+
   const h2hMainRecord = document.getElementById("h2h-main-record");
   const h2hMatchNote = document.getElementById("h2h-match-note");
-  
+
   const matrixListRows = document.getElementById("matrix-list-rows");
-  
+
   const staleBadge = document.getElementById("stale-badge");
   const confidenceScoreVal = document.getElementById("confidence-score-val");
   const confidenceMeterFill = document.getElementById("confidence-meter-fill");
-  
+
   const layerStaticVal = document.getElementById("layer-static-val");
   const layerFormVal = document.getElementById("layer-form-val");
   const layerFinalVal = document.getElementById("layer-final-val");
-  
+
   const engineNotesConsole = document.getElementById("engine-notes-console");
   const venueDisplay = document.getElementById("match-venue-display");
   const completedBanner = document.getElementById("match-completed-banner");
@@ -475,7 +447,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     segA.style.width = '0%';
     segDraw.style.width = '0%';
     segB.style.width = '0%';
-    
+
     segA.classList.remove('segment-pulse');
     segDraw.classList.remove('segment-pulse');
     segB.classList.remove('segment-pulse');
@@ -483,13 +455,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     requestAnimationFrame(() => {
       segA.style.transition = 'width 600ms cubic-bezier(0.16, 1, 0.3, 1)';
       segA.style.width = `${valA}%`;
-      
+
       segDraw.style.transition = 'width 600ms cubic-bezier(0.16, 1, 0.3, 1)';
       segDraw.style.width = `${valDraw}%`;
-      
+
       segB.style.transition = 'width 600ms cubic-bezier(0.16, 1, 0.3, 1)';
       segB.style.width = `${valB}%`;
-      
+
       setTimeout(() => {
         if (valA > valDraw && valA > valB) {
           segA.classList.add('segment-pulse');
@@ -505,7 +477,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   function typewriterLines(container, lines, prefix = '> ') {
     container.innerHTML = '';
     let lineIndex = 0;
-    
+
     function renderNextLine() {
       if (lineIndex >= lines.length) return;
       const text = prefix + lines[lineIndex++];
@@ -513,7 +485,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       el.className = 'engine-note-line';
       el.textContent = '';
       container.appendChild(el);
-      
+
       let charIndex = 0;
       const charInterval = setInterval(() => {
         el.textContent += text[charIndex++];
@@ -524,7 +496,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }, 10);
     }
-    
+
     renderNextLine();
   }
 
@@ -540,23 +512,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   function populateDropdowns() {
     [teamASelect, teamBSelect].forEach(select => {
       select.innerHTML = "";
-      
+
       // Loop tiers 1 to 4
       for (let t = 1; t <= 4; t++) {
         const optgroup = document.createElement("optgroup");
         optgroup.label = TIERS[t].toUpperCase();
-        
+
         const tierTeams = TEAMS.filter(team => team.tier === t);
         // Sort alphabetically by name
         tierTeams.sort((a, b) => a.name.localeCompare(b.name));
-        
+
         tierTeams.forEach(team => {
           const option = document.createElement("option");
           option.value = team.id;
           option.textContent = `${team.flag} ${team.name} [${team.id}]`;
           optgroup.appendChild(option);
         });
-        
+
         select.appendChild(optgroup);
       }
     });
@@ -612,15 +584,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
     const { enrichedA, enrichedB, fixture } = await enrichMatchup(teamA, teamB);
-    
+
     const fixtureDiv = document.getElementById('fixture-auto-resolved');
     const fixtureText = document.getElementById('fixture-resolved-text');
-    
+
     if (fixture) {
       const homeName = enrichedA.isHome ? teamA.name : teamB.name;
       const awayName = enrichedA.isHome ? teamB.name : teamA.name;
-      fixtureText.textContent = 
-        homeName + ' (H) vs ' + awayName + 
+      fixtureText.textContent =
+        homeName + ' (H) vs ' + awayName +
         ' (A) · ' + (fixture.ground || 'TBD') +
         ' · ' + (fixture.date || '');
       fixtureDiv.classList.remove('hidden');
@@ -649,7 +621,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function updateDashboard() {
     const teamAId = teamASelect.value;
     const teamBId = teamBSelect.value;
-    
+
     if (teamAId === teamBId) return;
 
     // Show results panel and hide placeholder
@@ -715,7 +687,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 1. PROBABILITY BAR TEXT & LABELS
     probTeamAName.textContent = enrichedA.name.toUpperCase();
     probTeamBName.textContent = enrichedB.name.toUpperCase();
-    
+
     probTeamAVal.textContent = `${correctedResults.winA_pct.toFixed(1)}%`;
     probDrawVal.textContent = `${correctedResults.draw_pct.toFixed(1)}%`;
     probTeamBVal.textContent = `${correctedResults.winB_pct.toFixed(1)}%`;
@@ -727,10 +699,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const labelB = teamB.name.substring(0, 3).toUpperCase();
     cardXgALabel.textContent = `λ ${labelA}`;
     cardXgAVal.textContent = correctedResults.lambda_A.toFixed(1);
-    
+
     cardXgBLabel.textContent = `λ ${labelB}`;
     cardXgBVal.textContent = correctedResults.lambda_B.toFixed(1);
-    
+
     cardScorelineVal.textContent = correctedResults.mostLikelyScoreline;
 
     // 4. RECENT FORM SQUARES
@@ -758,16 +730,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 3. TOP 5 SCORELINES BAR CHART
     matrixListRows.innerHTML = "";
     const maxProb = results.top5[0].probability; // highest probability
-    
+
     results.top5.forEach((row, index) => {
       const percentageText = `${(row.probability * 100).toFixed(1)}%`;
       // Fill width proportional to probability relative to highest probability (highest = 100% width)
       const fillPercentage = maxProb > 0 ? (row.probability / maxProb) * 100 : 0;
-      
+
       const matrixRow = document.createElement("div");
       matrixRow.className = "matrix-row matrix-row-animate";
       matrixRow.style.animationDelay = `${index * 70}ms`;
-      
+
       matrixRow.innerHTML = `
         <div class="matrix-score">${row.scoreA}-${row.scoreB}</div>
         <div class="matrix-bar-cell">
@@ -775,9 +747,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
         <div class="matrix-pct">${percentageText}</div>
       `;
-      
+
       matrixListRows.appendChild(matrixRow);
-      
+
       // Animate width expansion
       setTimeout(() => {
         const fillBar = matrixRow.querySelector(".matrix-bar-fill");
@@ -793,18 +765,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     confidenceScoreVal.textContent = `${results.confidence}/100 — ${results.confidenceBand}`;
-    
+
     // Clear old bands
     confidenceMeterFill.className = "confidence-meter-fill";
-    
+
     // Apply proper color class based on band
     let colorClass = "HIGH";
     if (results.confidenceBand === "MEDIUM") colorClass = "MEDIUM";
     else if (results.confidenceBand === "LOW") colorClass = "LOW";
     else if (results.confidenceBand === "VERY LOW") colorClass = "VERY_LOW";
-    
+
     confidenceMeterFill.classList.add(colorClass);
-    
+
     // Animate confidence meter width
     confidenceMeterFill.style.width = '0%';
     confidenceMeterFill.style.transition = 'none';
@@ -821,15 +793,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     layerFinalVal.textContent = `${results.winA_pct.toFixed(1)}%`;
 
     // 6. PREDICTION DRIVERS (ENGINE NOTES CONSOLE LOGS)
-    const prefixedDrivers = results.drivers.map(d => 
+    const prefixedDrivers = results.drivers.map(d =>
       (enrichedA.hasLiveData || enrichedB.hasLiveData ? '[LIVE] ' : '[STATIC] ') + d.toUpperCase()
     );
-    
+
     typewriterLines(engineNotesConsole, prefixedDrivers);
 
     // Update Squad Analysis
     renderSquadAnalysis();
     renderPreMatchFlags();
+
+    // Render expansion modules
+    await renderExpansionModules(teamAId, teamBId);
   }
 
   function runLoadingSequence(onComplete) {
@@ -840,13 +815,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       "BLENDING LIVE DATA FEEDS AND WEATHER MODIFIERS...",
       "COMPUTING CONFIDENCE SCORE AND LAMBDAS..."
     ];
-    
+
     const loadingOverlay = document.getElementById("loading-state");
     const textEl = loadingOverlay.querySelector(".loading-text");
     loadingOverlay.classList.remove("hidden");
-    
+
     let stepIndex = 0;
-    
+
     function nextStep() {
       if (stepIndex >= steps.length) {
         setTimeout(() => {
@@ -858,7 +833,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       textEl.textContent = steps[stepIndex++];
       setTimeout(nextStep, 180);
     }
-    
+
     nextStep();
   }
 
@@ -870,154 +845,70 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  // Routing elements
-  const fixturesMainView = document.getElementById("fixtures-main-view");
-  const matchDetailView = document.getElementById("match-detail-view");
+  // Tab Switching logic
+  const btnTabPredictor = document.getElementById("btn-tab-predictor");
+  const btnTabSquad = document.getElementById("btn-tab-squad");
   const btnTabVerification = document.getElementById("btn-tab-verification");
   const btnTabSettings = document.getElementById("btn-tab-settings");
-  const btnBackFixtures = document.getElementById("btn-back-fixtures");
-  const subnavPrediction = document.getElementById("subnav-prediction");
-  const subnavSquad = document.getElementById("subnav-squad");
-  const panePrediction = document.getElementById("match-detail-prediction-pane");
-  const paneSquad = document.getElementById("match-detail-squad-pane");
-
+  const predictorView = document.getElementById("predictor-view");
+  const squadAnalysisView = document.getElementById("squad-analysis-view");
   const verificationView = document.getElementById("verification-view");
   const settingsView = document.getElementById("settings-view");
 
-  function setActiveNavBtn(btn) {
+  btnTabPredictor.addEventListener("click", () => {
+    btnTabPredictor.classList.add("active");
+    btnTabSquad.classList.remove("active");
     btnTabVerification.classList.remove("active");
     btnTabSettings.classList.remove("active");
-    if (btn) btn.classList.add("active");
-  }
-
-  function hideAllMainViews() {
-    fixturesMainView.classList.add("hidden");
-    matchDetailView.classList.add("hidden");
+    predictorView.classList.remove("hidden");
+    squadAnalysisView.classList.add("hidden");
+    document.getElementById("squad-analysis-placeholder").classList.add("hidden");
     verificationView.classList.add("hidden");
     settingsView.classList.add("hidden");
-  }
+  });
 
-  function showFixturesMain() {
-    hideAllMainViews();
-    setActiveNavBtn(null);
-    fixturesMainView.classList.remove("hidden");
-    renderFixturesList();
-  }
+  btnTabSquad.addEventListener("click", () => {
+    btnTabSquad.classList.add("active");
+    btnTabPredictor.classList.remove("active");
+    btnTabVerification.classList.remove("active");
+    btnTabSettings.classList.remove("active");
+    squadAnalysisView.classList.remove("hidden");
+    predictorView.classList.add("hidden");
+    verificationView.classList.add("hidden");
+    settingsView.classList.add("hidden");
+
+    // Render squad analysis
+    renderSquadAnalysis();
+  });
 
   btnTabVerification.addEventListener("click", () => {
-    hideAllMainViews();
-    setActiveNavBtn(btnTabVerification);
+    btnTabVerification.classList.add("active");
+    btnTabPredictor.classList.remove("active");
+    btnTabSquad.classList.remove("active");
+    btnTabSettings.classList.remove("active");
     verificationView.classList.remove("hidden");
+    predictorView.classList.add("hidden");
+    squadAnalysisView.classList.add("hidden");
+    document.getElementById("squad-analysis-placeholder").classList.add("hidden");
+    settingsView.classList.add("hidden");
+
+    // Execute live backtest dynamically
     initVerificationTab();
   });
 
   btnTabSettings.addEventListener("click", () => {
-    hideAllMainViews();
-    setActiveNavBtn(btnTabSettings);
+    btnTabSettings.classList.add("active");
+    btnTabPredictor.classList.remove("active");
+    btnTabSquad.classList.remove("active");
+    btnTabVerification.classList.remove("active");
     settingsView.classList.remove("hidden");
+    predictorView.classList.add("hidden");
+    squadAnalysisView.classList.add("hidden");
+    document.getElementById("squad-analysis-placeholder").classList.add("hidden");
+    verificationView.classList.add("hidden");
+
     updateSettingsPanel();
   });
-
-  btnBackFixtures.addEventListener("click", () => {
-    subnavPrediction.classList.add("active");
-    subnavSquad.classList.remove("active");
-    panePrediction.classList.remove("hidden");
-    paneSquad.classList.add("hidden");
-    lineupState.currentFixtureLineup = null;
-    showFixturesMain();
-  });
-
-  subnavPrediction.addEventListener("click", () => {
-    subnavPrediction.classList.add("active");
-    subnavSquad.classList.remove("active");
-    panePrediction.classList.remove("hidden");
-    paneSquad.classList.add("hidden");
-    renderSquadAnalysis();
-  });
-
-  subnavSquad.addEventListener("click", () => {
-    subnavSquad.classList.add("active");
-    subnavPrediction.classList.remove("active");
-    paneSquad.classList.remove("hidden");
-    panePrediction.classList.add("hidden");
-    renderSquadAnalysis();
-  });
-
-  function renderFixturesList() {
-    const container = document.getElementById("fixtures-list-container");
-    if (!container) return;
-    container.innerHTML = "";
-
-    const upcoming = getUpcomingFixtures();
-    const completed = getCompletedFixtures();
-
-    const allFixtures = [...upcoming, ...completed].sort((a, b) => new Date(a.kickoff_utc) - new Date(b.kickoff_utc));
-
-    if (allFixtures.length === 0) {
-      container.innerHTML = `<div style="font-family: var(--font-data); font-size: 11px; color: var(--text-muted); padding: 12px;">NO FIXTURES AVAILABLE.</div>`;
-      return;
-    }
-
-    allFixtures.forEach(fixture => {
-      const row = document.createElement("div");
-      row.className = "fixture-row";
-      
-      const isCompleted = fixture.result && fixture.result.ft;
-      const kickoffDate = new Date(fixture.kickoff_utc);
-      const formattedDate = kickoffDate.toLocaleDateString([], { month: 'short', day: 'numeric' });
-      const formattedTime = kickoffDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      let scoreDisplay = "VS";
-      let statusClass = "status-upcoming";
-      let statusText = "UPCOMING";
-
-      if (isCompleted) {
-        scoreDisplay = `${fixture.result.ft[0]} — ${fixture.result.ft[1]}`;
-        statusClass = "status-completed";
-        statusText = "COMPLETED";
-      }
-
-      row.innerHTML = `
-        <span class="fixture-date">${formattedDate} · ${formattedTime}</span>
-        <div class="fixture-teams">
-          <span class="fixture-team-name home-name">${fixture.home_team}</span>
-          <span class="fixture-score">${scoreDisplay}</span>
-          <span class="fixture-team-name away-name">${fixture.away_team}</span>
-        </div>
-        <span class="fixture-status ${statusClass}">${statusText}</span>
-      `;
-
-      row.addEventListener("click", () => {
-        const homeTeamObj = TEAMS.find(t => t.name.toLowerCase() === fixture.home_team.toLowerCase() || normalizeName(t.name).toLowerCase() === normalizeName(fixture.home_team).toLowerCase());
-        const awayTeamObj = TEAMS.find(t => t.name.toLowerCase() === fixture.away_team.toLowerCase() || normalizeName(t.name).toLowerCase() === normalizeName(fixture.away_team).toLowerCase());
-
-        if (!homeTeamObj || !awayTeamObj) {
-          console.warn(`One or both teams (${fixture.home_team} vs ${fixture.away_team}) not found in the prediction system database.`);
-          return;
-        }
-
-        teamASelect.value = homeTeamObj.id;
-        teamBSelect.value = awayTeamObj.id;
-        squadTeamASelect.value = homeTeamObj.id;
-        squadTeamBSelect.value = awayTeamObj.id;
-
-        document.getElementById("match-detail-title").textContent = `${fixture.home_team} vs ${fixture.away_team} · ${formattedDate}`;
-
-        const matchLineup = getLineup(fixture.match_id);
-        lineupState.currentFixtureLineup = matchLineup;
-        lineupState.modified = false;
-
-        hideAllMainViews();
-        matchDetailView.classList.remove("hidden");
-        
-        runLoadingSequence(() => {
-          updateDashboard();
-        });
-      });
-
-      container.appendChild(row);
-    });
-  }
 
   // Backtest filter buttons click event listeners
   const filterAll = document.getElementById("filter-all");
@@ -1027,11 +918,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (filterAll && filterCorrect && filterIncorrect && filterDraws) {
     const filters = [filterAll, filterCorrect, filterIncorrect, filterDraws];
-    
+
     function applyFilter(activeBtn, type) {
       filters.forEach(btn => btn.classList.remove("active"));
       activeBtn.classList.add("active");
-      
+
       const rows = document.querySelectorAll("#backtest-results-body tr");
       rows.forEach(row => {
         if (row.classList.contains("details-row")) {
@@ -1081,19 +972,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   function isPlayerVerified(teamCode, playerName) {
     const internalTeam = TEAMS.find(t => t.id === teamCode);
     if (!internalTeam || !internalTeam.players) return false;
-    
+
     const match = internalTeam.players.find(ip => {
       const ipName = ip.name.toLowerCase();
       const pName = playerName.toLowerCase();
       return ipName === pName || ipName.includes(pName) || pName.includes(ipName);
     });
-    
+
     return !!(match && match.data_quality === 'FULL');
   }
 
   function getSortedStarters(squad) {
     const starters = squad.filter(p => p.isStarter !== undefined ? p.isStarter : p.starter);
-    
+
     const gks = starters.filter(p => p.posGroup === 'GOALKEEPERS');
     const dfs = starters.filter(p => p.posGroup === 'DEFENDERS');
     const mfs = starters.filter(p => p.posGroup === 'MIDFIELDERS');
@@ -1111,8 +1002,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const teamAId = squadTeamASelect.value;
     const teamBId = squadTeamBSelect.value;
 
-    const subnavSquad = document.getElementById("subnav-squad");
-    const isSquadTabActive = subnavSquad && subnavSquad.classList.contains("active");
+    const btnTabSquad = document.getElementById("btn-tab-squad");
+    const isSquadTabActive = btnTabSquad && btnTabSquad.classList.contains("active");
 
     if (!teamAId || !teamBId) {
       document.getElementById("squad-analysis-view").classList.add("hidden");
@@ -1148,7 +1039,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Get top scorers
     const topScorersList = await getTopScorers(15);
-    
+
     const topScorerA = topScorersList.find(s => s.teamCode === teamAId) || null;
     const topScorerB = topScorersList.find(s => s.teamCode === teamBId) || null;
 
@@ -1240,7 +1131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const headerDiv = document.createElement("div");
     headerDiv.className = "squad-panel-header";
     headerDiv.style.cssText = "display: flex; flex-direction: column; gap: 2px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;";
-    
+
     headerDiv.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <span style="font-family: var(--font-display); font-size: 11px; font-weight: bold; color: var(--text-primary); text-transform: uppercase;">${team.flag || ''} ${teamName}</span>
@@ -1301,14 +1192,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Modified Section: 5. Reduce player list height (collapsible Bench details container)
     const benchDetails = document.createElement("details");
     benchDetails.style.cssText = "margin-top: 8px; width: 100%; border: 1px solid #111; background: #030303;";
-    
+
     const benchSummary = document.createElement("summary");
     benchSummary.style.cssText = "font-family: var(--font-label); font-size: 8px; letter-spacing: 0.15em; color: #888; text-transform: uppercase; padding: 6px 8px; cursor: pointer; outline: none; list-style: none; user-select: none; border-bottom: 1px solid #111; display: flex; align-items: center; gap: 4px;";
     benchSummary.innerHTML = `${TACTICAL_ICONS.warning} RESERVE UNIT ▼`;
-    
+
     const benchContainer = document.createElement("div");
     benchContainer.style.cssText = "display: flex; flex-direction: column; gap: 4px; padding: 4px 6px;";
-    
+
     benchDetails.appendChild(benchSummary);
     benchDetails.appendChild(benchContainer);
 
@@ -1473,22 +1364,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!fullName) return "";
     const name = fullName.trim();
     const parts = name.split(/\s+/);
-    
+
     if (parts.length <= 1) {
       return name;
     }
-    
+
     // Check for initials like "L. Messi"
     if (parts[0].length <= 2 && parts[0].includes('.')) {
       return parts.slice(1).join(' ');
     }
-    
+
     // For names with 3 or more parts (e.g. Alexis Mac Allister, Kevin De Bruyne)
     if (parts.length >= 3) {
       const lastTwo = parts.slice(-2).join(' ');
       return lastTwo;
     }
-    
+
     // For 2-part names (e.g. Kylian Mbappé, Lionel Messi)
     return parts[1];
   }
@@ -1507,15 +1398,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const coordsB = getStartersCoords(startersB, formationB, true);
 
     const labels = [];
-    
+
     startersA.forEach((player) => {
       const coord = coordsA.get(player.name) || { x: 100, y: 147.5 };
       const isGK = player.posGroup === 'GOALKEEPERS';
       const isStar = topScorerA && player.name === topScorerA.name;
-      const r = isStar ? 11 : 7;
-      
+      const r = isStar ? 8 : 5.5;
+
       const shortName = getPitchShortName(player.name);
-      
+
       labels.push({
         side: 'a',
         player,
@@ -1525,9 +1416,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         isGK,
         isStar,
         x: coord.x,
-        y: coord.y - (r + 4),
-        width: Math.max(25, shortName.length * 3.5),
-        height: 7
+        y: coord.y - (r + 3),
+        width: Math.max(16, shortName.length * 2.8),
+        height: 5
       });
     });
 
@@ -1535,10 +1426,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       const coord = coordsB.get(player.name) || { x: 100, y: 147.5 };
       const isGK = player.posGroup === 'GOALKEEPERS';
       const isStar = topScorerB && player.name === topScorerB.name;
-      const r = isStar ? 11 : 7;
-      
+      const r = isStar ? 8 : 5.5;
+
       const shortName = getPitchShortName(player.name);
-      
+
       labels.push({
         side: 'b',
         player,
@@ -1548,9 +1439,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         isGK,
         isStar,
         x: coord.x,
-        y: coord.y - (r + 4),
-        width: Math.max(25, shortName.length * 3.5),
-        height: 7
+        y: coord.y - (r + 3),
+        width: Math.max(16, shortName.length * 2.8),
+        height: 5
       });
     });
 
@@ -1560,30 +1451,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         for (let j = i + 1; j < labels.length; j++) {
           const l1 = labels[i];
           const l2 = labels[j];
-          
+
           const dx = Math.abs(l1.x - l2.x);
           const dy = Math.abs(l1.y - l2.y);
-          
-          const minX = (l1.width + l2.width) / 2 + 3;
-          const minY = 9;
-          
+
+          const minX = (l1.width + l2.width) / 2 + 1;
+          const minY = 6;
+
           if (dx < minX && dy < minY) {
             const shiftY = minY - dy;
             if (l1.y <= l2.y) {
-              l1.y -= shiftY / 2 + 1.5;
-              l2.y += shiftY / 2 + 1.5;
+              l1.y -= shiftY / 2 + 1;
+              l2.y += shiftY / 2 + 1;
             } else {
-              l1.y += shiftY / 2 + 1.5;
-              l2.y -= shiftY / 2 + 1.5;
+              l1.y += shiftY / 2 + 1;
+              l2.y -= shiftY / 2 + 1;
             }
-            
-            if (dx < 6) {
+
+            if (dx < 4) {
               if (l1.x <= l2.x) {
-                l1.x -= 4;
-                l2.x += 4;
+                l1.x -= 2.5;
+                l2.x += 2.5;
               } else {
-                l1.x += 4;
-                l2.x -= 4;
+                l1.x += 2.5;
+                l2.x -= 2.5;
               }
             }
           }
@@ -1610,7 +1501,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Modified Section: 4. Dynamic pitch scaling, 6. Zoom support
     let svgHtml = `
-      <svg viewBox="0 0 200 295" width="100%" height="auto" style="display: block; width: 100%; height: auto; aspect-ratio: 200 / 295; font-family: var(--font-data);">
+      <svg viewBox="0 0 200 295" width="100%" style="display: block; width: 100%; height: auto; aspect-ratio: 200 / 295; font-family: var(--font-data);">
         <!-- Pitch Background -->
         <rect x="0" y="0" width="200" height="295" fill="#040404" />
         
@@ -1639,7 +1530,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     labels.forEach(l => {
       const pulseClass = l.isGK ? 'class="gk-pulse"' : '';
-      
+
       let selectedVisuals = '';
       if (lineupState.selectedPlayer && lineupState.selectedPlayer.name === l.player.name && lineupState.selectedPlayer.teamSide === l.side) {
         const strokeColor = l.side === 'a' ? '#22c55e' : '#3b82f6';
@@ -1657,11 +1548,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           <line x1="${l.coord.x}" y1="${l.coord.y + rTicks - 2}" x2="${l.coord.x}" y2="${l.coord.y + rTicks}" stroke="${strokeColor}" stroke-width="0.8" />
         `;
       }
-      
+
       const strokeColor = l.side === 'a' ? '#22c55e' : '#3b82f6';
       const textColor = l.side === 'a' ? '#22c55e' : '#60a5fa';
       const bgColor = l.side === 'a' ? '#08130a' : '#080d14';
-      
+
       svgHtml += `
         <g>
           ${selectedVisuals}
@@ -1777,7 +1668,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       renderEngineNotes(metrics, results);
 
       // Show timestamp
-      document.getElementById('backtest-timestamp').textContent = 
+      document.getElementById('backtest-timestamp').textContent =
         'Last computed: ' + new Date().toLocaleTimeString() + ' · ' + results.length + ' matches analysed';
     } catch (err) {
       console.error(err);
@@ -1822,7 +1713,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Outcome Cell
       const outcomeCell = document.createElement("td");
       outcomeCell.style.textAlign = "center";
-      
+
       let outcomeSymbol = "✗";
       if (match.outcomeCorrect) {
         outcomeSymbol = "✓";
@@ -1844,8 +1735,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const detailRow = document.createElement("tr");
       detailRow.className = "details-row hidden";
       detailRow.style.backgroundColor = "var(--bg-secondary)";
-      
-      const top5Html = match.top5.map((c, i) => `${i+1}. ${c.scoreA}-${c.scoreB} (${(c.probability * 100).toFixed(1)}%)`).join(" | ");
+
+      const top5Html = match.top5.map((c, i) => `${i + 1}. ${c.scoreA}-${c.scoreB} (${(c.probability * 100).toFixed(1)}%)`).join(" | ");
       detailRow.innerHTML = `
         <td colspan="5" style="font-family: var(--font-data); font-size: 10px; padding: 10px; border-bottom: 1px solid var(--border-color);">
           <div style="display: flex; flex-direction: column; gap: 4px;">
@@ -1872,7 +1763,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         'filter-draws': 'draws'
       };
       const filterType = typeMap[activeFilterBtn.id] || 'all';
-      
+
       const rows = tableBody.querySelectorAll("tr");
       rows.forEach(row => {
         if (row.classList.contains("details-row")) {
@@ -2043,7 +1934,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       animation: pulse 2s infinite;
     `;
     banner.innerHTML = `⚡ NEW MATCH DATA DETECTED — CLICK HERE TO [RECOMPUTE]`;
-    
+
     const tabControlBar = document.querySelector(".tab-control-bar");
     if (tabControlBar) {
       tabControlBar.parentNode.insertBefore(banner, tabControlBar.nextSibling);
@@ -2081,7 +1972,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const teamAId = teamASelect.value;
     const teamBId = teamBSelect.value;
     const container = document.getElementById("pre-match-flags-container");
-    
+
     if (teamAId === teamBId) {
       container.innerHTML = "";
       container.classList.add("hidden");
@@ -2111,7 +2002,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       block.className = "pre-match-flags-team-block";
 
       const team = TEAMS.find(t => t.id === teamId) || { name: teamId };
-      
+
       // Determine worst flag severity
       let titleClass = "";
       let prefixSym = "ℹ INFO";
@@ -2223,7 +2114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const detailsTr = document.createElement("tr");
       detailsTr.className = "details-row hidden";
       detailsTr.id = `inspector-details-${team.id}`;
-      
+
       const allFlagsList = [
         ...flags.critical.map(f => `<span class="flag-item critical">[CRITICAL] ${f}</span>`),
         ...flags.warning.map(f => `<span class="flag-item warning">[WARNING] ${f}</span>`),
@@ -2281,31 +2172,31 @@ document.addEventListener("DOMContentLoaded", async () => {
   btnPullSquad.addEventListener("click", async () => {
     btnPullSquad.disabled = true;
     btnPullSquad.style.opacity = 0.5;
-    
+
     const syncConsole = document.getElementById("sync-console");
     syncConsole.innerHTML = "> INITIATING SQUAD DATA SYNC VIA DELTA sync engine...\n";
     syncConsole.innerHTML += "> Connecting to backend synchronization server...\n";
     syncConsole.scrollTop = syncConsole.scrollHeight;
-    
+
     try {
       const initRes = await fetch("http://localhost:3001/api/pull", { method: "POST" });
       if (!initRes.ok) {
         const errorData = await initRes.json().catch(() => ({}));
         throw new Error(errorData.error || `Server returned status: ${initRes.status}`);
       }
-      
+
       syncConsole.innerHTML += "> Pull process started. Listening to log stream...\n";
       syncConsole.scrollTop = syncConsole.scrollHeight;
-      
+
       const eventSource = new EventSource("http://localhost:3001/api/pull-stream");
-      
+
       eventSource.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
           if (data.log) {
             syncConsole.innerHTML += `${data.log}\n`;
             syncConsole.scrollTop = syncConsole.scrollHeight;
-            
+
             if (data.log.includes("[SUCCESS]")) {
               const match = data.log.match(/\[SUCCESS\]\s+([A-Z]{3}):/);
               if (match) {
@@ -2322,7 +2213,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                   });
               }
             }
-            
+
             if (data.log.includes("PROCESS EXITED WITH CODE")) {
               eventSource.close();
               finalizeSync();
@@ -2338,26 +2229,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         eventSource.close();
         finalizeSync();
       };
-      
+
     } catch (err) {
       syncConsole.innerHTML += `\n> ERROR: Cannot connect to synchronization server.\n> Please ensure that the Express backend is running (run "npm run server" in a separate terminal).\n> Details: ${err.message}\n`;
       syncConsole.scrollTop = syncConsole.scrollHeight;
       btnPullSquad.disabled = false;
       btnPullSquad.style.opacity = 1;
     }
-    
+
     function finalizeSync() {
       const meta = JSON.parse(localStorage.getItem('oracle26_meta') || '{}');
       meta.last_pull_attempt = new Date().toISOString();
       localStorage.setItem('oracle26_meta', JSON.stringify(meta));
-      
+
       syncConsole.innerHTML += "\n> SYNC PROCESS CONCLUDED.";
       syncConsole.scrollTop = syncConsole.scrollHeight;
-      
+
       reloadTeams();
       updateDashboard();
       updateSettingsPanel();
-      
+
       btnPullSquad.disabled = false;
       btnPullSquad.style.opacity = 1;
     }
@@ -2367,14 +2258,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   btnUpdateInjuries.addEventListener("click", () => {
     btnUpdateInjuries.disabled = true;
     btnUpdateInjuries.style.opacity = 0.5;
-    
+
     const syncConsole = document.getElementById("sync-console");
     syncConsole.innerHTML = "> INITIATING INJURY INDEX SYNC FOR SELECTED TEAMS...\n";
-    
+
     // Get the two selected teams
     const teamA = document.getElementById("team-a-select").value;
     const teamB = document.getElementById("team-b-select").value;
-    
+
     const teamsToUpdate = [teamA, teamB].filter(Boolean);
     if (teamsToUpdate.length === 0) {
       syncConsole.innerHTML += "> ERROR: No teams selected for injury sync.\n";
@@ -2394,7 +2285,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           throw new Error(`Server returned status: ${response.status}`);
         }
         const injuryData = await response.json();
-        
+
         // Save to localStorage: oracle26_injuries_{teamId}
         const key = `oracle26_injuries_${teamId}`;
         localStorage.setItem(key, JSON.stringify(injuryData));
@@ -2408,11 +2299,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (completed === teamsToUpdate.length) {
           syncConsole.innerHTML += "\n> INJURY SYNC COMPLETE.";
           syncConsole.scrollTop = syncConsole.scrollHeight;
-          
+
           reloadTeams();
           updateDashboard();
           updateSettingsPanel();
-          
+
           btnUpdateInjuries.disabled = false;
           btnUpdateInjuries.style.opacity = 1;
         }
@@ -2425,17 +2316,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       const response = await fetch("http://localhost:3001/api/cache-status");
       if (!response.ok) return;
       const data = await response.json();
-      
+
       const promises = [];
       data.teams.forEach(team => {
         if (team.lastPulled) {
           const localKey = `oracle26_team_${team.code}`;
           const localData = JSON.parse(localStorage.getItem(localKey) || 'null');
-          
-          const needsSquadSync = !localData || 
+
+          const needsSquadSync = !localData ||
             localData.squad.some(p => p.xG_source === 'MOCK') ||
             (localData.updated_at && new Date(localData.updated_at) < new Date(team.lastPulled));
-            
+
           if (needsSquadSync) {
             promises.push(
               fetch(`http://localhost:3001/cache/${team.code}.json`)
@@ -2446,15 +2337,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
           }
         }
-        
+
         if (team.injuryAge) {
           const localInjuriesKey = `oracle26_injuries_${team.code}`;
           const localInjuries = JSON.parse(localStorage.getItem(localInjuriesKey) || 'null');
-          
+
           const needsInjurySync = !localInjuries ||
             !localInjuries.updated_at ||
             (new Date(localInjuries.updated_at) < new Date(team.injuryAge));
-            
+
           if (needsInjurySync) {
             promises.push(
               fetch(`http://localhost:3001/cache/${team.code}_injuries.json`)
@@ -2466,7 +2357,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         }
       });
-      
+
       if (promises.length > 0) {
         await Promise.all(promises);
         reloadTeams();
@@ -2482,21 +2373,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!squadTeamASelect || !squadTeamBSelect) return;
     [squadTeamASelect, squadTeamBSelect].forEach(select => {
       select.innerHTML = "";
-      
+
       for (let t = 1; t <= 4; t++) {
         const optgroup = document.createElement("optgroup");
         optgroup.label = TIERS[t].toUpperCase();
-        
+
         const tierTeams = TEAMS.filter(team => team.tier === t);
         tierTeams.sort((a, b) => a.name.localeCompare(b.name));
-        
+
         tierTeams.forEach(team => {
           const option = document.createElement("option");
           option.value = team.id;
           option.textContent = `${team.flag} ${team.name} [${team.id}]`;
           optgroup.appendChild(option);
         });
-        
+
         select.appendChild(optgroup);
       }
     });
@@ -2537,7 +2428,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.classList.add("active");
 
       const formation = btn.dataset.formation;
-      
+
       adjustStartersForFormation(lineupState.teamA, formation);
       adjustStartersForFormation(lineupState.teamB, formation);
       lineupState.modified = true;
@@ -2556,194 +2447,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
   });
-
-
-  // Schedule View Rendering
-  async function renderScheduleTab() {
-    const upcomingList = document.getElementById("upcoming-list");
-    const completedList = document.getElementById("completed-list");
-    if (!upcomingList || !completedList) return;
-
-    upcomingList.innerHTML = "";
-    completedList.innerHTML = "";
-
-    const upcoming = getUpcomingFixtures();
-    const completed = getCompletedFixtures();
-
-    if (upcoming.length === 0) {
-      upcomingList.innerHTML = `<div style="font-family: var(--font-data); font-size: 11px; color: var(--text-muted); padding: 12px;">NO UPCOMING FIXTURES PLANNED.</div>`;
-    } else {
-      // Group upcoming by stage
-      const sortedUpcoming = [...upcoming].sort((a, b) => new Date(a.kickoff_utc) - new Date(b.kickoff_utc));
-      
-      const stages = {};
-      sortedUpcoming.forEach(f => {
-        const stage = f.stage || "GROUP STAGE";
-        if (!stages[stage]) stages[stage] = [];
-        stages[stage].push(f);
-      });
-
-      Object.keys(stages).forEach(stage => {
-        const stageHeader = document.createElement("div");
-        stageHeader.style.gridColumn = "1 / -1";
-        stageHeader.style.fontFamily = "var(--font-display)";
-        stageHeader.style.fontSize = "10px";
-        stageHeader.style.letterSpacing = "0.1em";
-        stageHeader.style.color = "var(--text-secondary)";
-        stageHeader.style.borderBottom = "1px solid #1a1a1a";
-        stageHeader.style.padding = "12px 0 6px 0";
-        stageHeader.style.textTransform = "uppercase";
-        stageHeader.textContent = `[STAGE: ${stage}]`;
-        upcomingList.appendChild(stageHeader);
-
-        stages[stage].forEach(fixture => {
-          const card = document.createElement("div");
-          card.className = "schedule-card";
-          card.style.border = "1px solid var(--border-color)";
-          card.style.backgroundColor = "var(--bg-secondary)";
-          card.style.padding = "12px";
-          card.style.display = "flex";
-          card.style.flexDirection = "column";
-          card.style.gap = "8px";
-          card.style.fontFamily = "var(--font-data)";
-
-          const localTimeStr = new Date(fixture.kickoff_utc).toLocaleString([], {
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
-          });
-
-          card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); border-bottom: 1px solid #111; padding-bottom: 4px; text-transform: uppercase;">
-              <span>${fixture.match_id ? 'ID: ' + fixture.match_id.substring(0, 8) : ''}</span>
-              <span>${localTimeStr}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: bold; margin: 4px 0;">
-              <span style="flex: 1; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${fixture.home_team}</span>
-              <span style="margin: 0 12px; font-size: 9px; color: var(--text-muted); font-weight: normal;">VS</span>
-              <span style="flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${fixture.away_team}</span>
-            </div>
-            <div style="font-size: 9px; color: var(--text-muted); text-align: center; margin-bottom: 4px; text-transform: uppercase;">
-              📍 ${fixture.venue || 'TBD Venue'}
-            </div>
-            <button class="predict-btn btn-predict" style="font-size: 9px; padding: 6px 12px; cursor: pointer; text-transform: uppercase; width: 100%;">
-              Predict Match ↗
-            </button>
-            <div class="prediction-inline-result hidden" style="border-top: 1px dashed #202020; padding-top: 8px; margin-top: 4px; font-size: 10px; line-height: 1.4; color: var(--text-secondary);">
-              <!-- Inline prediction results -->
-            </div>
-          `;
-
-          const predictBtn = card.querySelector(".predict-btn");
-          const resultDiv = card.querySelector(".prediction-inline-result");
-
-          predictBtn.addEventListener("click", async () => {
-            const homeTeamObj = TEAMS.find(t => t.name.toLowerCase() === fixture.home_team.toLowerCase() || normalizeName(t.name).toLowerCase() === normalizeName(fixture.home_team).toLowerCase());
-            const awayTeamObj = TEAMS.find(t => t.name.toLowerCase() === fixture.away_team.toLowerCase() || normalizeName(t.name).toLowerCase() === normalizeName(fixture.away_team).toLowerCase());
-
-            if (!homeTeamObj || !awayTeamObj) {
-              resultDiv.innerHTML = `<span style="color: var(--accent-red); font-weight: bold;">&gt; PREDICTION UNAVAILABLE: Teams not found in system</span>`;
-              resultDiv.classList.remove("hidden");
-              return;
-            }
-
-            try {
-              predictBtn.disabled = true;
-              predictBtn.textContent = "[COMPUTING MODEL...]";
-              
-              const { enrichedA, enrichedB } = await enrichMatchup(homeTeamObj, awayTeamObj);
-              const options = {
-                staleData: !(enrichedA.hasLiveData || enrichedB.hasLiveData),
-                injureKeyA: false,
-                injureKeyB: false,
-                stage: fixture.stage || "Group"
-              };
-
-              const results = runPrediction(enrichedA, enrichedB, options);
-              
-              const newLambdaA = getLambdaOverride(enrichedA, results.P_dynamic_A, enrichedA.isHome);
-              const newLambdaB = getLambdaOverride(enrichedB, results.P_dynamic_B, enrichedB.isHome);
-              if (newLambdaA !== results.lambda_A || newLambdaB !== results.lambda_B) {
-                results.lambda_A = newLambdaA;
-                results.lambda_B = newLambdaB;
-                const recomputed = recomputeScorelines(newLambdaA, newLambdaB);
-                results.top5 = recomputed.top5;
-                results.mostLikelyScoreline = recomputed.mostLikelyScoreline;
-              }
-
-              resultDiv.innerHTML = `
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px; font-family: var(--font-display); font-weight: bold;">
-                  <span style="color: var(--accent-green);">${homeTeamObj.name}: ${results.winA_pct.toFixed(1)}%</span>
-                  <span style="color: var(--accent-gray);">Draw: ${results.draw_pct.toFixed(1)}%</span>
-                  <span style="color: var(--text-primary);">${awayTeamObj.name}: ${results.winB_pct.toFixed(1)}%</span>
-                </div>
-                <div style="text-align: center; font-weight: bold; color: var(--accent-blue); border-top: 1px solid #151515; padding-top: 4px; margin-top: 4px;">
-                  PROJECTED SCORELINE: ${results.mostLikelyScoreline}
-                </div>
-                <div style="font-size: 8px; color: var(--text-muted); text-align: center; margin-top: 2px;">
-                  CONFIDENCE: ${results.confidence}/100 — ${results.confidenceBand}
-                </div>
-              `;
-              resultDiv.classList.remove("hidden");
-            } catch (err) {
-              console.error("Prediction failed:", err);
-              resultDiv.innerHTML = `<span style="color: var(--accent-red); font-weight: bold;">&gt; ERROR: Prediction calculation failed</span>`;
-              resultDiv.classList.remove("hidden");
-            } finally {
-              predictBtn.disabled = false;
-              predictBtn.textContent = "Predict Match ↗";
-            }
-          });
-
-          upcomingList.appendChild(card);
-        });
-      });
-    }
-
-    if (completed.length === 0) {
-      completedList.innerHTML = `<div style="font-family: var(--font-data); font-size: 11px; color: var(--text-muted); padding: 12px;">NO COMPLETED MATCH RESULTS FOUND.</div>`;
-    } else {
-      const sortedCompleted = [...completed].sort((a, b) => new Date(b.kickoff_utc) - new Date(a.kickoff_utc));
-
-      sortedCompleted.forEach(fixture => {
-        const card = document.createElement("div");
-        card.style.border = "1px solid var(--border-color)";
-        card.style.backgroundColor = "var(--bg-secondary)";
-        card.style.padding = "12px";
-        card.style.display = "flex";
-        card.style.flexDirection = "column";
-        card.style.gap = "6px";
-        card.style.fontFamily = "var(--font-data)";
-
-        const localTimeStr = new Date(fixture.kickoff_utc).toLocaleString([], {
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit"
-        });
-
-        card.innerHTML = `
-          <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); border-bottom: 1px solid #111; padding-bottom: 4px; text-transform: uppercase;">
-            <span>${fixture.stage}</span>
-            <span>${localTimeStr}</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin: 4px 0;">
-            <span style="flex: 1; text-align: right; font-weight: ${fixture.result.ft[0] > fixture.result.ft[1] ? 'bold' : 'normal'}; color: ${fixture.result.ft[0] > fixture.result.ft[1] ? 'var(--text-primary)' : 'var(--text-secondary)'};">${fixture.home_team}</span>
-            <span style="margin: 0 10px; font-family: var(--font-display); font-size: 13px; font-weight: bold; color: var(--accent-green); background: #000; padding: 2px 8px; border: 1px solid #222;">
-              ${fixture.result.ft[0]} - ${fixture.result.ft[1]}
-            </span>
-            <span style="flex: 1; text-align: left; font-weight: ${fixture.result.ft[1] > fixture.result.ft[0] ? 'bold' : 'normal'}; color: ${fixture.result.ft[1] > fixture.result.ft[0] ? 'var(--text-primary)' : 'var(--text-secondary)'};">${fixture.away_team}</span>
-          </div>
-          <div style="font-size: 8px; color: var(--text-muted); text-align: center;">
-            FINAL SCORE (FT) ${fixture.result.ht ? `· HT: ${fixture.result.ht[0]}-${fixture.result.ht[1]}` : ''}
-          </div>
-        `;
-
-        completedList.appendChild(card);
-      });
-    }
-  }
 
 
   // System Info Modal Listeners
@@ -2784,5 +2487,236 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateResolvedFixture();
   renderPreMatchFlags();
   syncLocalWithServerCache();
-  showFixturesMain();
+
+  initScrapedData().then(() => {
+    renderQuickFixtures();
+    fetch('/data/scraped/match_events.json')
+      .then(r => r.json())
+      .then(d => { window._allMatchEvents = d; })
+      .catch(() => { window._allMatchEvents = {}; });
+  });
+
+  function renderQuickFixtures() {
+    const container = document.getElementById('quick-fixture-list');
+    if (!container) return;
+
+    const upcoming = getUpcomingFixtures().slice(0, 20);
+    if (!upcoming.length) {
+      container.innerHTML = '<div style="font-family:var(--font-data);font-size:9px;color:#333;padding:6px 0;">— No upcoming fixtures</div>';
+      return;
+    }
+
+    upcoming.forEach(f => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.style.cssText = `
+        display:flex; justify-content:space-between; align-items:center;
+        width:100%; padding:6px 8px;
+        background:transparent; border:1px solid #1a1a1a;
+        font-family:var(--font-data); font-size:9px; color:#888;
+        cursor:pointer; letter-spacing:0.06em;
+        transition:border-color 0.1s,color 0.1s;
+        text-align:left;
+      `;
+      const date = new Date(f.kickoff_utc).toLocaleDateString('en-GB',{month:'short',day:'numeric'});
+      btn.innerHTML = `
+        <span style="color:#c8c8c8;font-weight:600;letter-spacing:0.08em;">${f.home_team.slice(0,3).toUpperCase()} <span style="color:#555;font-weight:400;">vs</span> ${f.away_team.slice(0,3).toUpperCase()}</span>
+        <span style="color:#555;font-size:8px;">${date} · ${f.stage}</span>
+      `;
+      btn.onmouseover = () => { btn.style.borderColor='#333'; btn.style.color='#c8c8c8'; };
+      btn.onmouseout = () => { btn.style.borderColor='#1a1a1a'; btn.style.color='#888'; };
+
+      btn.onclick = () => {
+        // Find team codes from TEAMS array by name match
+        const teamA = TEAMS.find(t => normalizeName(t.name) === normalizeName(f.home_team) || t.name === f.home_team);
+        const teamB = TEAMS.find(t => normalizeName(t.name) === normalizeName(f.away_team) || t.name === f.away_team);
+        if (!teamA || !teamB) return;
+
+        document.getElementById('team-a-select').value = teamA.id;
+        document.getElementById('team-b-select').value = teamB.id;
+
+        // Trigger change events so existing JS picks up the selection
+        document.getElementById('team-a-select').dispatchEvent(new Event('change'));
+        document.getElementById('team-b-select').dispatchEvent(new Event('change'));
+
+        // Highlight selected
+        container.querySelectorAll('button').forEach(b => b.style.borderColor='#1a1a1a');
+        btn.style.borderColor = '#333';
+        btn.style.color = '#c8c8c8';
+      };
+
+      container.appendChild(btn);
+    });
+  }
+
+  async function renderExpansionModules(teamACode, teamBCode) {
+    const expansionContainer = document.getElementById('expansion-modules');
+    if (expansionContainer) expansionContainer.classList.remove('hidden');
+
+    // Wire sub-tab switching
+    document.querySelectorAll('.exp-tab-btn').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.exp-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        ['events','conditions','goals'].forEach(p => {
+          const el = document.getElementById('exp-pane-' + p);
+          if (el) el.classList.toggle('hidden', p !== btn.dataset.pane);
+        });
+      };
+    });
+
+    // Resolve team names in case codes were passed
+    const teamAName = TEAMS.find(t => t.id === teamACode)?.name || teamACode;
+    const teamBName = TEAMS.find(t => t.id === teamBCode)?.name || teamBCode;
+
+    // Find matched fixture from scraped data
+    const allFixtures = [...(getCompletedFixtures()||[]), ...(getUpcomingFixtures()||[])];
+    const fixture = allFixtures.find(f => {
+      const fHome = f.home_team;
+      const fAway = f.away_team;
+      return (fHome === teamACode || fHome === teamAName || normalizeName(fHome) === teamACode || normalizeName(fHome) === teamAName) &&
+             (fAway === teamBCode || fAway === teamBName || normalizeName(fAway) === teamBCode || normalizeName(fAway) === teamBName);
+    }) || null;
+
+    // EVENTS
+    renderExpEvents(fixture);
+
+    // CONDITIONS
+    await renderExpConditions(fixture);
+
+    // GOAL MAP
+    renderExpGoalMap(fixture);
+  }
+
+  function renderExpEvents(fixture) {
+    const container = document.getElementById('exp-timeline-container');
+    const noEvents = document.getElementById('exp-no-events');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (!fixture) { if (noEvents) noEvents.style.display='block'; return; }
+
+    const allEvents = window._allMatchEvents || {};
+    const homeCode = fixture.home_team.slice(0,3).toUpperCase();
+    const awayCode = fixture.away_team.slice(0,3).toUpperCase();
+
+    const events = Object.values(allEvents).find(e => {
+      const h = (e.home||'').toUpperCase();
+      const a = (e.away||'').toUpperCase();
+      return (h === homeCode || h.includes(homeCode)) && 
+             (a === awayCode || a.includes(awayCode));
+    });
+
+    if (!events || (!events.goals?.length && !events.yellow_cards?.length && !events.red_cards?.length)) {
+      if (noEvents) {
+        noEvents.textContent = '— No match event data for this fixture';
+        noEvents.style.display = 'block';
+      }
+      return;
+    }
+    if (noEvents) noEvents.style.display = 'none';
+
+    // Build unified event list
+    const all = [
+      ...(events.goals||[]).map(e=>({...e, kind:'goal'})),
+      ...(events.yellow_cards||[]).map(e=>({...e, kind:'yellow'})),
+      ...(events.red_cards||[]).map(e=>({...e, kind:'red'})),
+      ...(events.subs||[]).map(e=>({...e, kind:'sub'}))
+    ].sort((a,b) => parseInt(a.minute) - parseInt(b.minute));
+
+    const icon = { goal:'⚽', yellow:'🟨', red:'🟥', sub:'↕' };
+
+    all.forEach(e => {
+      const isHome = e.team === events.home;
+      const row = document.createElement('div');
+      row.style.cssText = 'display:grid;grid-template-columns:1fr 52px 1fr;align-items:center;padding:4px 10px;border-bottom:1px solid #0d0d0d;font-family:var(--font-data);font-size:9px;';
+      row.innerHTML = `
+        <div style="text-align:right;color:${isHome?'#3b82f6':'transparent'}">${isHome ? icon[e.kind] + ' ' + (e.player_id||'') : ''}</div>
+        <div style="text-align:center;font-size:8px;color:#333;border:1px solid #111;padding:2px 4px;">${e.minute||'—'}</div>
+        <div style="text-align:left;color:${!isHome?'#888':'transparent'}">${!isHome ? icon[e.kind] + ' ' + (e.player_id||'') : ''}</div>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  async function renderExpConditions(fixture) {
+    const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val || '—'; };
+
+    // Set venue from fixture first (always available)
+    set('exp-cond-venue-val', fixture?.venue || '—');
+
+    let hasWeather = false;
+
+    // Try FIFA API for weather
+    try {
+      if (!window._fifaMatchMeta) {
+        const r = await fetch('https://api.fifa.com/api/v3/calendar/matches?idCompetition=17&idSeason=285023&count=104&language=en-GB', {
+          headers: { 'Accept': 'application/json' }
+        });
+        const d = await r.json();
+        window._fifaMatchMeta = d.Results || [];
+      }
+      const home = fixture?.home_team;
+      const away = fixture?.away_team;
+      const fm = window._fifaMatchMeta.find(m =>
+        m.Home?.TeamName?.[0]?.Description === home ||
+        m.Away?.TeamName?.[0]?.Description === away
+      );
+      if (fm?.Weather) {
+        const w = fm.Weather;
+        set('exp-cond-temp-val', w.Temperature ? w.Temperature + '°C' : '—');
+        set('exp-cond-humidity-val', w.Humidity ? w.Humidity + '%' : '—');
+        set('exp-cond-wind-val', w.WindSpeed ? w.WindSpeed + ' km/h' : '—');
+        set('exp-cond-type-val', w.TypeLocalized?.[0]?.Description || '—');
+        if (w.Temperature || w.Humidity) {
+          hasWeather = true;
+        }
+      }
+      if (fm?.Stadium) {
+        set('exp-cond-venue-val', fm.Stadium.Name?.[0]?.Description || fixture?.venue || '—');
+      }
+    } catch(e) {
+      // fail silently — venue already set above
+    }
+
+    if (!hasWeather) {
+      set('exp-cond-temp-val', 'N/A');
+      set('exp-cond-humidity-val', 'N/A');
+      set('exp-cond-wind-val', 'N/A');
+      set('exp-cond-type-val', 'PRE-MATCH');
+    }
+  }
+
+  function renderExpGoalMap(fixture) {
+    const pitch = document.getElementById('exp-goal-pitch');
+    const noGoals = document.getElementById('exp-no-goals');
+    if (!pitch) return;
+
+    // Clear old goals, leaving the middle line intact
+    pitch.innerHTML = `<div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:#111;transform:translateX(-50%);"></div>`;
+
+    if (!fixture) { if (noGoals) noGoals.style.display='block'; return; }
+
+    const allEvents = window._allMatchEvents || {};
+    const homeCode = fixture.home_team.slice(0,3).toUpperCase();
+    const awayCode = fixture.away_team.slice(0,3).toUpperCase();
+
+    const events = Object.values(allEvents).find(e => {
+      const h = (e.home||'').toUpperCase();
+      const a = (e.away||'').toUpperCase();
+      return (h === homeCode || h.includes(homeCode)) && 
+             (a === awayCode || a.includes(awayCode));
+    });
+
+    const goals = events?.goals?.filter(g => g.x != null && g.y != null) || [];
+
+    if (!goals || !goals.length) { if (noGoals) noGoals.style.display='block'; return; }
+    if (noGoals) noGoals.style.display = 'none';
+
+    goals.forEach(g => {
+      const dot = document.createElement('div');
+      dot.style.cssText = `position:absolute;width:7px;height:7px;border-radius:50%;transform:translate(-50%,-50%);left:${g.x}%;top:${g.y}%;background:${g.team===events.home?'#3b82f6':'#ef4444'};opacity:0.85;`;
+      pitch.appendChild(dot);
+    });
+  }
 });

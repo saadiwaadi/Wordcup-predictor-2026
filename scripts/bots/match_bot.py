@@ -15,7 +15,7 @@ def run_match_bot():
     try:
         # Determine paths relative to this file
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        events_path = os.path.join(base_dir, "data", "scraped", "match_events.json")
+        events_path = os.path.join(base_dir, "public", "data", "scraped", "match_events.json")
         os.makedirs(os.path.dirname(events_path), exist_ok=True)
 
         # Load existing match events

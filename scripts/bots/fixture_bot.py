@@ -35,6 +35,58 @@ def generate_match_id(home, away, date):
     unique_str = f"{home.lower()}_vs_{away.lower()}_{date}"
     return hashlib.md5(unique_str.encode('utf-8')).hexdigest()[:12]
 
+def normalize_team_name(name):
+    if not name:
+        return ""
+    name = name.strip()
+    mapping = {
+        "Korea Republic": "South Korea",
+        "Côte d'Ivoire": "Ivory Coast",
+        "Cabo Verde": "Cape Verde",
+        "Cape Verde": "Cape Verde",
+        "Türkiye": "Turkey",
+        "IR Iran": "Iran",
+        "Congo DR": "DR Congo",
+        "United States": "USA",
+        "Czechia": "Czech Republic",
+        "Czech Republic": "Czech Republic",
+        "Bosnia and Herzegovina": "Bosnia & Herzegovina",
+        "Bosnia & Herzegovina": "Bosnia & Herzegovina",
+    }
+    return mapping.get(name, name)
+
+def find_fifa_match(fixture, fifa_matches):
+    # Try by kickoff date first since it's UTC and standardized
+    kickoff = fixture.get("kickoff_utc")
+    for m in fifa_matches:
+        if m.get("Date") == kickoff:
+            return m
+            
+    # Try by normalized home/away team names
+    f_home = normalize_team_name(fixture.get("home_team")).lower()
+    f_away = normalize_team_name(fixture.get("away_team")).lower()
+    
+    for m in fifa_matches:
+        m_home_obj = m.get("Home") or {}
+        m_away_obj = m.get("Away") or {}
+        
+        # ShortClubName
+        m_home = normalize_team_name(m_home_obj.get("ShortClubName")).lower()
+        m_away = normalize_team_name(m_away_obj.get("ShortClubName")).lower()
+        
+        if m_home == f_home and m_away == f_away:
+            return m
+            
+        # Try abbreviations or TeamName locales if ShortClubName isn't set or doesn't match
+        m_home_names = [t.get("Description", "").lower() for t in m_home_obj.get("TeamName", []) if t.get("Description")]
+        m_away_names = [t.get("Description", "").lower() for t in m_away_obj.get("TeamName", []) if t.get("Description")]
+        
+        if (f_home in m_home_names or f_home == m_home_obj.get("Abbreviation", "").lower()) and \
+           (f_away in m_away_names or f_away == m_away_obj.get("Abbreviation", "").lower()):
+            return m
+            
+    return None
+
 def fetch_and_normalize_fixtures():
     url = COMPETITION_CONFIG["openfootball_url"]
     headers = {"User-Agent": COMPETITION_CONFIG["user_agent"]}
@@ -55,6 +107,23 @@ def fetch_and_normalize_fixtures():
         print("Error: No matches found in JSON response", file=sys.stderr)
         sys.exit(1)
         
+    # Fetch FIFA API matches for enrichment
+    fifa_matches = []
+    try:
+        fifa_url = "https://api.fifa.com/api/v3/calendar/matches?idCompetition=17&idSeason=285023&count=104&language=en-GB"
+        print(f"Fetching FIFA metadata from: {fifa_url}")
+        fifa_headers = {
+            "Accept": "application/json",
+            "User-Agent": COMPETITION_CONFIG["user_agent"]
+        }
+        fifa_r = requests.get(fifa_url, headers=fifa_headers, timeout=15)
+        if fifa_r.status_code == 200:
+            fifa_matches = fifa_r.json().get("Results", [])
+        else:
+            print(f"Warning: FIFA API returned status code {fifa_r.status_code}", file=sys.stderr)
+    except Exception as e:
+        print(f"Warning: Failed to fetch FIFA match metadata: {e}", file=sys.stderr)
+        
     fixtures = []
     for m in matches:
         stage = m.get("round", "Unknown Stage")
@@ -73,7 +142,7 @@ def fetch_and_normalize_fixtures():
         venue = m.get("ground", "Unknown Venue")
         result = m.get("score") if "score" in m else None
         
-        fixtures.append({
+        fixture_item = {
             "match_id": match_id,
             "home_team": home,
             "away_team": away,
@@ -81,7 +150,32 @@ def fetch_and_normalize_fixtures():
             "stage": stage,
             "venue": venue,
             "result": result
-        })
+        }
+
+        # Try to find corresponding FIFA match
+        fifa_match = find_fifa_match(fixture_item, fifa_matches)
+        if fifa_match:
+            # Weather
+            weather = fifa_match.get("Weather") or {}
+            
+            # Stadium
+            stadium_name = None
+            stadium_obj = fifa_match.get("Stadium") or {}
+            stadium_names = stadium_obj.get("Name") or []
+            for n in stadium_names:
+                if n.get("Locale") == "en-GB" or not stadium_name:
+                    stadium_name = n.get("Description")
+            
+            venue = stadium_name if stadium_name else venue
+            
+            # Attendance
+            attendance = fifa_match.get("Attendance")
+            
+            fixture_item["weather"] = weather
+            fixture_item["venue"] = venue
+            fixture_item["attendance"] = attendance
+
+        fixtures.append(fixture_item)
         
     # Sort fixtures chronologically
     fixtures.sort(key=lambda x: x["kickoff_utc"])

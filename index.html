@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ORACLE-26 // Football Analytics Prediction Command Terminal</title>
-  
+
   <!-- SEO & Metadata -->
   <meta name="description" content="Classified World Cup 2026 analytical prediction model and scout system.">
   <meta name="theme-color" content="#050505">
-  
+
   <!-- Google Fonts: Space Mono, IBM Plex Mono, Space Grotesk, Geist Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Geist+Mono:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Geist+Mono:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
   <!-- Stylesheets -->
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
   <!-- Retro CRT overlays -->
@@ -25,7 +29,7 @@
 
   <!-- Terminal Container -->
   <div class="terminal-container">
-    
+
     <!-- HEADER BAR -->
     <header class="header-bar" id="header-main">
       <div class="header-left">
@@ -42,189 +46,43 @@
       </div>
     </header>
 
-    <!-- TOP CONTROL BAR -->
-    <div class="top-control-bar">
-      <span class="wordmark-mini">ORACLE-26 // WC26</span>
-      <div class="top-bar-right">
-        <button id="btn-tab-verification">[03] VERIFY</button>
-        <button id="btn-tab-settings">[04] DATA</button>
-        <button id="btn-system-info">[?]</button>
-      </div>
+    <!-- TAB CONTROLS -->
+    <div class="tab-control-bar">
+      <button class="tab-btn active" id="btn-tab-predictor">[01] MATCH PREDICTION</button>
+      <button class="tab-btn" id="btn-tab-squad">[02] ▣ SQUAD ANALYSIS</button>
+      <button class="tab-btn" id="btn-tab-verification">[03] MODEL VERIFICATION</button>
+      <button class="tab-btn" id="btn-tab-settings">[04] DATA SETTINGS</button>
+      <button id="btn-system-info" style="
+          margin-left: auto;
+          font-family: var(--font-data);
+          font-size: 9px;
+          letter-spacing: 0.1em;
+          padding: 6px 12px;
+          background: transparent;
+          border: 1px solid #1a1200;
+          color: #b45309;
+          cursor: pointer;
+          transition: all 0.15s;
+        " onmouseover="this.style.borderColor='#3a2800';
+          this.style.color='#f59e0b'" onmouseout="this.style.borderColor='#1a1200';
+          this.style.color='#b45309'">
+        [?] SYSTEM INFO
+      </button>
     </div>
 
-    <!-- FIXTURES MAIN VIEW -->
-    <main id="fixtures-main-view" style="width: 100%;">
-      <section class="panel">
-        <div class="panel-header">
-          <h2>[01] WORLD CUP FIXTURES & PROBABILITY MATRIX</h2>
-          <span class="corner-label">SYS // SCHEDULE</span>
-        </div>
-        <div class="panel-body" style="padding: 16px; overflow-y: auto; max-height: 80vh;" id="fixtures-list-container">
-          <!-- Filled dynamically by JS -->
-        </div>
-      </section>
-    </main>
-
-    <!-- MATCH DETAIL VIEW -->
-    <main id="match-detail-view" class="hidden" style="width: 100%;">
-      <section class="panel">
-        <!-- TOP BAR -->
-        <div class="match-detail-topbar">
-          <button id="btn-back-fixtures">← FIXTURES</button>
-          <span id="match-detail-title">MEX vs RSA · Jun 11</span>
-          <div class="match-detail-subnav">
-            <button class="subnav-btn active" id="subnav-prediction">PREDICTION</button>
-            <button class="subnav-btn" id="subnav-squad">SQUAD ANALYSIS</button>
-          </div>
-        </div>
-
-        <div class="panel-body" style="padding: 16px; overflow-y: auto; max-height: 80vh;">
-          <!-- PREDICTION PANE -->
-          <div id="match-detail-prediction-pane">
-            <!-- panel-result-section will be moved here dynamically or statically -->
-          </div>
-
-          <!-- SQUAD PANE -->
-          <div id="match-detail-squad-pane" class="hidden">
-            <!-- SQUAD ANALYSIS VIEW (moved here) -->
-            <div id="squad-analysis-view" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-              
-              <!-- SQUAD TAB HEADER / CONTROLS -->
-              <div class="squad-header-controls" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 4px;">
-                <div class="squad-header-title" style="font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.05em; text-transform: uppercase;">
-                  [02] ⌁ Squad Analytics & Pitch Simulation
-                </div>
-                <div class="squad-selectors-wrapper" style="display: flex; gap: 12px; align-items: center;">
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    <label style="font-family: var(--font-label); font-size: 9px; color: var(--text-secondary); text-transform: uppercase;">TEAM A:</label>
-                    <select id="squad-team-a-select" class="terminal-select squad-select-dropdown" style="width: 140px; padding: 4px 20px 4px 8px; font-size: 11px; height: auto;">
-                      <!-- Options filled by JS -->
-                    </select>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    <label style="font-family: var(--font-label); font-size: 9px; color: var(--text-secondary); text-transform: uppercase;">TEAM B:</label>
-                    <select id="squad-team-b-select" class="terminal-select squad-select-dropdown" style="width: 140px; padding: 4px 20px 4px 8px; font-size: 11px; height: auto;">
-                      <!-- Options filled by JS -->
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <!-- MAIN THREE COLUMNS -->
-              <div class="squad-three-columns" style="display: flex; gap: 12px; width: 100%; align-items: stretch; margin-bottom: 4px;">
-                <!-- LEFT COLUMN: TEAM A SQUAD -->
-                <div class="squad-side-panel tactical-panel" id="squad-team-a-panel" style="width: 18%; min-width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px;">
-                  <!-- Dynamically populated by JS -->
-                </div>
-
-                <!-- CENTER COLUMN: PITCH SVG -->
-                <div class="squad-pitch-container tactical-panel tactical-bg-grid" id="squad-pitch-container" style="flex: 1 1 64%; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; background-color: #040404; border: 1px solid var(--border-color); padding: 0; position: relative;">
-                  <!-- TACTICAL BOARD SUB-HEADER -->
-                  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111; padding: 6px 12px; background: #060606; z-index: 10; position: relative;">
-                    <div style="font-family: var(--font-label); font-size: 8px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; text-transform: uppercase;">
-                      <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10" stroke="currentColor"><rect x="2" y="2" width="6" height="6" fill="none" stroke-width="1"/><rect x="4" y="4" width="2" height="2" fill="currentColor"/></svg>
-                      TACTICAL BOARD
-                    </div>
-                    <div style="font-family: var(--font-data); font-size: 8px; color: #444; display: flex; align-items: center; gap: 4px; text-transform: uppercase;">
-                      <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10" stroke="currentColor"><polygon points="5,1.5 8.5,5 5,8.5 1.5,5" fill="none" stroke-width="1"/><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg>
-                      FORMATION MATRIX
-                    </div>
-                  </div>
-
-                  <!-- formation-selector hidden to favor team-specific dropdowns -->
-                  <div id="formation-selector" style="display: none !important;">
-                    <button class="formation-btn active" data-formation="4-3-3">4-3-3</button>
-                    <button class="formation-btn" data-formation="4-2-3-1">4-2-3-1</button>
-                    <button class="formation-btn" data-formation="4-4-2">4-4-2</button>
-                    <button class="formation-btn" data-formation="3-5-2">3-5-2</button>
-                    <button class="formation-btn" data-formation="3-4-3">3-4-3</button>
-                    <button class="formation-btn" data-formation="5-3-2">5-3-2</button>
-                    <button class="formation-btn" data-formation="4-5-1">4-5-1</button>
-                  </div>
-
-                  <!-- PITCH SVG WRAPPER -->
-                  <div id="pitch-svg-wrapper" style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 0; min-height: 520px; height: 100%;">
-                    <!-- SVG rendered here dynamically -->
-                  </div>
-
-                  <!-- MODIFICATION BANNER -->
-                  <div id="lineup-modified-banner" 
-                    class="hidden"
-                    style="
-                      font-family: var(--font-data);
-                      font-size: 9px;
-                      letter-spacing: 0.1em;
-                      color: #f59e0b;
-                      border: 1px solid #f59e0b22;
-                      background: #0f0a00;
-                      padding: 6px 12px;
-                      text-align: center;
-                      margin-top: 8px;
-                    ">
-                    LINEUP MODIFIED — CUSTOM SELECTION
-                    <button id="btn-reset-lineup" style="
-                      margin-left: 12px;
-                      background: transparent;
-                      border: 1px solid #333;
-                      color: #555;
-                      font-family: var(--font-data);
-                      font-size: 8px;
-                      letter-spacing: 0.1em;
-                      padding: 2px 8px;
-                      cursor: pointer;
-                    ">[RESET]</button>
-                  </div>
-                </div>
-
-                <!-- RIGHT COLUMN: TEAM B SQUAD -->
-                <div class="squad-side-panel tactical-panel" id="squad-team-b-panel" style="width: 18%; min-width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px;">
-                  <!-- Dynamically populated by JS -->
-                </div>
-              </div>
-
-              <!-- GOLDEN BOOT BAR -->
-              <div class="golden-boot-bar tactical-panel tactical-bg-grid" style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px; padding: 10px 12px;">
-                <div class="golden-boot-header" style="font-family: var(--font-display); font-size: 8px; letter-spacing: 0.2em; color: #444; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
-                  <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10"><polygon points="5,1.5 8.5,5 5,8.5 1.5,5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="5" cy="5" r="1.2" fill="currentColor"/></svg>
-                  TOURNAMENT GOLDEN BOOT MATRIX
-                </div>
-                <div class="golden-boot-chips" id="golden-boot-chips-container" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin;">
-                  <!-- Filled dynamically by JS -->
-                </div>
-              </div>
-
-              <!-- AWARDS BAR -->
-              <div class="squad-awards-bar tactical-panel" id="squad-awards-bar" style="display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid #0e0e0e; background-color: var(--bg-panels); margin-top: 4px;">
-                <!-- 4 Cells filled dynamically by JS -->
-              </div>
-
-              <!-- FOOTER DISCLAIMER -->
-              <div class="squad-footer-disclaimer" style="font-family: var(--font-label); font-size: 7px; letter-spacing: 0.1em; color: #333; text-align: center; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px; text-transform: uppercase;">
-                SOURCE: openfootball worldcup.squads.json · LINEUPS SUGGESTED NOT CONFIRMED · (C) = CAPTAIN · ||||| = DATA VERIFIED
-              </div>
-
-            </div>
-
-            <!-- SQUAD ANALYSIS VIEW PLACEHOLDER -->
-            <div id="squad-analysis-placeholder" class="placeholder-container" style="padding: 80px 40px; text-align: center; font-family: var(--font-display); color: var(--text-secondary); border: 1px dashed var(--border-color); background-color: var(--bg-panels); font-size: 12px; letter-spacing: 0.05em;">
-              &gt; SELECT TEAMS IN MATCH PREDICTION TAB TO VIEW SQUAD LINEUPS
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
     <!-- MAIN GRID LAYOUT -->
-    <main class="grid-layout hidden" id="predictor-view">
-      
+    <main class="grid-layout" id="predictor-view">
+
+
       <!-- LEFT PANEL: INPUT & CONTROLS -->
-      <section class="panel panel-input hidden" id="panel-input-section">
+      <section class="panel panel-input" id="panel-input-section">
         <div class="panel-header">
           <h2>[01] MATCH INPUT</h2>
           <span class="corner-label">SYS</span>
         </div>
         <div class="panel-body">
           <form id="prediction-form" onsubmit="event.preventDefault();">
-            
+
             <!-- TEAM SELECTORS -->
             <div class="team-selector-row">
               <div class="form-group flex-1">
@@ -233,9 +91,9 @@
                   <!-- JS will populate options grouped by Tier -->
                 </select>
               </div>
-              
+
               <div class="vs-label">VS</div>
-              
+
               <div class="form-group flex-1">
                 <label for="team-b-select">TEAM B</label>
                 <select id="team-b-select" class="terminal-select">
@@ -243,10 +101,8 @@
                 </select>
               </div>
             </div>
-            
-            <div id="fixture-auto-resolved" 
-              class="hidden"
-              style="margin-top: 8px; font-size: 10px; 
+
+            <div id="fixture-auto-resolved" class="hidden" style="margin-top: 8px; font-size: 10px; 
                 font-family: var(--font-data); 
                 color: var(--accent-blue);
                 letter-spacing: 0.05em;
@@ -295,14 +151,296 @@
               <!-- Filled dynamically by JS -->
             </div>
 
+            <!-- UPCOMING FIXTURES -->
+            <div class="margin-top-md">
+              <div style="font-family:var(--font-data);font-size:9px;letter-spacing:0.12em;color:#444;margin-bottom:6px;text-transform:uppercase;">UPCOMING FIXTURES</div>
+              <div id="quick-fixture-list" style="display:flex;flex-direction:column;gap:3px;max-height:200px;overflow-y:auto;scrollbar-width:thin;"></div>
+            </div>
+
             <!-- RUN PREDICTION BUTTON -->
             <button type="button" id="predict-btn" class="btn-predict margin-top-lg">
               Predict match ↗
             </button>
-            
+
           </form>
         </div>
       </section>
+
+
+
+      <!-- RIGHT COLUMN WRAPPER -->
+      <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0;">
+
+        <!-- EXPANSION MODULES -->
+        <div id="expansion-modules" class="hidden" style="margin-top: 0;">
+          <!-- SUB-NAV -->
+          <div>
+            <button class="exp-tab-btn active" data-pane="events">[SLOT_B] MATCH EVENTS</button>
+            <button class="exp-tab-btn" data-pane="conditions">[SLOT_C] CONDITIONS</button>
+            <button class="exp-tab-btn" data-pane="goals">[SLOT_E] GOAL MAP</button>
+          </div>
+
+          <!-- EVENTS PANE -->
+          <div id="exp-pane-events" style="padding:8px 10px;">
+            <div style="font-family:var(--font-data);font-size:8px;letter-spacing:0.14em;color:#333;margin-bottom:6px;text-transform:uppercase;">MATCH TIMELINE</div>
+            <div id="exp-timeline-container"></div>
+            <div id="exp-no-events" style="font-family:var(--font-data);font-size:9px;color:#333;padding:10px 0;">— No match event data available for this fixture</div>
+          </div>
+
+          <!-- CONDITIONS PANE -->
+          <div id="exp-pane-conditions" class="hidden" style="padding:8px 10px;">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);border-left:1px solid var(--border-color);border-top:1px solid var(--border-color);">
+              <div class="exp-cond-cell" id="exp-cond-temp"><div class="exp-cond-lbl">TEMPERATURE</div><div class="exp-cond-val" id="exp-cond-temp-val">—</div></div>
+              <div class="exp-cond-cell" id="exp-cond-humidity"><div class="exp-cond-lbl">HUMIDITY</div><div class="exp-cond-val" id="exp-cond-humidity-val">—</div></div>
+              <div class="exp-cond-cell" id="exp-cond-wind"><div class="exp-cond-lbl">WIND</div><div class="exp-cond-val" id="exp-cond-wind-val">—</div></div>
+              <div class="exp-cond-cell" id="exp-cond-type" style="grid-column:span 1"><div class="exp-cond-lbl">CONDITIONS</div><div class="exp-cond-val sm" id="exp-cond-type-val">—</div></div>
+              <div class="exp-cond-cell" id="exp-cond-venue" style="grid-column:span 2"><div class="exp-cond-lbl">VENUE</div><div class="exp-cond-val sm" id="exp-cond-venue-val">—</div></div>
+            </div>
+          </div>
+
+          <!-- GOAL MAP PANE -->
+          <div id="exp-pane-goals" class="hidden" style="padding:8px 10px;">
+            <div style="font-family:var(--font-data);font-size:8px;letter-spacing:0.14em;color:#333;margin-bottom:6px;text-transform:uppercase;">GOAL POSITIONS</div>
+            <div id="exp-goal-pitch" style="width:100%;height:100px;background:#050505;border:1px solid var(--border-color);position:relative;overflow:hidden;">
+              <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:#111;transform:translateX(-50%);"></div>
+            </div>
+            <div id="exp-no-goals" style="font-family:var(--font-data);font-size:9px;color:#333;padding:10px 0;">— No goal position data available</div>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL: PREDICTION RESULTS -->
+        <section class="panel panel-result" id="panel-result-section">
+        <!-- LOADING INDICATOR -->
+        <div id="loading-state" class="loading-overlay hidden">
+          <div class="loading-box">
+            <span class="loading-bracket">[</span>
+            <span class="loading-text">COMPUTING PREDICTION MODEL...</span>
+            <span class="loading-bracket">]</span>
+          </div>
+        </div>
+
+        <div class="panel-header">
+          <h2>[02] PROBABILITY MODEL</h2>
+          <span class="corner-label">MODEL</span>
+        </div>
+
+        <div class="panel-body flex-column justify-between height-100">
+
+          <!-- RESULTS PLACEHOLDER -->
+          <div id="results-placeholder" style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 320px;
+            flex-direction: column;
+            gap: 16px;
+            font-family: var(--font-data);
+            color: var(--text-muted);">
+            <div style="font-size: 32px; opacity: 0.15; 
+              letter-spacing: 0.2em;">◈ ◈ ◈</div>
+            <div style="font-size: 10px; letter-spacing: 0.15em; 
+              opacity: 0.5;">SELECT TEAMS AND RUN PREDICTION</div>
+            <div style="font-size: 9px; letter-spacing: 0.1em; 
+              opacity: 0.3;">ENGINE STANDING BY...</div>
+          </div>
+
+          <!-- RESULTS CONTENT -->
+          <div id="results-content" class="results-content hidden">
+
+            <!-- [1] PROBABILITY BAR -->
+            <div class="section-block">
+              <div class="prob-labels-row">
+                <div class="prob-label text-left">
+                  <div class="team-name-small" id="prob-team-a-name">FRANCE</div>
+                  <div class="prob-value" id="prob-team-a-val">0.0%</div>
+                </div>
+                <div class="prob-label text-center">
+                  <div class="team-name-small">DRAW</div>
+                  <div class="prob-value" id="prob-draw-val">0.0%</div>
+                </div>
+                <div class="prob-label text-right">
+                  <div class="team-name-small" id="prob-team-b-name">ARGENTINA</div>
+                  <div class="prob-value" id="prob-team-b-val">0.0%</div>
+                </div>
+              </div>
+
+              <!-- 3-Segment Brutalist Signal Indicator Bar -->
+              <div class="prob-bar-container" id="prob-bar-container">
+                <div class="prob-segment win-a-segment" id="prob-segment-a" style="width: 33.3%;"></div>
+                <div class="prob-segment draw-segment" id="prob-segment-draw" style="width: 33.3%;"></div>
+                <div class="prob-segment win-b-segment" id="prob-segment-b" style="width: 33.3%;"></div>
+              </div>
+
+              <!-- Venue & Status Details -->
+              <div class="match-meta-details-row"
+                style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 10px; font-family: var(--font-data);">
+                <span id="match-venue-display" style="color: var(--accent-blue);">📍 venue loading...</span>
+                <span id="match-completed-banner" class="hidden"
+                  style="color: var(--accent-red); font-weight: bold; background: rgba(177, 32, 32, 0.15); padding: 2px 6px; border: 1px solid var(--accent-red);">⚠️
+                  COMPLETED: 0-0</span>
+              </div>
+            </div>
+
+            <!-- MIDDLE GRID: METRIC CARDS & MATRIX -->
+            <div class="result-middle-grid">
+
+              <!-- LEFT COLUMN: READOUTS -->
+              <div class="middle-col flex-column gap-md">
+
+                <!-- [2] METRIC CARDS -->
+                <div class="metrics-container">
+                  <div class="panel-header sub-header">
+                    <h3 class="has-tooltip"
+                      data-tip="The model's predicted average goals per team. Computed via Poisson distribution — blends win probability with real 2026 goals when available. Not the same as shot-based xG.">
+                      PREDICTED GOALS (λ) &amp; SCORELINE</h3>
+                  </div>
+                  <div class="metrics-grid">
+                    <div class="metric-card">
+                      <div class="metric-label" id="card-xg-a-label">XG FRA</div>
+                      <div class="metric-value" id="card-xg-a-val">1.8</div>
+                    </div>
+                    <div class="metric-card highlight-card">
+                      <div class="metric-label">SCORELINE</div>
+                      <div class="metric-value font-large" id="card-scoreline-val">2-1</div>
+                    </div>
+                    <div class="metric-card">
+                      <div class="metric-label" id="card-xg-b-label">XG ARG</div>
+                      <div class="metric-value" id="card-xg-b-val">1.4</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- [4] RECENT FORM -->
+                <div class="form-analysis-container">
+                  <div class="panel-header sub-header">
+                    <h3>[04] FORM ANALYSIS</h3>
+                    <span class="corner-label">DATA</span>
+                  </div>
+                  <div class="form-grid">
+                    <div class="form-col text-left">
+                      <div class="form-team-header" id="form-team-a-header">FRANCE</div>
+                      <div class="form-squares-row" id="form-team-a-squares">
+                        <!-- Filled by JS -->
+                      </div>
+                    </div>
+                    <div class="form-col text-right">
+                      <div class="form-team-header" id="form-team-b-header">ARGENTINA</div>
+                      <div class="form-squares-row justify-end" id="form-team-b-squares">
+                        <!-- Filled by JS -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- [5] HEAD TO HEAD -->
+                <div class="h2h-container">
+                  <div class="panel-header sub-header">
+                    <h3>[05] HEAD TO HEAD</h3>
+                    <span class="corner-label">DATA</span>
+                  </div>
+                  <div class="h2h-box">
+                    <div class="h2h-record-text" id="h2h-main-record">France 2 — 1 draw — 2 Argentina</div>
+                    <div class="h2h-note" id="h2h-match-note">2022 WC Final — ARG won pens</div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- RIGHT COLUMN: SCORE MATRIX -->
+              <div class="middle-col">
+                <!-- [3] TOP 5 SCORELINES -->
+                <div class="score-matrix-panel">
+                  <div class="panel-header sub-header">
+                    <h3 class="has-tooltip"
+                      data-tip="Top 5 most likely exact scorelines from Poisson distribution. Each % is that scoreline's individual probability — they do not sum to 100%.">
+                      [03] SCORE MATRIX (TOP 5)</h3>
+                    <span class="corner-label">MODEL</span>
+                  </div>
+                  <div class="matrix-list" id="matrix-list-rows">
+                    <!-- Filled by JS -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- LOWER GRID: CONFIDENCE & ENGINE NOTES -->
+            <div class="result-lower-grid">
+
+              <!-- [7] CONFIDENCE METER & LAYER BREAKDOWN -->
+              <div class="lower-col flex-column gap-md">
+                <div class="confidence-box">
+                  <div class="panel-header sub-header">
+                    <h3 class="has-tooltip"
+                      data-tip="Prediction trust score out of 100. Penalties: Tier 4 team (-20 each), under 3 WC appearances (-15 each), key injury (-5 each), neutral venue (-5). Under 45 = LOW reliability.">
+                      [05] CONFIDENCE</h3>
+                    <span class="corner-label">SYS</span>
+                  </div>
+
+                  <div class="confidence-header-row">
+                    <div class="confidence-title">CONFIDENCE</div>
+                    <div class="confidence-value-container">
+                      <span id="stale-badge" class="badge-stale hidden">STALE DATA</span>
+                      <span class="confidence-score-text" id="confidence-score-val">87/100 — HIGH</span>
+                    </div>
+                  </div>
+
+                  <!-- Fill block visualization -->
+                  <div class="confidence-meter-container">
+                    <div class="confidence-meter-fill" id="confidence-meter-fill" style="width: 87%;"></div>
+                  </div>
+                </div>
+
+                <!-- [8] LAYER BREAKDOWN -->
+                <div class="layer-breakdown">
+                  <div class="panel-header sub-header">
+                    <h3>[06] LAYER BREAKDOWN</h3>
+                  </div>
+                  <div class="layers-row">
+                    <div class="layer-box has-tooltip"
+                      data-tip="Baseline win probability from Elo rating (weight 1.0), FIFA rank (0.5), and squad market value (0.25). Does not update during tournament.">
+                      <div class="layer-lbl">L1: STATIC</div>
+                      <div class="layer-val" id="layer-static-val">P = 0.54</div>
+                    </div>
+                    <div class="layer-box has-tooltip"
+                      data-tip="Adjusts L1 using last 5 results and Elo momentum trend. Uses real 2026 match data when the team has played 1+ matches.">
+                      <div class="layer-lbl">L2: FORM</div>
+                      <div class="layer-val" id="layer-form-val">P = 0.58</div>
+                    </div>
+                    <div class="layer-box highlight-blue has-tooltip"
+                      data-tip="Final win probability after blending both layers. Feeds into Poisson to generate the scoreline matrix.">
+                      <div class="layer-lbl">P(WIN A)</div>
+                      <div class="layer-val color-blue" id="layer-final-val">54.2%</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- [6] PREDICTION DRIVERS (ENGINE NOTES) -->
+              <div class="lower-col">
+                <div class="engine-notes-panel">
+                  <div class="panel-header sub-header">
+                    <h3>[06] ENGINE NOTES</h3>
+                    <span class="corner-label">LIVE</span>
+                  </div>
+                  <div class="engine-notes-terminal" id="engine-notes-console">
+                    <!-- Filled by JS as command lines -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      </div>
+
+
+
+
 
     </main>
 
@@ -322,9 +460,7 @@
           <span id="backtest-timestamp">
             AWAITING COMPUTATION...
           </span>
-          <button id="btn-refresh-backtest" 
-            class="tab-btn" 
-            style="font-size: 9px; padding: 3px 8px;">
+          <button id="btn-refresh-backtest" class="tab-btn" style="font-size: 9px; padding: 3px 8px;">
             [↻ RECOMPUTE]
           </button>
         </div>
@@ -332,20 +468,16 @@
           <!-- FILTER BUTTONS -->
           <div style="display: flex; gap: 8px; padding: 10px 12px; 
             border-bottom: 1px solid var(--border-color);">
-            <button class="tab-btn active" id="filter-all" 
-              style="font-size: 10px; padding: 4px 10px;">
+            <button class="tab-btn active" id="filter-all" style="font-size: 10px; padding: 4px 10px;">
               ALL
             </button>
-            <button class="tab-btn" id="filter-correct"
-              style="font-size: 10px; padding: 4px 10px;">
+            <button class="tab-btn" id="filter-correct" style="font-size: 10px; padding: 4px 10px;">
               CORRECT ✓
             </button>
-            <button class="tab-btn" id="filter-incorrect"
-              style="font-size: 10px; padding: 4px 10px;">
+            <button class="tab-btn" id="filter-incorrect" style="font-size: 10px; padding: 4px 10px;">
               INCORRECT ✗
             </button>
-            <button class="tab-btn" id="filter-draws"
-              style="font-size: 10px; padding: 4px 10px;">
+            <button class="tab-btn" id="filter-draws" style="font-size: 10px; padding: 4px 10px;">
               DRAWS
             </button>
           </div>
@@ -384,16 +516,15 @@
             <h2>[03] WHAT THESE NUMBERS MEAN</h2>
             <span class="corner-label">GUIDE</span>
           </div>
-          <div class="panel-body flex-column" 
-            style="gap: 10px; padding: 14px 16px; 
+          <div class="panel-body flex-column" style="gap: 10px; padding: 14px 16px; 
             font-family: var(--font-data); font-size: 10px;
             line-height: 1.6;">
-            
+
             <div class="metric-explanation">
               <div class="exp-label">OUTCOME ACCURACY</div>
               <div class="exp-text">
-                Win / Draw / Loss prediction. The model picks 
-                whichever outcome has the highest probability. 
+                Win / Draw / Loss prediction. The model picks
+                whichever outcome has the highest probability.
                 60% means 6 in 10 matches called correctly.
                 Random chance = 33%.
               </div>
@@ -402,10 +533,10 @@
             <div class="metric-explanation">
               <div class="exp-label">BRIER SCORE</div>
               <div class="exp-text">
-                Measures probability quality, not just the 
-                winner call. Penalises confident wrong 
+                Measures probability quality, not just the
+                winner call. Penalises confident wrong
                 predictions. Perfect = 0.000, Random = 0.667.
-                Our 0.551 beats random — probabilities have 
+                Our 0.551 beats random — probabilities have
                 real signal.
               </div>
             </div>
@@ -413,10 +544,10 @@
             <div class="metric-explanation">
               <div class="exp-label">CALIBRATION</div>
               <div class="exp-text">
-                When the model says 60% confidence, does it 
-                win ~60% of those matches? IMPROVING means 
+                When the model says 60% confidence, does it
+                win ~60% of those matches? IMPROVING means
                 higher confidence = higher actual accuracy.
-                This is the strongest sign the model is 
+                This is the strongest sign the model is
                 doing real work.
               </div>
             </div>
@@ -424,9 +555,9 @@
             <div class="metric-explanation">
               <div class="exp-label">VS RANDOM / VS NAIVE</div>
               <div class="exp-text">
-                Random = predict HOME/DRAW/AWAY randomly 
+                Random = predict HOME/DRAW/AWAY randomly
                 (~33%). Naive = always pick better FIFA rank.
-                Our model must beat both to prove it adds 
+                Our model must beat both to prove it adds
                 value beyond simple heuristics.
               </div>
             </div>
@@ -434,10 +565,10 @@
             <div class="metric-explanation">
               <div class="exp-label">WHY DRAW ACCURACY = 0%</div>
               <div class="exp-text">
-                Poisson models structurally under-predict 
-                draws. Draw probability (~30%) rarely exceeds 
-                win probability (~40-60%), so the model never 
-                picks draws as its top outcome. This is a 
+                Poisson models structurally under-predict
+                draws. Draw probability (~30%) rarely exceeds
+                win probability (~40-60%), so the model never
+                picks draws as its top outcome. This is a
                 known mathematical limitation — not a bug.
               </div>
             </div>
@@ -453,7 +584,8 @@
             <span class="corner-label">LOGS</span>
           </div>
           <div class="panel-body engine-notes-panel" style="padding: 0;">
-            <div class="engine-notes-terminal" id="backtest-engine-notes" style="height: 250px; overflow-y: auto; padding: 12px;">
+            <div class="engine-notes-terminal" id="backtest-engine-notes"
+              style="height: 250px; overflow-y: auto; padding: 12px;">
               <!-- Filled by JS -->
             </div>
           </div>
@@ -461,7 +593,171 @@
       </section>
     </main>
 
+    <!-- SQUAD ANALYSIS VIEW -->
+    <!-- Modified Section: 8. Reduce empty space, 10. Improve spacing -->
+    <main class="hidden" id="squad-analysis-view"
+      style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
 
+      <!-- SQUAD TAB HEADER / CONTROLS -->
+      <!-- Modified Section: 10. Improve spacing (consistent paddings and margins) -->
+      <div class="squad-header-controls"
+        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 4px;">
+        <div class="squad-header-title"
+          style="font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--text-primary); letter-spacing: 0.05em; text-transform: uppercase;">
+          [02] ⌁ Squad Analytics & Pitch Simulation
+        </div>
+        <div class="squad-selectors-wrapper" style="display: flex; gap: 12px; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <label
+              style="font-family: var(--font-label); font-size: 9px; color: var(--text-secondary); text-transform: uppercase;">TEAM
+              A:</label>
+            <select id="squad-team-a-select" class="terminal-select squad-select-dropdown"
+              style="width: 140px; padding: 4px 20px 4px 8px; font-size: 11px; height: auto;">
+              <!-- Options filled by JS -->
+            </select>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <label
+              style="font-family: var(--font-label); font-size: 9px; color: var(--text-secondary); text-transform: uppercase;">TEAM
+              B:</label>
+            <select id="squad-team-b-select" class="terminal-select squad-select-dropdown"
+              style="width: 140px; padding: 4px 20px 4px 8px; font-size: 11px; height: auto;">
+              <!-- Options filled by JS -->
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN THREE COLUMNS -->
+      <!-- Modified Section: 1. Resize the three-column layout, 3. Align all three columns, 10. Improve spacing -->
+      <div class="squad-three-columns"
+        style="display: flex; gap: 12px; width: 100%; align-items: stretch; margin-bottom: 4px;">
+        <!-- LEFT COLUMN: TEAM A SQUAD -->
+        <!-- Modified Section: 1. Left squad panel 18% width (min-width 180px) -->
+        <div class="squad-side-panel tactical-panel" id="squad-team-a-panel"
+          style="width: 18%; min-width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px;">
+          <!-- Dynamically populated by JS -->
+        </div>
+
+        <!-- CENTER COLUMN: PITCH SVG -->
+        <!-- Modified Section: 1. Center pitch container flex-grow to 64%, 2. Increase pitch area, 3. Align all three columns, 10. Improve spacing -->
+        <div class="squad-pitch-container tactical-panel tactical-bg-grid" id="squad-pitch-container"
+          style="flex: 1 1 64%; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; background-color: #040404; border: 1px solid var(--border-color); padding: 0; position: relative;">
+          <!-- TACTICAL BOARD SUB-HEADER (Requirement 2 & 9) -->
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111; padding: 6px 12px; background: #060606; z-index: 10; position: relative;">
+            <div
+              style="font-family: var(--font-label); font-size: 8px; color: var(--text-secondary); display: flex; align-items: center; gap: 4px; text-transform: uppercase;">
+              <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10" stroke="currentColor">
+                <rect x="2" y="2" width="6" height="6" fill="none" stroke-width="1" />
+                <rect x="4" y="4" width="2" height="2" fill="currentColor" />
+              </svg>
+              TACTICAL BOARD
+            </div>
+            <div
+              style="font-family: var(--font-data); font-size: 8px; color: #444; display: flex; align-items: center; gap: 4px; text-transform: uppercase;">
+              <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10" stroke="currentColor">
+                <polygon points="5,1.5 8.5,5 5,8.5 1.5,5" fill="none" stroke-width="1" />
+                <circle cx="5" cy="5" r="1.2" fill="currentColor" />
+              </svg>
+              FORMATION MATRIX
+            </div>
+          </div>
+
+          <!-- formation-selector hidden to favor team-specific dropdowns -->
+          <div id="formation-selector" style="display: none !important;">
+            <button class="formation-btn active" data-formation="4-3-3">4-3-3</button>
+            <button class="formation-btn" data-formation="4-2-3-1">4-2-3-1</button>
+            <button class="formation-btn" data-formation="4-4-2">4-4-2</button>
+            <button class="formation-btn" data-formation="3-5-2">3-5-2</button>
+            <button class="formation-btn" data-formation="3-4-3">3-4-3</button>
+            <button class="formation-btn" data-formation="5-3-2">5-3-2</button>
+            <button class="formation-btn" data-formation="4-5-1">4-5-1</button>
+          </div>
+
+          <!-- PITCH SVG WRAPPER -->
+          <!-- Modified Section: 2. Increase pitch area, 6. Increase pitch scale -->
+          <div id="pitch-svg-wrapper"
+            style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 0; min-height: 380px; height: 100%;">
+            <!-- SVG rendered here dynamically -->
+          </div>
+
+          <!-- MODIFICATION BANNER -->
+          <div id="lineup-modified-banner" class="hidden" style="
+              font-family: var(--font-data);
+              font-size: 9px;
+              letter-spacing: 0.1em;
+              color: #f59e0b;
+              border: 1px solid #f59e0b22;
+              background: #0f0a00;
+              padding: 6px 12px;
+              text-align: center;
+              margin-top: 8px;
+            ">
+            LINEUP MODIFIED — CUSTOM SELECTION
+            <button id="btn-reset-lineup" style="
+              margin-left: 12px;
+              background: transparent;
+              border: 1px solid #333;
+              color: #555;
+              font-family: var(--font-data);
+              font-size: 8px;
+              letter-spacing: 0.1em;
+              padding: 2px 8px;
+              cursor: pointer;
+            ">[RESET]</button>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: TEAM B SQUAD -->
+        <!-- Modified Section: 1. Right squad panel 18% width (min-width 180px) -->
+        <div class="squad-side-panel tactical-panel" id="squad-team-b-panel"
+          style="width: 18%; min-width: 180px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; padding: 10px;">
+          <!-- Dynamically populated by JS -->
+        </div>
+      </div>
+
+      <!-- GOLDEN BOOT BAR -->
+      <!-- Modified Section: 9. Move tournament widgets (moved below three-column layout), 10. Improve spacing -->
+      <div class="golden-boot-bar tactical-panel tactical-bg-grid"
+        style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px; padding: 10px 12px;">
+        <div class="golden-boot-header"
+          style="font-family: var(--font-display); font-size: 8px; letter-spacing: 0.2em; color: #444; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
+          <svg class="tactical-icon" viewBox="0 0 10 10" width="10" height="10">
+            <polygon points="5,1.5 8.5,5 5,8.5 1.5,5" fill="none" stroke="currentColor" stroke-width="1" />
+            <circle cx="5" cy="5" r="1.2" fill="currentColor" />
+          </svg>
+          TOURNAMENT GOLDEN BOOT MATRIX
+        </div>
+        <div class="golden-boot-chips" id="golden-boot-chips-container"
+          style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin;">
+          <!-- Filled dynamically by JS -->
+        </div>
+      </div>
+
+      <!-- AWARDS BAR -->
+      <!-- Modified Section: 9. Move tournament widgets (moved below three-column layout) -->
+      <div class="squad-awards-bar tactical-panel" id="squad-awards-bar"
+        style="display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid #0e0e0e; background-color: var(--bg-panels); margin-top: 4px;">
+        <!-- 4 Cells filled dynamically by JS -->
+      </div>
+
+      <!-- FOOTER DISCLAIMER -->
+      <!-- Modified Section: 10. Improve spacing -->
+      <div class="squad-footer-disclaimer"
+        style="font-family: var(--font-label); font-size: 7px; letter-spacing: 0.1em; color: #333; text-align: center; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px; text-transform: uppercase;">
+        SOURCE: openfootball worldcup.squads.json · LINEUPS SUGGESTED NOT CONFIRMED · (C) = CAPTAIN · ||||| = DATA
+        VERIFIED
+      </div>
+
+    </main>
+
+
+    <!-- SQUAD ANALYSIS VIEW PLACEHOLDER -->
+    <div id="squad-analysis-placeholder" class="placeholder-container hidden"
+      style="padding: 80px 40px; text-align: center; font-family: var(--font-display); color: var(--text-secondary); border: 1px dashed var(--border-color); background-color: var(--bg-panels); font-size: 12px; letter-spacing: 0.05em;">
+      &gt; SELECT TEAMS IN MATCH PREDICTION TAB TO VIEW SQUAD LINEUPS
+    </div>
 
     <!-- DATA SETTINGS VIEW (TAB 4) -->
     <main class="grid-layout hidden" id="settings-view">
@@ -474,66 +770,82 @@
         <div class="panel-body flex-column gap-md">
           <!-- Section 1: API Config -->
           <div class="settings-section">
-            <div class="panel-header sub-header" style="padding: 6px 12px; background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+            <div class="panel-header sub-header"
+              style="padding: 6px 12px; background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
               <h3 style="font-size: 11px;">[01] API CONFIGURATION</h3>
             </div>
-            <div class="panel-body-inner flex-column gap-xs" style="padding: 10px; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-top: none;">
+            <div class="panel-body-inner flex-column gap-xs"
+              style="padding: 10px; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-top: none;">
               <div class="form-group">
                 <label style="font-size: 9px; margin-bottom: 2px;">API BASE URL</label>
-                <input type="text" value="https://api.oracle26.infra/v1" class="terminal-select" style="background: var(--bg-primary); cursor: text; padding: 6px 10px; font-size: 11px;" readonly>
+                <input type="text" value="https://api.oracle26.infra/v1" class="terminal-select"
+                  style="background: var(--bg-primary); cursor: text; padding: 6px 10px; font-size: 11px;" readonly>
               </div>
               <div class="form-group margin-top-sm">
                 <label style="font-size: 9px; margin-bottom: 2px;">ENVIRONMENT</label>
-                <input type="text" value="PRODUCTION-SECURE" class="terminal-select" style="background: var(--bg-primary); cursor: text; padding: 6px 10px; font-size: 11px;" readonly>
+                <input type="text" value="PRODUCTION-SECURE" class="terminal-select"
+                  style="background: var(--bg-primary); cursor: text; padding: 6px 10px; font-size: 11px;" readonly>
               </div>
             </div>
           </div>
 
           <!-- Section 2: Cache Meta Stats -->
           <div class="settings-section margin-top-md">
-            <div class="panel-header sub-header" style="padding: 6px 12px; background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+            <div class="panel-header sub-header"
+              style="padding: 6px 12px; background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
               <h3 style="font-size: 11px;">[02] DATABASE STATS</h3>
             </div>
-            <div class="panel-body-inner flex-column gap-xs" style="padding: 12px; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-top: none; font-family: var(--font-data); font-size: 11px; gap: 8px;">
+            <div class="panel-body-inner flex-column gap-xs"
+              style="padding: 12px; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-top: none; font-family: var(--font-data); font-size: 11px; gap: 8px;">
               <div class="metric-row-flat" style="display: flex; justify-content: space-between;">
                 <span class="flat-label" style="color: var(--text-secondary);">META SCHEMA VERSION:</span>
-                <span class="flat-value" id="meta-version" style="font-weight: bold; color: var(--accent-green);">1</span>
+                <span class="flat-value" id="meta-version"
+                  style="font-weight: bold; color: var(--accent-green);">1</span>
               </div>
               <div class="metric-row-flat" style="display: flex; justify-content: space-between;">
                 <span class="flat-label" style="color: var(--text-secondary);">TOTAL TEAMS CACHED:</span>
-                <span class="flat-value" id="meta-total-teams" style="font-weight: bold; color: var(--text-primary);">0</span>
+                <span class="flat-value" id="meta-total-teams"
+                  style="font-weight: bold; color: var(--text-primary);">0</span>
               </div>
               <div class="metric-row-flat" style="display: flex; justify-content: space-between;">
                 <span class="flat-label" style="color: var(--text-secondary);">TOTAL PLAYERS CACHED:</span>
-                <span class="flat-value" id="meta-total-players" style="font-weight: bold; color: var(--text-primary);">0</span>
+                <span class="flat-value" id="meta-total-players"
+                  style="font-weight: bold; color: var(--text-primary);">0</span>
               </div>
               <div class="metric-row-flat" style="display: flex; justify-content: space-between;">
                 <span class="flat-label" style="color: var(--text-secondary);">LAST PULL ATTEMPT:</span>
-                <span class="flat-value" id="meta-last-pull" style="font-weight: bold; color: var(--accent-blue);">NEVER</span>
+                <span class="flat-value" id="meta-last-pull"
+                  style="font-weight: bold; color: var(--accent-blue);">NEVER</span>
               </div>
             </div>
           </div>
 
           <!-- Section 3: Data Actions & Console Log -->
           <div class="settings-section margin-top-md">
-            <div class="panel-header sub-header" style="padding: 6px 12px; background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+            <div class="panel-header sub-header"
+              style="padding: 6px 12px; background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
               <h3 style="font-size: 11px;">[03] REMOTE DATA CONTROL</h3>
             </div>
-            <div class="panel-body-inner flex-column gap-sm" style="padding: 10px; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-top: none;">
-              <button type="button" id="btn-pull-squad" class="btn-predict" style="background-color: var(--accent-green); color: black; font-weight: bold; width: 100%; padding: 10px; border: 1px solid var(--border-color); cursor: pointer; text-transform: uppercase;">
+            <div class="panel-body-inner flex-column gap-sm"
+              style="padding: 10px; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-top: none;">
+              <button type="button" id="btn-pull-squad" class="btn-predict"
+                style="background-color: var(--accent-green); color: black; font-weight: bold; width: 100%; padding: 10px; border: 1px solid var(--border-color); cursor: pointer; text-transform: uppercase;">
                 [PULL SQUAD DATA]
               </button>
-              <button type="button" id="btn-update-injuries" class="btn-predict margin-top-sm" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); cursor: pointer; text-transform: uppercase;">
+              <button type="button" id="btn-update-injuries" class="btn-predict margin-top-sm"
+                style="width: 100%; padding: 10px; border: 1px solid var(--border-color); cursor: pointer; text-transform: uppercase;">
                 [UPDATE INJURIES ONLY]
               </button>
-              
+
               <div class="engine-notes-panel margin-top-md">
                 <div class="panel-header sub-header" style="padding: 4px 10px; background-color: var(--bg-secondary);">
-                  <span style="font-size: 10px; font-weight: bold; font-family: var(--font-display);">SYNC CONSOLE</span>
+                  <span style="font-size: 10px; font-weight: bold; font-family: var(--font-display);">SYNC
+                    CONSOLE</span>
                   <span class="corner-label" style="font-size: 8px;">LIVE</span>
                 </div>
-                <div class="engine-notes-terminal" id="sync-console" style="height: 140px; overflow-y: auto; font-family: var(--font-data); font-size: 11px; padding: 8px; background-color: #030303; border: 1px solid var(--border-color); color: var(--accent-green); line-height: 1.4; white-space: pre-wrap;">
-&gt; SYNC ENGINE STANDBY...
+                <div class="engine-notes-terminal" id="sync-console"
+                  style="height: 140px; overflow-y: auto; font-family: var(--font-data); font-size: 11px; padding: 8px; background-color: #030303; border: 1px solid var(--border-color); color: var(--accent-green); line-height: 1.4; white-space: pre-wrap;">
+                  &gt; SYNC ENGINE STANDBY...
                 </div>
               </div>
             </div>
@@ -566,39 +878,15 @@
         </div>
       </section>
     </main>
- 
-    <!-- SCHEDULE VIEW -->
-    <main class="hidden" id="schedule-view" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-      <section class="panel">
-        <div class="panel-header">
-          <h2>[05] WORLD CUP 2026 SCHEDULE & RESULTS</h2>
-          <span class="corner-label">SYS // SCHEDULE</span>
-        </div>
-        <div class="panel-body" style="padding: 16px; overflow-y: auto; max-height: 75vh; display: flex; flex-direction: column; gap: 20px;">
-          <div id="upcoming-fixtures-section">
-            <h3 style="font-family: var(--font-display); font-size: 11px; margin-bottom: 12px; color: var(--accent-blue); border-bottom: 1px solid #202020; padding-bottom: 6px;">◈ UPCOMING FIXTURES</h3>
-            <div id="upcoming-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px;">
-              <!-- Upcoming fixtures render here -->
-            </div>
-          </div>
-          <div id="completed-fixtures-section" style="margin-top: 12px; border-top: 1px dashed #202020; padding-top: 16px;">
-            <h3 style="font-family: var(--font-display); font-size: 11px; margin-bottom: 12px; color: var(--accent-green); border-bottom: 1px solid #202020; padding-bottom: 6px;">◈ MATCH RESULTS</h3>
-            <div id="completed-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px;">
-              <!-- Completed fixtures render here -->
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
 
 
     <!-- FUTURE SLOTS PANEL -->
-    <footer class="future-slots-section">
+    <footer class="future-slots-section" style="display:none">
       <div class="future-header">
         <span>PLANNED EXPANSION MODULES</span>
         <span class="muted-slot-label">SLOTS A-F · ACTIVE DASHBOARD DETECTOR</span>
       </div>
-      
+
       <div class="slots-grid">
         <!-- SLOT A -->
         <div class="slot-card">
@@ -639,8 +927,7 @@
       </div>
     </footer>
 
-    <div id="system-info-modal" 
-      style="
+    <div id="system-info-modal" style="
         display: none;
         position: fixed;
         top: 0; left: 0;
@@ -651,6 +938,27 @@
         padding: 40px 20px;
         box-sizing: border-box;
       ">
+      <style>
+        #system-info-modal .modal-section-label {
+          color: #e8e8e8 !important;
+          font-size: 10px;
+          letter-spacing: 0.12em;
+          margin-bottom: 6px;
+          font-weight: 600;
+        }
+        #system-info-modal .modal-section-text {
+          color: #666 !important;
+          font-size: 10px;
+          line-height: 1.6;
+        }
+        #system-info-modal .modal-code-block {
+          color: #888 !important;
+          font-size: 9px;
+          line-height: 1.7;
+          border-left: 2px solid #1a1a1a;
+          padding-left: 10px;
+        }
+      </style>
       <div style="
         max-width: 680px;
         margin: 0 auto;
@@ -693,10 +1001,10 @@
               WHAT IS ORACLE-26?
             </div>
             <div class="modal-section-text">
-              ORACLE-26 is a mathematical match prediction 
-              system for the 2026 FIFA World Cup. It uses 
-              three layers of data to generate win 
-              probabilities and expected scorelines for 
+              ORACLE-26 is a mathematical match prediction
+              system for the 2026 FIFA World Cup. It uses
+              three layers of data to generate win
+              probabilities and expected scorelines for
               any matchup between the 48 competing nations.
             </div>
           </div>
@@ -706,16 +1014,16 @@
               LAYER 1 — STATIC STRENGTH
             </div>
             <div class="modal-section-text">
-              Pre-tournament baseline derived from three 
+              Pre-tournament baseline derived from three
               signals weighted and combined:
             </div>
             <div class="modal-code-block">
-              Elo rating      × 1.00 weight
-              FIFA rank       × 0.50 weight  
-              Market value    × 0.25 weight
+              Elo rating × <span style="color:#3b82f6">1.00</span> weight
+              FIFA rank × <span style="color:#3b82f6">0.50</span> weight
+              Market value × <span style="color:#3b82f6">0.25</span> weight
               ─────────────────────────────
               P_static = weighted average → [0.05, 0.95]
-              
+
               Host nation bonus: +8% additive
             </div>
           </div>
@@ -725,18 +1033,18 @@
               LAYER 2 — DYNAMIC FORM
             </div>
             <div class="modal-section-text">
-              Adjusts static strength using live 
+              Adjusts static strength using live
               tournament data and recent results:
             </div>
             <div class="modal-code-block">
               Form ratio = points from last 6 / 18
               Elo momentum = elo_delta_90 / 100
               Injury penalty = -5% if key player out
-              
-              P_dynamic = P_static × 0.65
-                        + form_signal × 0.35
-                        + momentum × 0.02
-                        - injury_penalty
+
+              P_dynamic = P_static × <span style="color:#3b82f6">0.65</span>
+              + form_signal × <span style="color:#3b82f6">0.35</span>
+              + momentum × <span style="color:#3b82f6">0.02</span>
+              - injury_penalty
             </div>
           </div>
 
@@ -745,25 +1053,25 @@
               LAYER 3 — POISSON GOAL MODEL
             </div>
             <div class="modal-section-text">
-              Converts win probability into expected 
-              goals (lambda) and generates a 7x7 
+              Converts win probability into expected
+              goals (lambda) and generates a 7x7
               scoreline probability matrix:
             </div>
             <div class="modal-code-block">
               IF team has 2+ matches played:
-                λ = avgGoalsFor × 0.6
-                  + (1.8 × P_dynamic + 0.27) × 0.4
+              λ = avgGoalsFor × <span style="color:#3b82f6">0.6</span>
+              + (1.8 × P_dynamic + 0.27) × <span style="color:#3b82f6">0.4</span>
 
               IF no live data yet:
-                λ = 1.8 × P_dynamic + 0.27
+              λ = 1.8 × P_dynamic + 0.27
 
               Residual correction:
-                Home: λ += +0.162 (from backtest)
-                Away: λ += -0.081 (from backtest)
+              Home: λ += <span style="color:#3b82f6">+0.162</span> (from backtest)
+              Away: λ += <span style="color:#3b82f6">-0.081</span> (from backtest)
 
               Dixon-Coles tau correction applied
               to 0-0, 1-0, 0-1, 1-1 scorelines.
-              RHO = -0.04
+              RHO = <span style="color:#3b82f6">-0.04</span>
             </div>
           </div>
 
@@ -772,16 +1080,16 @@
               DRAW PROBABILITY
             </div>
             <div class="modal-section-text">
-              Computed via Gaussian distribution 
+              Computed via Gaussian distribution
               centred at 0.5 (even matchups):
             </div>
             <div class="modal-code-block">
               P_draw = (1/3) × e^(
-                -(P_dynamic - 0.5)² / (2 × 0.28²)
+              -(P_dynamic - 0.5)² / (2 × 0.28²)
               )
-              
-              Note: Poisson models structurally 
-              under-predict draws. Draw accuracy 
+
+              Note: Poisson models structurally
+              under-predict draws. Draw accuracy
               is a known limitation of this approach.
             </div>
           </div>
@@ -791,22 +1099,22 @@
               CONFIDENCE SCORE
             </div>
             <div class="modal-section-text">
-              Trust score from 0-100 based on 
+              Trust score from 0-100 based on
               data quality penalties:
             </div>
             <div class="modal-code-block">
-              Start:              100
-              Tier 4 team:        -20 each
-              Under 3 WC apps:    -15 each
-              No H2H record:      -10
-              Stale data:         -15
-              Key injury:         -5 each
-              Neutral venue:      -5 always
+              Start: 100
+              Tier 4 team: -20 each
+              Under 3 WC apps: -15 each
+              No H2H record: -10
+              Stale data: -15
+              Key injury: -5 each
+              Neutral venue: -5 always
               ─────────────────────────────
               85+ = HIGH
               65+ = MEDIUM
               45+ = LOW
-              0+  = VERY LOW
+              0+ = VERY LOW
             </div>
           </div>
 
@@ -816,20 +1124,20 @@
             </div>
             <div class="modal-code-block">
               openfootball/worldcup.json
-                Scores, results, goalscorers
-                Updated: live, cached 6 hours
-              
+              Scores, results, goalscorers
+              Updated: live, cached 6 hours
+
               eloratings.net/World.tsv
-                Current Elo ratings all 48 teams
-                Updated: cached 24 hours
-              
+              Current Elo ratings all 48 teams
+              Updated: cached 24 hours
+
               openfootball/worldcup.squads.json
-                26-man squads all 48 teams
-                Updated: once at tournament start
-              
+              26-man squads all 48 teams
+              Updated: once at tournament start
+
               data/teams.js (static)
-                Pre-tournament xG estimates
-                Market values, historical form
+              Pre-tournament xG estimates
+              Market values, historical form
             </div>
           </div>
 
@@ -838,15 +1146,15 @@
               ACCURACY BENCHMARK (60 matches)
             </div>
             <div class="modal-code-block">
-              Outcome accuracy:   60.0% (36/60)
-              vs Random:          +26.4%
-              vs Naive (FIFA rk): +0.0%
-              Brier score:        0.551 (FAIR)
-              Calibration:        IMPROVING
-              Verdict:            MODERATE SIGNAL
-              
-              Exact scoreline:    6.7%
-              Score in top 5:     51.7%
+              Outcome accuracy: <span style="color:#1aff6e">60.0%</span> (36/60)
+              vs Random: <span style="color:#1aff6e">+26.4%</span>
+              vs Naive (FIFA rk): <span style="color:#1aff6e">+0.0%</span>
+              Brier score: <span style="color:#1aff6e">0.551</span> (FAIR)
+              Calibration: <span style="color:#f59e0b">IMPROVING</span>
+              Verdict: <span style="color:#f59e0b">MODERATE SIGNAL</span>
+
+              Exact scoreline: <span style="color:#1aff6e">6.7%</span>
+              Score in top 5: <span style="color:#1aff6e">51.7%</span>
             </div>
           </div>
 
@@ -858,22 +1166,22 @@
               Known weaknesses in current model:
             </div>
             <div class="modal-code-block">
-              1. Lambda circularity — probability 
-                 feeds lambda which generates 
-                 probability. Attack/defence 
-                 parameters planned for v2.
+              <span style="color:#ef4444">1.</span> Lambda circularity — probability
+              feeds lambda which generates
+              probability. Attack/defence
+              parameters planned for v2.
 
-              2. Draw under-prediction — Poisson 
-                 structurally misses draws. 
-                 0% draw accuracy is expected.
+              <span style="color:#ef4444">2.</span> Draw under-prediction — Poisson
+              structurally misses draws.
+              0% draw accuracy is expected.
 
-              3. Small sample — 60 matches is 
-                 statistically limited. Calibration 
-                 improves as tournament progresses.
+              <span style="color:#ef4444">3.</span> Small sample — 60 matches is
+              statistically limited. Calibration
+              improves as tournament progresses.
 
-              4. No live player data — xG values 
-                 are pre-tournament estimates for 
-                 most teams except FRA and ARG.
+              <span style="color:#ef4444">4.</span> No live player data — xG values
+              are pre-tournament estimates for
+              most teams except FRA and ARG.
             </div>
           </div>
 
@@ -886,8 +1194,8 @@
           color: #333;
           letter-spacing: 0.1em;
         ">
-          ORACLE-26 // BUILT WITH OPENFOOTBALL · 
-          ELORATINGS.NET · POISSON DISTRIBUTION · 
+          ORACLE-26 // BUILT WITH OPENFOOTBALL ·
+          ELORATINGS.NET · POISSON DISTRIBUTION ·
           DIXON-COLES CORRECTION
         </div>
       </div>
@@ -898,4 +1206,5 @@
   <!-- Javascript Modules -->
   <script type="module" src="app.js"></script>
 </body>
+
 </html>
