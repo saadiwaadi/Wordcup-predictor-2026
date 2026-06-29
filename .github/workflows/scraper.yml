@@ -8,6 +8,10 @@ on:
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,35 +29,51 @@ jobs:
           pip install requests beautifulsoup4
 
       - name: Run Lineup Bot
+        continue-on-error: true
         run: python scripts/bots/lineup_bot.py
 
       - name: Run Fixture Bot
+        continue-on-error: true
         run: python scripts/bots/fixture_bot.py
 
       - name: Run Squad Bot
+        continue-on-error: true
         run: python scripts/bots/squad_bot.py
 
       - name: Run Injury Bot
+        continue-on-error: true
         run: python scripts/bots/injury_bot.py
 
       - name: Run Match Bot
+        continue-on-error: true
         run: python scripts/bots/match_bot.py
 
       - name: Print record counts
         run: |
-          python -c "import json, os; print('Fixtures count:', len(json.load(open('data/scraped/fixtures.json'))) if os.path.exists('data/scraped/fixtures.json') else 'N/A')"
-          python -c "import json, os; print('Injuries count:', len(json.load(open('data/scraped/injuries.json'))) if os.path.exists('data/scraped/injuries.json') else 'N/A')"
-          python -c "import json, os; print('Squads count:', len(json.load(open('data/scraped/squads.json'))) if os.path.exists('data/scraped/squads.json') else 'N/A')"
+          python -c "
+          import json, os
+          base = 'public/data/scraped'
+          files = ['fixtures.json', 'injuries.json', 
+                   'squads.json', 'lineups.json']
+          for f in files:
+              path = os.path.join(base, f)
+              if os.path.exists(path):
+                  data = json.load(open(path))
+                  count = len(data) if isinstance(data, list) else len(data.keys())
+                  print(f'{f}: {count} records')
+              else:
+                  print(f'{f}: NOT FOUND')
+          "
 
       - name: Commit and push changes
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
-          git add data/scraped/
+          git add public/data/scraped/
           if git diff --cached --quiet; then
-            echo "No changes in data/scraped/ detected."
+            echo "No changes detected."
           else
             TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-            git commit -m "auto: scraper run - fixture_bot/injury_bot [$TIMESTAMP]"
+            git commit -m "auto: scraper run [$TIMESTAMP]"
             git push
           fi
