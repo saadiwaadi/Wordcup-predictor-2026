@@ -11,13 +11,56 @@ headers = {
 ID_COMPETITION = 17
 ID_SEASON = 285023
 
+def normalize_team_name(name):
+    if not name:
+        return ""
+    name = name.strip()
+    mapping = {
+        "Korea Republic": "South Korea",
+        "Côte d'Ivoire": "Ivory Coast",
+        "Cabo Verde": "Cape Verde",
+        "Cape Verde": "Cape Verde",
+        "Türkiye": "Turkey",
+        "IR Iran": "Iran",
+        "Congo DR": "DR Congo",
+        "United States": "USA",
+        "Czechia": "Czech Republic",
+        "Czech Republic": "Czech Republic",
+        "Bosnia and Herzegovina": "Bosnia & Herzegovina",
+        "Bosnia & Herzegovina": "Bosnia & Herzegovina",
+    }
+    return mapping.get(name, name)
+
 def run_squad_bot():
     try:
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(
             os.path.abspath(__file__))))
+        
+        fixtures_path = os.path.join(
+            base_dir, "public", "data", "scraped", "fixtures.json")
         squads_path = os.path.join(
             base_dir, "public", "data", "scraped", "squads.json")
         os.makedirs(os.path.dirname(squads_path), exist_ok=True)
+
+        if not os.path.exists(fixtures_path):
+            print(f"Warning: fixtures.json not found at {fixtures_path}. Skipping squad update.", file=sys.stderr)
+            sys.exit(0)
+
+        try:
+            with open(fixtures_path, "r", encoding="utf-8") as f:
+                fixtures_data = json.load(f)
+        except Exception as e:
+            print(f"Warning: failed to load fixtures.json: {e}", file=sys.stderr)
+            sys.exit(0)
+
+        unique_teams = set()
+        for fixture in fixtures_data:
+            h = fixture.get("home_team")
+            a = fixture.get("away_team")
+            if h:
+                unique_teams.add(h)
+            if a:
+                unique_teams.add(a)
 
         squads = {}
         if os.path.exists(squads_path):
@@ -27,39 +70,91 @@ def run_squad_bot():
             except Exception:
                 squads = {}
 
-        # Fetch all teams in the competition
-        teams_url = (
-            f"https://api.fifa.com/api/v3/teams"
+        # Fetch matches calendar to get team names and team IDs
+        matches_url = (
+            f"https://api.fifa.com/api/v3/calendar/matches"
             f"?idCompetition={ID_COMPETITION}"
             f"&idSeason={ID_SEASON}"
-            f"&count=48&language=en-GB"
+            f"&count=104&language=en-GB"
         )
-        print(f"Fetching teams from: {teams_url}")
-        r = requests.get(teams_url, headers=headers, timeout=15)
+        print(f"Fetching matches from: {matches_url}")
+        r = requests.get(matches_url, headers=headers, timeout=15)
         if r.status_code != 200:
-            print(f"Error: teams endpoint returned {r.status_code}",
+            print(f"Error: matches endpoint returned {r.status_code}",
                   file=sys.stderr)
             sys.exit(1)
 
-        teams_data = r.json().get("Results", [])
-        if not teams_data:
-            print("Error: no teams found", file=sys.stderr)
-            sys.exit(1)
+        results = r.json().get("Results", [])
+        fifa_teams = {}
+        for m in results:
+            for key in ["Home", "Away"]:
+                team_obj = m.get(key)
+                if not team_obj:
+                    continue
+                team_id = team_obj.get("IdTeam")
+                if not team_id:
+                    continue
 
-        print(f"Found {len(teams_data)} teams. Fetching squads...")
+                if team_id not in fifa_teams:
+                    team_name = None
+                    names = set()
+                    for n in team_obj.get("TeamName", []):
+                        desc = n.get("Description")
+                        if desc:
+                            names.add(desc.strip().lower())
+                            if n.get("Locale") == "en-GB" or not team_name:
+                                team_name = desc.strip()
+                    
+                    short_club = team_obj.get("ShortClubName")
+                    if short_club:
+                        names.add(short_club.strip().lower())
+                        if not team_name:
+                            team_name = short_club.strip()
+                            
+                    abbreviation = team_obj.get("Abbreviation")
+                    if abbreviation:
+                        names.add(abbreviation.strip().lower())
+                        if not team_name:
+                            team_name = abbreviation.strip()
+                    
+                    # Add normalized version of names to names set
+                    norm_names = set()
+                    for name_val in names:
+                        norm_names.add(normalize_team_name(name_val).lower())
+                    names.update(norm_names)
+
+                    fifa_teams[team_id] = {
+                        "team_id": team_id,
+                        "team_name": team_name,
+                        "abbreviation": abbreviation or "",
+                        "names": names
+                    }
+
+        teams_to_fetch = []
+        for fixture_name in unique_teams:
+            fixture_name_lower = fixture_name.strip().lower()
+            fixture_name_norm_lower = normalize_team_name(fixture_name).lower()
+            
+            matched_team = None
+            for team_id, team_info in fifa_teams.items():
+                if (fixture_name_lower in team_info["names"] or 
+                    fixture_name_norm_lower in team_info["names"]):
+                    matched_team = team_info
+                    break
+            
+            if matched_team:
+                if matched_team not in teams_to_fetch:
+                    teams_to_fetch.append(matched_team)
+            else:
+                print(f"Warning: Could not find FIFA team ID for fixture team '{fixture_name}'", file=sys.stderr)
+
+        print(f"Found {len(teams_to_fetch)} teams from fixtures. Fetching squads...")
         updated = 0
 
-        for team in teams_data:
-            team_id = team.get("IdTeam")
-            team_name = None
-            for n in team.get("Name", []):
-                if n.get("Locale") == "en-GB" or not team_name:
-                    team_name = n.get("Description")
-
-            abbreviation = team.get("Abbreviation", "")
-
-            if not team_id:
-                continue
+        for team in teams_to_fetch:
+            team_id = team["team_id"]
+            team_name = team["team_name"]
+            abbreviation = team["abbreviation"]
 
             squad_url = (
                 f"https://api.fifa.com/api/v3/teams/{team_id}/squads"
@@ -129,4 +224,3 @@ def run_squad_bot():
 
 if __name__ == "__main__":
     run_squad_bot()
-    
