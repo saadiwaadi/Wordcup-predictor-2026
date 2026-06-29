@@ -491,28 +491,82 @@ export async function getEnrichedMatchData(homeCode, awayCode) {
 }
 
 export async function getFixture(team1Code, team2Code) {
-  const cache = await getCache();
-  const rawMatches = cache.matches?.matches || [];
-  
-  for (const m of rawMatches) {
-    const code1 = teamNameToCode[m.team1] || null;
-    const code2 = teamNameToCode[m.team2] || null;
+  let fixtures = [];
+  if (isNode) {
+    await initNode();
+    try {
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = path.dirname(__filename);
+      const filePath = path.join(__dirname, '../public/data/scraped/fixtures.json');
+      const content = await fs.readFile(filePath, 'utf8');
+      fixtures = JSON.parse(content);
+    } catch (e) {
+      const cache = await getCache();
+      fixtures = cache.matches?.matches || [];
+    }
+  } else {
+    try {
+      const res = await fetch('/data/scraped/fixtures.json');
+      if (res.ok) {
+        fixtures = await res.json();
+      } else {
+        const cache = await getCache();
+        fixtures = cache.matches?.matches || [];
+      }
+    } catch {
+      const cache = await getCache();
+      fixtures = cache.matches?.matches || [];
+    }
+  }
+
+  for (const m of fixtures) {
+    const homeName = m.home_team || m.team1;
+    const awayName = m.away_team || m.team2;
+    
+    const code1 = teamNameToCode[homeName] || null;
+    const code2 = teamNameToCode[awayName] || null;
     
     if ((code1 === team1Code && code2 === team2Code) || (code1 === team2Code && code2 === team1Code)) {
       return {
         homeTeamCode: code1,
         awayTeamCode: code2,
-        date: m.date,
-        ground: m.ground || "Unknown Stadium",
-        round: m.round,
+        date: m.date || m.kickoff_utc,
+        ground: m.venue || m.ground || "Unknown Stadium",
+        venue: m.venue || m.ground || "Unknown Stadium",
+        round: m.round || m.stage,
         group: m.group || null,
-        isCompleted: !!(m.score && m.score.ft),
-        score: (m.score && m.score.ft) ? m.score : null
+        isCompleted: !!(m.result && (m.result.ft || m.score?.ft)),
+        score: m.result || m.score || null,
+        attendance: m.attendance || null
       };
     }
   }
   
   return null;
+}
+
+export const STADIUM_CAPACITIES = {
+  "Mexico City Stadium": 87523,
+  "Estadio Azteca": 87523,
+  "AT&T Stadium": 80000,
+  "SoFi Stadium": 70240,
+  "MetLife Stadium": 82500,
+  "Levi's Stadium": 68500,
+  "Arrowhead Stadium": 76416,
+  "Rose Bowl Stadium": 90888,
+  "Gillette Stadium": 65878,
+  "Lincoln Financial Field": 69796,
+  "NRG Stadium": 72220,
+  "BC Place": 54500,
+  "BMO Field": 45736,
+  "Estadio Akron": 49850,
+  "Estadio BBVA": 53500,
+  "Commonwealth Stadium": 56302
+};
+
+export function getAttendanceFactor(venueNameFromFixture) {
+  const capacity = STADIUM_CAPACITIES[venueNameFromFixture] || 70000;
+  return capacity;
 }
 
 export async function getTeamSquad(teamCode) {

@@ -644,8 +644,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const options = {
       staleData,
-      injureKeyA: injuryAToggle.checked,
-      injureKeyB: injuryBToggle.checked,
+      injureKeyA: injuryAToggle.checked || (enrichedA.injuries && enrichedA.injuries.includes("lineup_absence")),
+      injureKeyB: injuryBToggle.checked || (enrichedB.injuries && enrichedB.injuries.includes("lineup_absence")),
       stage: stageSelect.value
     };
 

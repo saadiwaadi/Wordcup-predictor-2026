@@ -32,9 +32,18 @@ function calculateStaticStrength(teamA, teamB) {
   const ratio_val = teamA.market_value_m / teamB.market_value_m;
   const P_val = 1 / (1 + Math.exp(-Math.log(ratio_val) / 1.3026));
 
-  // Host bonus
-  const hostBonusA = teamA.host ? 0.08 : 0.0;
-  const hostBonusB = teamB.host ? 0.08 : 0.0;
+  const crowd_factor = teamA.crowd_factor || 0.75
+  
+  // Home advantage: base 3% + up to 8% from crowd
+  // Only applies when one team has home advantage
+  // For WC2026: USA, MEX, CAN are home nations
+  
+  const homeAdvantage = 0.03 + (crowd_factor * 0.08)
+  
+  const hostBonusA = teamA.host && teamA.isHome 
+    ? homeAdvantage : 0.0
+  const hostBonusB = teamB.host && teamB.isHome
+    ? homeAdvantage : 0.0
 
   // Combined (weighted) for Team A
   let P_static_A = (P_elo * 1.0 + P_fifa * 0.5 + P_val * 0.25) / 1.75 + (hostBonusA - hostBonusB);

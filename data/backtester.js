@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import { runPrediction } from '../engine.js';
 import { TEAMS } from './index.js';
 import { getLambdaOverride, recomputeScorelines } from './enrichTeam.js';
-import { getFixture } from './openFootballLayer.js';
+import { getFixture, STADIUM_CAPACITIES } from './openFootballLayer.js';
 
 // Setup file paths
 const __filename = fileURLToPath(import.meta.url);
@@ -120,6 +120,20 @@ export async function runBacktest() {
     const fixture = await getFixture(codeA, codeB);
     const isAHome = fixture ? (fixture.homeTeamCode === codeA) : true;
     const isBHome = fixture ? (fixture.homeTeamCode === codeB) : false;
+
+    enrichedA.isHome = isAHome;
+    enrichedB.isHome = isBHome;
+
+    let crowd_factor = 0.75;  // neutral venue default
+    if (fixture && fixture.attendance) {
+      const attendance = parseInt(fixture.attendance);
+      const capacity = STADIUM_CAPACITIES[fixture.ground] 
+                    || STADIUM_CAPACITIES[fixture.venue]
+                    || 70000;
+      crowd_factor = Math.min(1.0, attendance / capacity);
+    }
+    enrichedA.crowd_factor = crowd_factor;
+    enrichedB.crowd_factor = crowd_factor;
 
     // Run prediction using blind versions
     const options = {

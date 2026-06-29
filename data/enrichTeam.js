@@ -1,6 +1,7 @@
 // Run with: node data/enrichTeam.js
 
-import { getTeamForm, getTeamStats, getH2HResults, getFixture } from './openFootballLayer.js';
+import fs from 'fs';
+import { getTeamForm, getTeamStats, getH2HResults, getFixture, STADIUM_CAPACITIES } from './openFootballLayer.js';
 import { TEAMS } from './index.js';
 
 export async function enrichTeamWithLiveData(teamObject) {
@@ -48,12 +49,40 @@ export async function enrichMatchup(teamAObject, teamBObject) {
     enrichedB.fixtureDate = null;
   }
 
+  let crowd_factor = 0.75;  // neutral venue default
+  
+  if (fixture && fixture.attendance) {
+    const attendance = parseInt(fixture.attendance);
+    const capacity = STADIUM_CAPACITIES[fixture.ground] 
+                  || STADIUM_CAPACITIES[fixture.venue]
+                  || 70000;
+    crowd_factor = Math.min(1.0, attendance / capacity);
+  }
+  
+  enrichedA.crowd_factor = crowd_factor;
+  enrichedB.crowd_factor = crowd_factor;
+
+  const lineupResult = getLineupAbsences(enrichedA.id, enrichedB.id);
+  if (lineupResult && lineupResult.hasData) {
+    if (lineupResult.homeAbsences) {
+      if (!enrichedA.injuries || enrichedA.injuries.length === 0) {
+        enrichedA.injuries = ["lineup_absence"];
+      }
+    }
+    if (lineupResult.awayAbsences) {
+      if (!enrichedB.injuries || enrichedB.injuries.length === 0) {
+        enrichedB.injuries = ["lineup_absence"];
+      }
+    }
+    console.log(`[LINEUP] Data found for ${enrichedA.id} vs ${enrichedB.id} — homeAbsences: ${lineupResult.homeAbsences}, awayAbsences: ${lineupResult.awayAbsences}`);
+  }
+
   return { enrichedA, enrichedB, h2hResults, fixture };
 }
 
 export const CALIBRATION_CONSTANTS = {
-  home_residual_correction: 0.27,  // from backtest
-  away_residual_correction: -0.01  // from backtest
+  home_residual_correction: 0.20,  // from backtest
+  away_residual_correction: 0.05  // from backtest
 };
 
 
@@ -187,3 +216,86 @@ if (isNode) {
     })();
   }
 }
+
+export function getFixtureByTeamCodes(codeA, codeB) {
+  if (typeof window !== 'undefined') {
+    return null;
+  }
+  
+  try {
+    const fileUrl = new URL('../public/data/scraped/fixtures.json', import.meta.url);
+    const content = fs.readFileSync(fileUrl, 'utf8');
+    const fixtures = JSON.parse(content);
+    
+    const nameToCode = Object.fromEntries(TEAMS.map(t => [t.name, t.id]));
+    
+    for (const f of fixtures) {
+      const homeCode = nameToCode[f.home_team];
+      const awayCode = nameToCode[f.away_team];
+      
+      if (!homeCode) {
+        console.warn(`Warning: No team code found for home team name "${f.home_team}"`);
+        continue;
+      }
+      if (!awayCode) {
+        console.warn(`Warning: No team code found for away team name "${f.away_team}"`);
+        continue;
+      }
+      
+      if ((homeCode === codeA && awayCode === codeB) || (homeCode === codeB && awayCode === codeA)) {
+        return {
+          match_id: f.match_id,
+          homeCode,
+          awayCode,
+          kickoff_utc: f.kickoff_utc,
+          stage: f.stage,
+          venue: f.venue,
+          attendance: f.attendance,
+          result: f.result
+        };
+      }
+    }
+  } catch (e) {
+    console.error("Error reading fixtures in getFixtureByTeamCodes:", e);
+  }
+  
+  return null;
+}
+
+export function getLineupAbsences(codeA, codeB) {
+  if (typeof window !== 'undefined') {
+    return null;
+  }
+  
+  try {
+    const fileUrl = new URL('../public/data/scraped/lineups.json', import.meta.url);
+    const content = fs.readFileSync(fileUrl, 'utf8');
+    const lineups = JSON.parse(content);
+    
+    if (!lineups || Object.keys(lineups).length === 0) {
+      return null;
+    }
+    
+    for (const key of Object.keys(lineups)) {
+      const entry = lineups[key];
+      if ((entry.home === codeA && entry.away === codeB) || (entry.home === codeB && entry.away === codeA)) {
+        const homeAbsences = (entry.home_starters || []).length < 9;
+        const awayAbsences = (entry.away_starters || []).length < 9;
+        
+        return {
+          hasData: true,
+          homeAbsences,
+          awayAbsences,
+          homeStarters: entry.home_starters || [],
+          awayStarters: entry.away_starters || []
+        };
+      }
+    }
+    
+    return { hasData: false };
+  } catch (e) {
+    console.error("Error reading lineups in getLineupAbsences:", e);
+    return null;
+  }
+}
+
