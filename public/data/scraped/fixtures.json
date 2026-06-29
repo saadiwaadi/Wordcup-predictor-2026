@@ -5,7 +5,7 @@
     "away_team": "South Africa",
     "kickoff_utc": "2026-06-11T19:00:00Z",
     "stage": "Matchday 1",
-    "venue": "Mexico City",
+    "venue": "Mexico City Stadium",
     "result": {
       "ft": [
         2,
@@ -15,7 +15,15 @@
         1,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "80824"
   },
   {
     "match_id": "edd99dcf03a9",
@@ -23,7 +31,7 @@
     "away_team": "Czech Republic",
     "kickoff_utc": "2026-06-12T02:00:00Z",
     "stage": "Matchday 1",
-    "venue": "Guadalajara (Zapopan)",
+    "venue": "Guadalajara Stadium",
     "result": {
       "ft": [
         2,
@@ -33,7 +41,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "44985"
   },
   {
     "match_id": "37d9f00abec2",
@@ -41,7 +57,7 @@
     "away_team": "Bosnia & Herzegovina",
     "kickoff_utc": "2026-06-12T19:00:00Z",
     "stage": "Matchday 2",
-    "venue": "Toronto",
+    "venue": "Toronto Stadium",
     "result": {
       "ft": [
         1,
@@ -51,7 +67,15 @@
         0,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "43002"
   },
   {
     "match_id": "4315f22e7b5e",
@@ -59,7 +83,7 @@
     "away_team": "Paraguay",
     "kickoff_utc": "2026-06-13T01:00:00Z",
     "stage": "Matchday 2",
-    "venue": "Los Angeles (Inglewood)",
+    "venue": "Los Angeles Stadium",
     "result": {
       "ft": [
         4,
@@ -69,7 +93,15 @@
         3,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "70492"
   },
   {
     "match_id": "7c494176d581",
@@ -77,7 +109,7 @@
     "away_team": "Switzerland",
     "kickoff_utc": "2026-06-13T19:00:00Z",
     "stage": "Matchday 3",
-    "venue": "San Francisco Bay Area (Santa Clara)",
+    "venue": "San Francisco Bay Area Stadium",
     "result": {
       "ft": [
         1,
@@ -87,7 +119,15 @@
         0,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "67966"
   },
   {
     "match_id": "2b468de5ade5",
@@ -95,7 +135,7 @@
     "away_team": "Morocco",
     "kickoff_utc": "2026-06-13T22:00:00Z",
     "stage": "Matchday 3",
-    "venue": "New York/New Jersey (East Rutherford)",
+    "venue": "New York/New Jersey Stadium",
     "result": {
       "ft": [
         1,
@@ -105,7 +145,15 @@
         1,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "80663"
   },
   {
     "match_id": "905352d12893",
@@ -113,7 +161,7 @@
     "away_team": "Scotland",
     "kickoff_utc": "2026-06-14T01:00:00Z",
     "stage": "Matchday 3",
-    "venue": "Boston (Foxborough)",
+    "venue": "Boston Stadium",
     "result": {
       "ft": [
         0,
@@ -123,7 +171,15 @@
         0,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "64146"
   },
   {
     "match_id": "7df8dece8df3",
@@ -131,7 +187,7 @@
     "away_team": "Turkey",
     "kickoff_utc": "2026-06-14T04:00:00Z",
     "stage": "Matchday 3",
-    "venue": "Vancouver",
+    "venue": "BC Place Vancouver",
     "result": {
       "ft": [
         2,
@@ -141,7 +197,15 @@
         1,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "52497"
   },
   {
     "match_id": "4266b7d4e011",
@@ -149,7 +213,7 @@
     "away_team": "Curaçao",
     "kickoff_utc": "2026-06-14T17:00:00Z",
     "stage": "Matchday 4",
-    "venue": "Houston",
+    "venue": "Houston Stadium",
     "result": {
       "ft": [
         7,
@@ -159,7 +223,15 @@
         3,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68021"
   },
   {
     "match_id": "f069b4ef0af7",
@@ -167,7 +239,7 @@
     "away_team": "Japan",
     "kickoff_utc": "2026-06-14T20:00:00Z",
     "stage": "Matchday 4",
-    "venue": "Dallas (Arlington)",
+    "venue": "Dallas Stadium",
     "result": {
       "ft": [
         2,
@@ -177,7 +249,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "69285"
   },
   {
     "match_id": "c178467b6e7b",
@@ -185,7 +265,7 @@
     "away_team": "Ecuador",
     "kickoff_utc": "2026-06-14T23:00:00Z",
     "stage": "Matchday 4",
-    "venue": "Philadelphia",
+    "venue": "Philadelphia Stadium",
     "result": {
       "ft": [
         1,
@@ -195,7 +275,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68274"
   },
   {
     "match_id": "ddeb8d05faf9",
@@ -203,7 +291,7 @@
     "away_team": "Tunisia",
     "kickoff_utc": "2026-06-15T02:00:00Z",
     "stage": "Matchday 4",
-    "venue": "Monterrey (Guadalupe)",
+    "venue": "Monterrey Stadium",
     "result": {
       "ft": [
         5,
@@ -213,7 +301,15 @@
         2,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "50987"
   },
   {
     "match_id": "a104691a20a6",
@@ -221,7 +317,7 @@
     "away_team": "Cape Verde",
     "kickoff_utc": "2026-06-15T16:00:00Z",
     "stage": "Matchday 5",
-    "venue": "Atlanta",
+    "venue": "Atlanta Stadium",
     "result": {
       "ft": [
         0,
@@ -231,7 +327,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "67640"
   },
   {
     "match_id": "0925ba824385",
@@ -239,7 +343,7 @@
     "away_team": "Egypt",
     "kickoff_utc": "2026-06-15T19:00:00Z",
     "stage": "Matchday 5",
-    "venue": "Seattle",
+    "venue": "Seattle Stadium",
     "result": {
       "ft": [
         1,
@@ -249,7 +353,15 @@
         0,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "66775"
   },
   {
     "match_id": "687b071c1a0e",
@@ -257,7 +369,7 @@
     "away_team": "Uruguay",
     "kickoff_utc": "2026-06-15T22:00:00Z",
     "stage": "Matchday 5",
-    "venue": "Miami (Miami Gardens)",
+    "venue": "Miami Stadium",
     "result": {
       "ft": [
         1,
@@ -267,7 +379,15 @@
         1,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "62764"
   },
   {
     "match_id": "afed5bb93372",
@@ -275,7 +395,7 @@
     "away_team": "New Zealand",
     "kickoff_utc": "2026-06-16T01:00:00Z",
     "stage": "Matchday 5",
-    "venue": "Los Angeles (Inglewood)",
+    "venue": "Los Angeles Stadium",
     "result": {
       "ft": [
         2,
@@ -285,7 +405,15 @@
         1,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "70108"
   },
   {
     "match_id": "74405d70989e",
@@ -293,7 +421,7 @@
     "away_team": "Senegal",
     "kickoff_utc": "2026-06-16T19:00:00Z",
     "stage": "Matchday 6",
-    "venue": "New York/New Jersey (East Rutherford)",
+    "venue": "New York/New Jersey Stadium",
     "result": {
       "ft": [
         3,
@@ -303,7 +431,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "80545"
   },
   {
     "match_id": "b8e9bd2c1beb",
@@ -311,7 +447,7 @@
     "away_team": "Norway",
     "kickoff_utc": "2026-06-16T22:00:00Z",
     "stage": "Matchday 6",
-    "venue": "Boston (Foxborough)",
+    "venue": "Boston Stadium",
     "result": {
       "ft": [
         1,
@@ -321,7 +457,15 @@
         1,
         2
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "63106"
   },
   {
     "match_id": "1b610293fa2c",
@@ -329,7 +473,7 @@
     "away_team": "Algeria",
     "kickoff_utc": "2026-06-17T01:00:00Z",
     "stage": "Matchday 6",
-    "venue": "Kansas City",
+    "venue": "Kansas City Stadium",
     "result": {
       "ft": [
         3,
@@ -339,7 +483,15 @@
         1,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "69045"
   },
   {
     "match_id": "43a627c863c2",
@@ -347,7 +499,7 @@
     "away_team": "Jordan",
     "kickoff_utc": "2026-06-17T04:00:00Z",
     "stage": "Matchday 6",
-    "venue": "San Francisco Bay Area (Santa Clara)",
+    "venue": "San Francisco Bay Area Stadium",
     "result": {
       "ft": [
         3,
@@ -357,7 +509,15 @@
         1,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68527"
   },
   {
     "match_id": "91e0f4f9a6b9",
@@ -365,7 +525,7 @@
     "away_team": "DR Congo",
     "kickoff_utc": "2026-06-17T17:00:00Z",
     "stage": "Matchday 7",
-    "venue": "Houston",
+    "venue": "Houston Stadium",
     "result": {
       "ft": [
         1,
@@ -375,7 +535,15 @@
         1,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68777"
   },
   {
     "match_id": "4baa34355301",
@@ -383,7 +551,7 @@
     "away_team": "Croatia",
     "kickoff_utc": "2026-06-17T20:00:00Z",
     "stage": "Matchday 7",
-    "venue": "Dallas (Arlington)",
+    "venue": "Dallas Stadium",
     "result": {
       "ft": [
         4,
@@ -393,7 +561,15 @@
         2,
         2
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "70389"
   },
   {
     "match_id": "6f04a54248bf",
@@ -401,7 +577,7 @@
     "away_team": "Panama",
     "kickoff_utc": "2026-06-17T23:00:00Z",
     "stage": "Matchday 7",
-    "venue": "Toronto",
+    "venue": "Toronto Stadium",
     "result": {
       "ft": [
         1,
@@ -411,7 +587,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "42942"
   },
   {
     "match_id": "bab8e37a0495",
@@ -419,7 +603,7 @@
     "away_team": "Colombia",
     "kickoff_utc": "2026-06-18T02:00:00Z",
     "stage": "Matchday 7",
-    "venue": "Mexico City",
+    "venue": "Mexico City Stadium",
     "result": {
       "ft": [
         1,
@@ -429,7 +613,15 @@
         0,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "80824"
   },
   {
     "match_id": "fc9711ee9880",
@@ -437,7 +629,7 @@
     "away_team": "South Africa",
     "kickoff_utc": "2026-06-18T16:00:00Z",
     "stage": "Matchday 8",
-    "venue": "Atlanta",
+    "venue": "Atlanta Stadium",
     "result": {
       "ft": [
         1,
@@ -447,7 +639,15 @@
         1,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "67442"
   },
   {
     "match_id": "5147c4c2f1db",
@@ -455,7 +655,7 @@
     "away_team": "Bosnia & Herzegovina",
     "kickoff_utc": "2026-06-18T19:00:00Z",
     "stage": "Matchday 8",
-    "venue": "Los Angeles (Inglewood)",
+    "venue": "Los Angeles Stadium",
     "result": {
       "ft": [
         4,
@@ -465,7 +665,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "70026"
   },
   {
     "match_id": "81384e83e949",
@@ -473,7 +681,7 @@
     "away_team": "Qatar",
     "kickoff_utc": "2026-06-18T22:00:00Z",
     "stage": "Matchday 8",
-    "venue": "Vancouver",
+    "venue": "BC Place Vancouver",
     "result": {
       "ft": [
         6,
@@ -483,7 +691,15 @@
         3,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "52497"
   },
   {
     "match_id": "7dff55fd51e7",
@@ -491,7 +707,7 @@
     "away_team": "South Korea",
     "kickoff_utc": "2026-06-19T01:00:00Z",
     "stage": "Matchday 8",
-    "venue": "Guadalajara (Zapopan)",
+    "venue": "Guadalajara Stadium",
     "result": {
       "ft": [
         1,
@@ -501,7 +717,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "45522"
   },
   {
     "match_id": "a4ef080c9e69",
@@ -509,7 +733,7 @@
     "away_team": "Australia",
     "kickoff_utc": "2026-06-19T19:00:00Z",
     "stage": "Matchday 9",
-    "venue": "Seattle",
+    "venue": "Seattle Stadium",
     "result": {
       "ft": [
         2,
@@ -519,7 +743,15 @@
         2,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "66925"
   },
   {
     "match_id": "a7683d67badf",
@@ -527,7 +759,7 @@
     "away_team": "Morocco",
     "kickoff_utc": "2026-06-19T22:00:00Z",
     "stage": "Matchday 9",
-    "venue": "Boston (Foxborough)",
+    "venue": "Boston Stadium",
     "result": {
       "ft": [
         0,
@@ -537,7 +769,15 @@
         0,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "64146"
   },
   {
     "match_id": "b00cc893a269",
@@ -545,7 +785,7 @@
     "away_team": "Haiti",
     "kickoff_utc": "2026-06-20T00:30:00Z",
     "stage": "Matchday 9",
-    "venue": "Philadelphia",
+    "venue": "Philadelphia Stadium",
     "result": {
       "ft": [
         3,
@@ -555,7 +795,15 @@
         3,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68324"
   },
   {
     "match_id": "08d09764a1aa",
@@ -563,7 +811,7 @@
     "away_team": "Paraguay",
     "kickoff_utc": "2026-06-20T03:00:00Z",
     "stage": "Matchday 9",
-    "venue": "San Francisco Bay Area (Santa Clara)",
+    "venue": "San Francisco Bay Area Stadium",
     "result": {
       "ft": [
         0,
@@ -573,7 +821,15 @@
         0,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68827"
   },
   {
     "match_id": "b51a08915be0",
@@ -581,7 +837,7 @@
     "away_team": "Sweden",
     "kickoff_utc": "2026-06-20T17:00:00Z",
     "stage": "Matchday 10",
-    "venue": "Houston",
+    "venue": "Houston Stadium",
     "result": {
       "ft": [
         5,
@@ -591,7 +847,15 @@
         2,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68777"
   },
   {
     "match_id": "3317b16d9871",
@@ -599,7 +863,7 @@
     "away_team": "Ivory Coast",
     "kickoff_utc": "2026-06-20T20:00:00Z",
     "stage": "Matchday 10",
-    "venue": "Toronto",
+    "venue": "Toronto Stadium",
     "result": {
       "ft": [
         2,
@@ -609,7 +873,15 @@
         0,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "43036"
   },
   {
     "match_id": "fd84c14bc190",
@@ -617,7 +889,7 @@
     "away_team": "Curaçao",
     "kickoff_utc": "2026-06-21T00:00:00Z",
     "stage": "Matchday 10",
-    "venue": "Kansas City",
+    "venue": "Kansas City Stadium",
     "result": {
       "ft": [
         0,
@@ -627,7 +899,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68598"
   },
   {
     "match_id": "c94a59764bb0",
@@ -635,7 +915,7 @@
     "away_team": "Japan",
     "kickoff_utc": "2026-06-21T04:00:00Z",
     "stage": "Matchday 10",
-    "venue": "Monterrey (Guadalupe)",
+    "venue": "Monterrey Stadium",
     "result": {
       "ft": [
         0,
@@ -645,7 +925,15 @@
         0,
         2
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "51243"
   },
   {
     "match_id": "61160361e55b",
@@ -653,7 +941,7 @@
     "away_team": "Saudi Arabia",
     "kickoff_utc": "2026-06-21T16:00:00Z",
     "stage": "Matchday 11",
-    "venue": "Atlanta",
+    "venue": "Atlanta Stadium",
     "result": {
       "ft": [
         4,
@@ -663,7 +951,15 @@
         3,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68239"
   },
   {
     "match_id": "e02c41d9e9a3",
@@ -671,7 +967,7 @@
     "away_team": "Iran",
     "kickoff_utc": "2026-06-21T19:00:00Z",
     "stage": "Matchday 11",
-    "venue": "Los Angeles (Inglewood)",
+    "venue": "Los Angeles Stadium",
     "result": {
       "ft": [
         0,
@@ -681,7 +977,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "70317"
   },
   {
     "match_id": "b75a0859fbe6",
@@ -689,7 +993,7 @@
     "away_team": "Cape Verde",
     "kickoff_utc": "2026-06-21T22:00:00Z",
     "stage": "Matchday 11",
-    "venue": "Miami (Miami Gardens)",
+    "venue": "Miami Stadium",
     "result": {
       "ft": [
         2,
@@ -699,7 +1003,15 @@
         2,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "64003"
   },
   {
     "match_id": "599c05dcfbda",
@@ -707,7 +1019,7 @@
     "away_team": "Egypt",
     "kickoff_utc": "2026-06-22T01:00:00Z",
     "stage": "Matchday 11",
-    "venue": "Vancouver",
+    "venue": "BC Place Vancouver",
     "result": {
       "ft": [
         1,
@@ -717,7 +1029,15 @@
         1,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "52497"
   },
   {
     "match_id": "9a40c1c54b91",
@@ -725,7 +1045,7 @@
     "away_team": "Austria",
     "kickoff_utc": "2026-06-22T17:00:00Z",
     "stage": "Matchday 12",
-    "venue": "Dallas (Arlington)",
+    "venue": "Dallas Stadium",
     "result": {
       "ft": [
         2,
@@ -735,7 +1055,15 @@
         1,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "70649"
   },
   {
     "match_id": "5a1c3c6dd4cd",
@@ -743,7 +1071,7 @@
     "away_team": "Iraq",
     "kickoff_utc": "2026-06-22T21:00:00Z",
     "stage": "Matchday 12",
-    "venue": "Philadelphia",
+    "venue": "Philadelphia Stadium",
     "result": {
       "ft": [
         3,
@@ -753,7 +1081,15 @@
         1,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68324"
   },
   {
     "match_id": "82edd4d451ee",
@@ -761,7 +1097,7 @@
     "away_team": "Senegal",
     "kickoff_utc": "2026-06-23T00:00:00Z",
     "stage": "Matchday 12",
-    "venue": "New York/New Jersey (East Rutherford)",
+    "venue": "New York/New Jersey Stadium",
     "result": {
       "ft": [
         3,
@@ -771,7 +1107,15 @@
         1,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "80663"
   },
   {
     "match_id": "1c28f1831f66",
@@ -779,7 +1123,7 @@
     "away_team": "Algeria",
     "kickoff_utc": "2026-06-23T03:00:00Z",
     "stage": "Matchday 12",
-    "venue": "San Francisco Bay Area (Santa Clara)",
+    "venue": "San Francisco Bay Area Stadium",
     "result": {
       "ft": [
         1,
@@ -789,7 +1133,15 @@
         1,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68371"
   },
   {
     "match_id": "e5d4c54fa2df",
@@ -797,7 +1149,7 @@
     "away_team": "Uzbekistan",
     "kickoff_utc": "2026-06-23T17:00:00Z",
     "stage": "Matchday 13",
-    "venue": "Houston",
+    "venue": "Houston Stadium",
     "result": {
       "ft": [
         5,
@@ -807,7 +1159,15 @@
         3,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68777"
   },
   {
     "match_id": "77978401b1a5",
@@ -815,7 +1175,7 @@
     "away_team": "Ghana",
     "kickoff_utc": "2026-06-23T20:00:00Z",
     "stage": "Matchday 13",
-    "venue": "Boston (Foxborough)",
+    "venue": "Boston Stadium",
     "result": {
       "ft": [
         0,
@@ -825,7 +1185,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "63983"
   },
   {
     "match_id": "c8692b43da58",
@@ -833,7 +1201,7 @@
     "away_team": "Croatia",
     "kickoff_utc": "2026-06-23T23:00:00Z",
     "stage": "Matchday 13",
-    "venue": "Toronto",
+    "venue": "Toronto Stadium",
     "result": {
       "ft": [
         0,
@@ -843,7 +1211,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "43036"
   },
   {
     "match_id": "3c5f1981a7de",
@@ -851,7 +1227,7 @@
     "away_team": "DR Congo",
     "kickoff_utc": "2026-06-24T02:00:00Z",
     "stage": "Matchday 13",
-    "venue": "Guadalajara (Zapopan)",
+    "venue": "Guadalajara Stadium",
     "result": {
       "ft": [
         1,
@@ -861,7 +1237,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "45358"
   },
   {
     "match_id": "56fd4e467c2c",
@@ -869,7 +1253,7 @@
     "away_team": "Canada",
     "kickoff_utc": "2026-06-24T19:00:00Z",
     "stage": "Matchday 14",
-    "venue": "Vancouver",
+    "venue": "Seattle Stadium",
     "result": {
       "ft": [
         2,
@@ -879,7 +1263,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "66925"
   },
   {
     "match_id": "d619f490c954",
@@ -887,7 +1279,7 @@
     "away_team": "Qatar",
     "kickoff_utc": "2026-06-24T19:00:00Z",
     "stage": "Matchday 14",
-    "venue": "Seattle",
+    "venue": "Seattle Stadium",
     "result": {
       "ft": [
         3,
@@ -897,7 +1289,15 @@
         2,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "66925"
   },
   {
     "match_id": "745e1e16429f",
@@ -905,7 +1305,7 @@
     "away_team": "Brazil",
     "kickoff_utc": "2026-06-24T22:00:00Z",
     "stage": "Matchday 14",
-    "venue": "Miami (Miami Gardens)",
+    "venue": "Atlanta Stadium",
     "result": {
       "ft": [
         0,
@@ -915,7 +1315,15 @@
         0,
         2
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68239"
   },
   {
     "match_id": "1d02ada18e7c",
@@ -923,7 +1331,7 @@
     "away_team": "Haiti",
     "kickoff_utc": "2026-06-24T22:00:00Z",
     "stage": "Matchday 14",
-    "venue": "Atlanta",
+    "venue": "Atlanta Stadium",
     "result": {
       "ft": [
         4,
@@ -933,7 +1341,15 @@
         2,
         2
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68239"
   },
   {
     "match_id": "3c28d716fc05",
@@ -941,7 +1357,7 @@
     "away_team": "Mexico",
     "kickoff_utc": "2026-06-25T01:00:00Z",
     "stage": "Matchday 14",
-    "venue": "Mexico City",
+    "venue": "Monterrey Stadium",
     "result": {
       "ft": [
         0,
@@ -951,7 +1367,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "51243"
   },
   {
     "match_id": "34a49c4d55e3",
@@ -959,7 +1383,7 @@
     "away_team": "South Korea",
     "kickoff_utc": "2026-06-25T01:00:00Z",
     "stage": "Matchday 14",
-    "venue": "Monterrey (Guadalupe)",
+    "venue": "Monterrey Stadium",
     "result": {
       "ft": [
         1,
@@ -969,7 +1393,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "51243"
   },
   {
     "match_id": "c640e4e5f174",
@@ -977,7 +1409,7 @@
     "away_team": "Ivory Coast",
     "kickoff_utc": "2026-06-25T20:00:00Z",
     "stage": "Matchday 15",
-    "venue": "Philadelphia",
+    "venue": "Philadelphia Stadium",
     "result": {
       "ft": [
         0,
@@ -987,7 +1419,15 @@
         0,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68324"
   },
   {
     "match_id": "b15a914a43fa",
@@ -995,7 +1435,7 @@
     "away_team": "Germany",
     "kickoff_utc": "2026-06-25T20:00:00Z",
     "stage": "Matchday 15",
-    "venue": "New York/New Jersey (East Rutherford)",
+    "venue": "Philadelphia Stadium",
     "result": {
       "ft": [
         2,
@@ -1005,7 +1445,15 @@
         1,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68324"
   },
   {
     "match_id": "9090beb3a2b9",
@@ -1013,7 +1461,7 @@
     "away_team": "Sweden",
     "kickoff_utc": "2026-06-25T23:00:00Z",
     "stage": "Matchday 15",
-    "venue": "Dallas (Arlington)",
+    "venue": "Kansas City Stadium",
     "result": {
       "ft": [
         1,
@@ -1023,7 +1471,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68391"
   },
   {
     "match_id": "5455770404e5",
@@ -1031,7 +1487,7 @@
     "away_team": "Netherlands",
     "kickoff_utc": "2026-06-25T23:00:00Z",
     "stage": "Matchday 15",
-    "venue": "Kansas City",
+    "venue": "Kansas City Stadium",
     "result": {
       "ft": [
         1,
@@ -1041,7 +1497,15 @@
         0,
         2
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68391"
   },
   {
     "match_id": "3ad877e97c90",
@@ -1049,7 +1513,7 @@
     "away_team": "USA",
     "kickoff_utc": "2026-06-26T02:00:00Z",
     "stage": "Matchday 15",
-    "venue": "Los Angeles (Inglewood)",
+    "venue": "San Francisco Bay Area Stadium",
     "result": {
       "ft": [
         3,
@@ -1059,7 +1523,15 @@
         2,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68827"
   },
   {
     "match_id": "af2698630066",
@@ -1067,7 +1539,7 @@
     "away_team": "Australia",
     "kickoff_utc": "2026-06-26T02:00:00Z",
     "stage": "Matchday 15",
-    "venue": "San Francisco Bay Area (Santa Clara)",
+    "venue": "San Francisco Bay Area Stadium",
     "result": {
       "ft": [
         0,
@@ -1077,7 +1549,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68827"
   },
   {
     "match_id": "2a1b64f21722",
@@ -1085,7 +1565,7 @@
     "away_team": "France",
     "kickoff_utc": "2026-06-26T19:00:00Z",
     "stage": "Matchday 16",
-    "venue": "Boston (Foxborough)",
+    "venue": "Toronto Stadium",
     "result": {
       "ft": [
         1,
@@ -1095,7 +1575,15 @@
         1,
         3
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "43036"
   },
   {
     "match_id": "afd83c4f43f1",
@@ -1103,7 +1591,7 @@
     "away_team": "Iraq",
     "kickoff_utc": "2026-06-26T19:00:00Z",
     "stage": "Matchday 16",
-    "venue": "Toronto",
+    "venue": "Toronto Stadium",
     "result": {
       "ft": [
         5,
@@ -1113,7 +1601,15 @@
         1,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "43036"
   },
   {
     "match_id": "0338f33e0492",
@@ -1121,7 +1617,7 @@
     "away_team": "Saudi Arabia",
     "kickoff_utc": "2026-06-27T00:00:00Z",
     "stage": "Matchday 16",
-    "venue": "Houston",
+    "venue": "Guadalajara Stadium",
     "result": {
       "ft": [
         0,
@@ -1131,7 +1627,15 @@
         0,
         0
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "45065"
   },
   {
     "match_id": "6d4b30507269",
@@ -1139,7 +1643,7 @@
     "away_team": "Spain",
     "kickoff_utc": "2026-06-27T00:00:00Z",
     "stage": "Matchday 16",
-    "venue": "Guadalajara (Zapopan)",
+    "venue": "Guadalajara Stadium",
     "result": {
       "ft": [
         0,
@@ -1149,7 +1653,15 @@
         0,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "45065"
   },
   {
     "match_id": "ad432ff60725",
@@ -1157,7 +1669,7 @@
     "away_team": "Iran",
     "kickoff_utc": "2026-06-27T03:00:00Z",
     "stage": "Matchday 16",
-    "venue": "Seattle",
+    "venue": "BC Place Vancouver",
     "result": {
       "ft": [
         1,
@@ -1167,7 +1679,15 @@
         1,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "52497"
   },
   {
     "match_id": "31cdb24e0b28",
@@ -1175,7 +1695,7 @@
     "away_team": "Belgium",
     "kickoff_utc": "2026-06-27T03:00:00Z",
     "stage": "Matchday 16",
-    "venue": "Vancouver",
+    "venue": "BC Place Vancouver",
     "result": {
       "ft": [
         1,
@@ -1185,7 +1705,15 @@
         0,
         1
       ]
-    }
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "52497"
   },
   {
     "match_id": "30c70583496d",
@@ -1193,8 +1721,25 @@
     "away_team": "England",
     "kickoff_utc": "2026-06-27T21:00:00Z",
     "stage": "Matchday 17",
-    "venue": "New York/New Jersey (East Rutherford)",
-    "result": null
+    "venue": "New York/New Jersey Stadium",
+    "result": {
+      "ft": [
+        0,
+        2
+      ],
+      "ht": [
+        0,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "80663"
   },
   {
     "match_id": "87a42e48366e",
@@ -1202,8 +1747,25 @@
     "away_team": "Ghana",
     "kickoff_utc": "2026-06-27T21:00:00Z",
     "stage": "Matchday 17",
-    "venue": "Philadelphia",
-    "result": null
+    "venue": "New York/New Jersey Stadium",
+    "result": {
+      "ft": [
+        2,
+        1
+      ],
+      "ht": [
+        1,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "80663"
   },
   {
     "match_id": "225817ff845e",
@@ -1211,8 +1773,25 @@
     "away_team": "Portugal",
     "kickoff_utc": "2026-06-27T23:30:00Z",
     "stage": "Matchday 17",
-    "venue": "Miami (Miami Gardens)",
-    "result": null
+    "venue": "Atlanta Stadium",
+    "result": {
+      "ft": [
+        0,
+        0
+      ],
+      "ht": [
+        0,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68239"
   },
   {
     "match_id": "4a1675abb904",
@@ -1220,8 +1799,25 @@
     "away_team": "Uzbekistan",
     "kickoff_utc": "2026-06-27T23:30:00Z",
     "stage": "Matchday 17",
-    "venue": "Atlanta",
-    "result": null
+    "venue": "Atlanta Stadium",
+    "result": {
+      "ft": [
+        3,
+        1
+      ],
+      "ht": [
+        0,
+        1
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68239"
   },
   {
     "match_id": "ffea2c029c6b",
@@ -1229,8 +1825,25 @@
     "away_team": "Austria",
     "kickoff_utc": "2026-06-28T02:00:00Z",
     "stage": "Matchday 17",
-    "venue": "Kansas City",
-    "result": null
+    "venue": "Kansas City Stadium",
+    "result": {
+      "ft": [
+        3,
+        3
+      ],
+      "ht": [
+        1,
+        1
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "69045"
   },
   {
     "match_id": "008c4b59eb23",
@@ -1238,8 +1851,25 @@
     "away_team": "Argentina",
     "kickoff_utc": "2026-06-28T02:00:00Z",
     "stage": "Matchday 17",
-    "venue": "Dallas (Arlington)",
-    "result": null
+    "venue": "Kansas City Stadium",
+    "result": {
+      "ft": [
+        1,
+        3
+      ],
+      "ht": [
+        0,
+        2
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "69045"
   },
   {
     "match_id": "b815d1f56983",
@@ -1247,8 +1877,25 @@
     "away_team": "Canada",
     "kickoff_utc": "2026-06-28T19:00:00Z",
     "stage": "Round of 32",
-    "venue": "Los Angeles (Inglewood)",
-    "result": null
+    "venue": "Los Angeles Stadium",
+    "result": {
+      "ft": [
+        0,
+        1
+      ],
+      "ht": [
+        0,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "69237"
   },
   {
     "match_id": "83580dec1f0f",
@@ -1256,17 +1903,21 @@
     "away_team": "Japan",
     "kickoff_utc": "2026-06-29T17:00:00Z",
     "stage": "Round of 32",
-    "venue": "Houston",
-    "result": null
+    "venue": "Houston Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
-    "match_id": "234dd57fc1e9",
+    "match_id": "30298ec46862",
     "home_team": "Germany",
-    "away_team": "3A/B/C/D/F",
+    "away_team": "Paraguay",
     "kickoff_utc": "2026-06-29T20:30:00Z",
     "stage": "Round of 32",
-    "venue": "Boston (Foxborough)",
-    "result": null
+    "venue": "Boston Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "35aec8229061",
@@ -1274,116 +1925,142 @@
     "away_team": "Morocco",
     "kickoff_utc": "2026-06-30T01:00:00Z",
     "stage": "Round of 32",
-    "venue": "Monterrey (Guadalupe)",
-    "result": null
+    "venue": "Monterrey Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
-    "match_id": "560a59f87766",
+    "match_id": "97af4f55eac7",
     "home_team": "Ivory Coast",
-    "away_team": "2I",
+    "away_team": "Norway",
     "kickoff_utc": "2026-06-30T17:00:00Z",
     "stage": "Round of 32",
-    "venue": "Dallas (Arlington)",
-    "result": null
+    "venue": "Dallas Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
-    "match_id": "53b157c39780",
-    "home_team": "1I",
-    "away_team": "3C/D/F/G/H",
+    "match_id": "e8bfdfa89e02",
+    "home_team": "France",
+    "away_team": "Sweden",
     "kickoff_utc": "2026-06-30T21:00:00Z",
     "stage": "Round of 32",
-    "venue": "New York/New Jersey (East Rutherford)",
-    "result": null
+    "venue": "New York/New Jersey Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
-    "match_id": "178a97850f46",
+    "match_id": "85ea301f8686",
     "home_team": "Mexico",
-    "away_team": "3C/E/F/H/I",
+    "away_team": "Ecuador",
     "kickoff_utc": "2026-07-01T01:00:00Z",
     "stage": "Round of 32",
-    "venue": "Mexico City",
-    "result": null
+    "venue": "Mexico City Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
-    "match_id": "150983753492",
-    "home_team": "1L",
-    "away_team": "3E/H/I/J/K",
+    "match_id": "eea87038b44d",
+    "home_team": "England",
+    "away_team": "DR Congo",
     "kickoff_utc": "2026-07-01T16:00:00Z",
     "stage": "Round of 32",
-    "venue": "Atlanta",
-    "result": null
+    "venue": "Atlanta Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
-    "match_id": "e5f2e3cd0795",
-    "home_team": "1G",
-    "away_team": "3A/E/H/I/J",
+    "match_id": "b740961bd495",
+    "home_team": "Belgium",
+    "away_team": "Senegal",
     "kickoff_utc": "2026-07-01T20:00:00Z",
     "stage": "Round of 32",
-    "venue": "Seattle",
-    "result": null
+    "venue": "Seattle Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
-    "match_id": "db23a97a6bb5",
+    "match_id": "62690eaba814",
     "home_team": "USA",
-    "away_team": "3B/E/F/I/J",
+    "away_team": "Bosnia & Herzegovina",
     "kickoff_utc": "2026-07-02T00:00:00Z",
     "stage": "Round of 32",
-    "venue": "San Francisco Bay Area (Santa Clara)",
-    "result": null
+    "venue": "San Francisco Bay Area Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
-    "match_id": "adc337003278",
-    "home_team": "1H",
-    "away_team": "2J",
+    "match_id": "b76fdb9bcdaf",
+    "home_team": "Spain",
+    "away_team": "Austria",
     "kickoff_utc": "2026-07-02T19:00:00Z",
     "stage": "Round of 32",
-    "venue": "Los Angeles (Inglewood)",
-    "result": null
+    "venue": "Los Angeles Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
-    "match_id": "a69c10075f02",
-    "home_team": "2K",
-    "away_team": "2L",
+    "match_id": "f58c5cd36a2b",
+    "home_team": "Portugal",
+    "away_team": "Croatia",
     "kickoff_utc": "2026-07-02T23:00:00Z",
     "stage": "Round of 32",
-    "venue": "Toronto",
-    "result": null
+    "venue": "Toronto Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
-    "match_id": "6e540bb8b0cb",
+    "match_id": "5845d4a3e339",
     "home_team": "Switzerland",
-    "away_team": "3E/F/G/I/J",
+    "away_team": "Algeria",
     "kickoff_utc": "2026-07-03T03:00:00Z",
     "stage": "Round of 32",
-    "venue": "Vancouver",
-    "result": null
+    "venue": "BC Place Vancouver",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
-    "match_id": "222fed279ab3",
+    "match_id": "65c99bf10491",
     "home_team": "Australia",
-    "away_team": "2G",
+    "away_team": "Egypt",
     "kickoff_utc": "2026-07-03T18:00:00Z",
     "stage": "Round of 32",
-    "venue": "Dallas (Arlington)",
-    "result": null
+    "venue": "Dallas Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
-    "match_id": "1481be645413",
-    "home_team": "1J",
-    "away_team": "2H",
+    "match_id": "763eb4c2f662",
+    "home_team": "Argentina",
+    "away_team": "Cape Verde",
     "kickoff_utc": "2026-07-03T22:00:00Z",
     "stage": "Round of 32",
-    "venue": "Miami (Miami Gardens)",
-    "result": null
+    "venue": "Miami Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
-    "match_id": "9c06706831c6",
-    "home_team": "1K",
-    "away_team": "3D/E/I/J/L",
+    "match_id": "816ca1cef6be",
+    "home_team": "Colombia",
+    "away_team": "Ghana",
     "kickoff_utc": "2026-07-04T01:30:00Z",
     "stage": "Round of 32",
-    "venue": "Kansas City",
-    "result": null
+    "venue": "Kansas City Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "a4b264c43c27",
@@ -1391,8 +2068,10 @@
     "away_team": "W75",
     "kickoff_utc": "2026-07-04T17:00:00Z",
     "stage": "Round of 16",
-    "venue": "Houston",
-    "result": null
+    "venue": "Houston Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "ea271152c8aa",
@@ -1400,8 +2079,10 @@
     "away_team": "W77",
     "kickoff_utc": "2026-07-04T21:00:00Z",
     "stage": "Round of 16",
-    "venue": "Philadelphia",
-    "result": null
+    "venue": "Philadelphia Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "1dc0d4fb9e3e",
@@ -1409,8 +2090,10 @@
     "away_team": "W78",
     "kickoff_utc": "2026-07-05T20:00:00Z",
     "stage": "Round of 16",
-    "venue": "New York/New Jersey (East Rutherford)",
-    "result": null
+    "venue": "New York/New Jersey Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "7de747fc2945",
@@ -1418,8 +2101,10 @@
     "away_team": "W80",
     "kickoff_utc": "2026-07-06T00:00:00Z",
     "stage": "Round of 16",
-    "venue": "Mexico City",
-    "result": null
+    "venue": "Mexico City Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "d49ec22045ea",
@@ -1427,8 +2112,10 @@
     "away_team": "W84",
     "kickoff_utc": "2026-07-06T19:00:00Z",
     "stage": "Round of 16",
-    "venue": "Dallas (Arlington)",
-    "result": null
+    "venue": "Dallas Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "a63765b1966b",
@@ -1436,8 +2123,10 @@
     "away_team": "W82",
     "kickoff_utc": "2026-07-07T00:00:00Z",
     "stage": "Round of 16",
-    "venue": "Seattle",
-    "result": null
+    "venue": "Seattle Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "0991fdff5256",
@@ -1445,8 +2134,10 @@
     "away_team": "W88",
     "kickoff_utc": "2026-07-07T16:00:00Z",
     "stage": "Round of 16",
-    "venue": "Atlanta",
-    "result": null
+    "venue": "Atlanta Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "cbf6567d2d18",
@@ -1454,8 +2145,10 @@
     "away_team": "W87",
     "kickoff_utc": "2026-07-07T20:00:00Z",
     "stage": "Round of 16",
-    "venue": "Vancouver",
-    "result": null
+    "venue": "BC Place Vancouver",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "ece35d4e1780",
@@ -1463,8 +2156,10 @@
     "away_team": "W90",
     "kickoff_utc": "2026-07-09T20:00:00Z",
     "stage": "Quarter-final",
-    "venue": "Boston (Foxborough)",
-    "result": null
+    "venue": "Boston Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "d2d932f7bd7f",
@@ -1472,8 +2167,10 @@
     "away_team": "W94",
     "kickoff_utc": "2026-07-10T19:00:00Z",
     "stage": "Quarter-final",
-    "venue": "Los Angeles (Inglewood)",
-    "result": null
+    "venue": "Los Angeles Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "d54eb5d56f05",
@@ -1481,8 +2178,10 @@
     "away_team": "W92",
     "kickoff_utc": "2026-07-11T21:00:00Z",
     "stage": "Quarter-final",
-    "venue": "Miami (Miami Gardens)",
-    "result": null
+    "venue": "Miami Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "c80d776d6c9c",
@@ -1490,8 +2189,10 @@
     "away_team": "W96",
     "kickoff_utc": "2026-07-12T01:00:00Z",
     "stage": "Quarter-final",
-    "venue": "Kansas City",
-    "result": null
+    "venue": "Kansas City Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "100d903fc64b",
@@ -1499,8 +2200,10 @@
     "away_team": "W98",
     "kickoff_utc": "2026-07-14T19:00:00Z",
     "stage": "Semi-final",
-    "venue": "Dallas (Arlington)",
-    "result": null
+    "venue": "Dallas Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "a6506fb90459",
@@ -1508,8 +2211,10 @@
     "away_team": "W100",
     "kickoff_utc": "2026-07-15T19:00:00Z",
     "stage": "Semi-final",
-    "venue": "Atlanta",
-    "result": null
+    "venue": "Atlanta Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "fb650bb7845b",
@@ -1517,8 +2222,10 @@
     "away_team": "L102",
     "kickoff_utc": "2026-07-18T21:00:00Z",
     "stage": "Match for third place",
-    "venue": "Miami (Miami Gardens)",
-    "result": null
+    "venue": "Miami Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   },
   {
     "match_id": "24f853d99efb",
@@ -1526,7 +2233,9 @@
     "away_team": "W102",
     "kickoff_utc": "2026-07-19T19:00:00Z",
     "stage": "Final",
-    "venue": "New York/New Jersey (East Rutherford)",
-    "result": null
+    "venue": "New York/New Jersey Stadium",
+    "result": null,
+    "weather": {},
+    "attendance": null
   }
 ]
