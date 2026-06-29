@@ -1904,9 +1904,24 @@
     "kickoff_utc": "2026-06-29T17:00:00Z",
     "stage": "Round of 32",
     "venue": "Houston Stadium",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "ft": [
+        2,
+        1
+      ],
+      "ht": [
+        0,
+        1
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68777"
   },
   {
     "match_id": "30298ec46862",
