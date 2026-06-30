@@ -962,72 +962,6 @@ body {
   color: var(--accent-red);
 }
 
-/* FUTURE EXPANSION SLOTS */
-.future-slots-section {
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-panels);
-}
-
-.future-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
-  padding: 8px 16px;
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: bold;
-}
-
-.muted-slot-label {
-  font-size: 9px;
-  color: var(--text-muted);
-}
-
-.slots-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  padding: 16px;
-}
-
-@media (max-width: 800px) {
-  .slots-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.slot-card {
-  border: 1px dashed var(--border-color-active);
-  background-color: var(--bg-primary);
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  opacity: 0.5;
-  transition: none;
-  /* No hover, as specified */
-}
-
-.slot-id {
-  font-family: var(--font-data);
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-.slot-name {
-  font-family: var(--font-display);
-  font-size: 11px;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-}
-
-.slot-status {
-  font-family: var(--font-label);
-  font-size: 9px;
-  color: var(--accent-red);
-}
 
 /* TAB CONTROL BAR */
 .tab-control-bar {
@@ -1061,6 +995,24 @@ body {
   color: var(--accent-green);
   background-color: var(--bg-primary);
   border-bottom: 2px solid var(--accent-green);
+}
+
+#btn-system-info {
+  margin-left: auto;
+  font-family: var(--font-data);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid #1a1200;
+  color: #b45309;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+#btn-system-info:hover {
+  border-color: #3a2800;
+  color: #f59e0b;
 }
 
 /* BRUTALIST RESULTS TABLE */
@@ -1967,29 +1919,6 @@ body {
   overflow-x: auto;
 }
 
-/* Formation button styles */
-.formation-btn {
-  font-family: var(--font-data);
-  font-size: 8px;
-  letter-spacing: 0.1em;
-  padding: 3px 8px;
-  background: transparent;
-  border: 1px solid #1a1a1a;
-  color: #444;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.formation-btn:hover {
-  border-color: #333;
-  color: #888;
-}
-
-.formation-btn.active {
-  border-color: #22c55e44;
-  color: #22c55e;
-  background: #0a1a0a;
-}
 
 @keyframes spin {
   from {

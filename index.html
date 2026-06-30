@@ -52,20 +52,7 @@
       <button class="tab-btn" id="btn-tab-squad">[02] ▣ SQUAD ANALYSIS</button>
       <button class="tab-btn" id="btn-tab-verification">[03] MODEL VERIFICATION</button>
       <button class="tab-btn" id="btn-tab-settings">[04] DATA SETTINGS</button>
-      <button id="btn-system-info" style="
-          margin-left: auto;
-          font-family: var(--font-data);
-          font-size: 9px;
-          letter-spacing: 0.1em;
-          padding: 6px 12px;
-          background: transparent;
-          border: 1px solid #1a1200;
-          color: #b45309;
-          cursor: pointer;
-          transition: all 0.15s;
-        " onmouseover="this.style.borderColor='#3a2800';
-          this.style.color='#f59e0b'" onmouseout="this.style.borderColor='#1a1200';
-          this.style.color='#b45309'">
+      <button id="btn-system-info">
         [?] SYSTEM INFO
       </button>
     </div>
@@ -130,21 +117,6 @@
               </select>
             </div>
 
-            <!-- CONFIGURATION TOGGLES -->
-            <div class="toggles-container margin-top-md">
-              <label class="toggle-row">
-                <input type="checkbox" id="toggle-stale" class="terminal-checkbox">
-                <span class="checkbox-label">Simulate stale data (−15 confidence)</span>
-              </label>
-              <label class="toggle-row">
-                <input type="checkbox" id="toggle-injury-a" class="terminal-checkbox">
-                <span class="checkbox-label">Injure key player — Team A</span>
-              </label>
-              <label class="toggle-row">
-                <input type="checkbox" id="toggle-injury-b" class="terminal-checkbox">
-                <span class="checkbox-label">Injure key player — Team B</span>
-              </label>
-            </div>
 
             <!-- PRE-MATCH FLAGS -->
             <div id="pre-match-flags-container" class="margin-top-md hidden">
@@ -175,9 +147,9 @@
         <div id="expansion-modules" class="hidden" style="margin-top: 0;">
           <!-- SUB-NAV -->
           <div>
-            <button class="exp-tab-btn active" data-pane="events">[SLOT_B] MATCH EVENTS</button>
-            <button class="exp-tab-btn" data-pane="conditions">[SLOT_C] CONDITIONS</button>
-            <button class="exp-tab-btn" data-pane="goals">[SLOT_E] GOAL MAP</button>
+            <button class="exp-tab-btn active" data-pane="events">MATCH EVENTS</button>
+            <button class="exp-tab-btn" data-pane="conditions">CONDITIONS</button>
+            <button class="exp-tab-btn" data-pane="goals">GOAL MAP</button>
           </div>
 
           <!-- EVENTS PANE -->
@@ -664,16 +636,6 @@
             </div>
           </div>
 
-          <!-- formation-selector hidden to favor team-specific dropdowns -->
-          <div id="formation-selector" style="display: none !important;">
-            <button class="formation-btn active" data-formation="4-3-3">4-3-3</button>
-            <button class="formation-btn" data-formation="4-2-3-1">4-2-3-1</button>
-            <button class="formation-btn" data-formation="4-4-2">4-4-2</button>
-            <button class="formation-btn" data-formation="3-5-2">3-5-2</button>
-            <button class="formation-btn" data-formation="3-4-3">3-4-3</button>
-            <button class="formation-btn" data-formation="5-3-2">5-3-2</button>
-            <button class="formation-btn" data-formation="4-5-1">4-5-1</button>
-          </div>
 
           <!-- PITCH SVG WRAPPER -->
           <!-- Modified Section: 2. Increase pitch area, 6. Increase pitch scale -->
@@ -768,26 +730,6 @@
           <span class="corner-label">SYS</span>
         </div>
         <div class="panel-body flex-column gap-md">
-          <!-- Section 1: API Config -->
-          <div class="settings-section">
-            <div class="panel-header sub-header"
-              style="padding: 6px 12px; background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
-              <h3 style="font-size: 11px;">[01] API CONFIGURATION</h3>
-            </div>
-            <div class="panel-body-inner flex-column gap-xs"
-              style="padding: 10px; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-top: none;">
-              <div class="form-group">
-                <label style="font-size: 9px; margin-bottom: 2px;">API BASE URL</label>
-                <input type="text" value="https://api.oracle26.infra/v1" class="terminal-select"
-                  style="background: var(--bg-primary); cursor: text; padding: 6px 10px; font-size: 11px;" readonly>
-              </div>
-              <div class="form-group margin-top-sm">
-                <label style="font-size: 9px; margin-bottom: 2px;">ENVIRONMENT</label>
-                <input type="text" value="PRODUCTION-SECURE" class="terminal-select"
-                  style="background: var(--bg-primary); cursor: text; padding: 6px 10px; font-size: 11px;" readonly>
-              </div>
-            </div>
-          </div>
 
           <!-- Section 2: Cache Meta Stats -->
           <div class="settings-section margin-top-md">
@@ -880,52 +822,6 @@
     </main>
 
 
-    <!-- FUTURE SLOTS PANEL -->
-    <footer class="future-slots-section" style="display:none">
-      <div class="future-header">
-        <span>PLANNED EXPANSION MODULES</span>
-        <span class="muted-slot-label">SLOTS A-F · ACTIVE DASHBOARD DETECTOR</span>
-      </div>
-
-      <div class="slots-grid">
-        <!-- SLOT A -->
-        <div class="slot-card">
-          <div class="slot-id">[SLOT_A]</div>
-          <div class="slot-name">BOOKMAKER ODDS FEED</div>
-          <div class="slot-status">STATUS: PLANNED</div>
-        </div>
-        <!-- SLOT B -->
-        <div class="slot-card">
-          <div class="slot-id">[SLOT_B]</div>
-          <div class="slot-name">LIVE MATCH EVENTS</div>
-          <div class="slot-status">STATUS: PLANNED</div>
-        </div>
-        <!-- SLOT C -->
-        <div class="slot-card">
-          <div class="slot-id">[SLOT_C]</div>
-          <div class="slot-name">WEATHER &amp; VENUE DATA</div>
-          <div class="slot-status">STATUS: PLANNED</div>
-        </div>
-        <!-- SLOT D -->
-        <div class="slot-card">
-          <div class="slot-id">[SLOT_D]</div>
-          <div class="slot-name">TOURNAMENT BRACKET SIM</div>
-          <div class="slot-status">STATUS: PLANNED</div>
-        </div>
-        <!-- SLOT E -->
-        <div class="slot-card">
-          <div class="slot-id">[SLOT_E]</div>
-          <div class="slot-name">xG SHOT DATA FEED</div>
-          <div class="slot-status">STATUS: PLANNED</div>
-        </div>
-        <!-- SLOT F -->
-        <div class="slot-card">
-          <div class="slot-id">[SLOT_F]</div>
-          <div class="slot-name">CALIBRATION ENGINE V2</div>
-          <div class="slot-status">STATUS: PLANNED</div>
-        </div>
-      </div>
-    </footer>
 
     <div id="system-info-modal" style="
         display: none;
@@ -1142,19 +1038,19 @@
           </div>
 
           <div class="modal-section">
-            <div class="modal-section-label">
-              ACCURACY BENCHMARK (60 matches)
+            <div class="modal-section-label" id="modal-accuracy-heading">
+              ACCURACY BENCHMARK (77 matches)
             </div>
-            <div class="modal-code-block">
-              Outcome accuracy: <span style="color:#1aff6e">60.0%</span> (36/60)
-              vs Random: <span style="color:#1aff6e">+26.4%</span>
-              vs Naive (FIFA rk): <span style="color:#1aff6e">+0.0%</span>
-              Brier score: <span style="color:#1aff6e">0.551</span> (FAIR)
-              Calibration: <span style="color:#f59e0b">IMPROVING</span>
-              Verdict: <span style="color:#f59e0b">MODERATE SIGNAL</span>
+            <div class="modal-code-block" id="modal-accuracy-stats">
+              Outcome accuracy: <span style="color:#1aff6e" id="modal-outcome-accuracy">59.7%</span> (<span id="modal-correct-count">46</span>/77)
+              vs Random: <span style="color:#1aff6e" id="modal-vs-random">+26.4%</span>
+              vs Naive (FIFA rk): <span style="color:#1aff6e" id="modal-vs-naive">+0.0%</span>
+              Brier score: <span style="color:#1aff6e" id="modal-brier-score">0.547</span> (<span id="modal-brier-interpretation">FAIR</span>)
+              Calibration: <span style="color:#f59e0b" id="modal-calibration-trend">IMPROVING</span>
+              Verdict: <span style="color:#f59e0b" id="modal-verdict">MODERATE SIGNAL</span>
 
-              Exact scoreline: <span style="color:#1aff6e">6.7%</span>
-              Score in top 5: <span style="color:#1aff6e">51.7%</span>
+              Exact scoreline: <span style="color:#1aff6e" id="modal-exact-score">6.5%</span>
+              Score in top 5: <span style="color:#1aff6e" id="modal-top5-score">51.9%</span>
             </div>
           </div>
 
@@ -1175,13 +1071,11 @@
               structurally misses draws.
               0% draw accuracy is expected.
 
-              <span style="color:#ef4444">3.</span> Small sample — 60 matches is
+              <span style="color:#ef4444">3.</span> Small sample — <span id="modal-limitation-sample">77</span> matches is
               statistically limited. Calibration
               improves as tournament progresses.
 
-              <span style="color:#ef4444">4.</span> No live player data — xG values
-              are pre-tournament estimates for
-              most teams except FRA and ARG.
+              <span style="color:#ef4444">4.</span> Static baseline parameters — While player availability and injuries are updated dynamically via daily scrapers, pre-tournament baseline parameters (like FIFA points, Elo) are cached and require manual sync updates.
             </div>
           </div>
 

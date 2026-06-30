@@ -9,7 +9,7 @@ import { getLambdaOverride, recomputeScorelines } from '../data/enrichTeam.js';
 // Setup file paths
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const FIXTURES_FILE = path.join(__dirname, '../data/scraped/fixtures.json');
+const FIXTURES_FILE = path.join(__dirname, '../public/data/scraped/fixtures.json');
 
 // Step 1 - Build a name-to-code map
 const NAME_OVERRIDES = {

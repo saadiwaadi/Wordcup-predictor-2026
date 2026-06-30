@@ -1,17 +1,5 @@
-const NAME_MAP = {
-  "Czech Republic": "Czechia",
-  "Czechia": "Czech Republic",
-  "Bosnia and Herzegovina": "Bosnia & Herzegovina",
-  "Bosnia & Herzegovina": "Bosnia and Herzegovina",
-  "DR Congo": "DR Congo",
-  "Ivory Coast": "Ivory Coast",
-  "United States": "United States",
-  "USA": "United States"
-};
-
-export function normalizeName(name) {
-  return NAME_MAP[name] ?? name;
-}
+import { getTeamIdentifiers } from './teamRegistry.js';
+export { normalizeName } from './teamRegistry.js';
 
 let _squads = null;
 let _fixtures = null;
@@ -68,8 +56,18 @@ export async function initScrapedData() {
 
 export function getScrapedSquad(teamName) {
   if (!_squads) return [];
-  const normalized = normalizeName(teamName);
-  return _squads[normalized] || _squads[teamName] || [];
+  const ids = getTeamIdentifiers(teamName);
+  for (const id of ids) {
+    if (_squads[id]) return _squads[id];
+  }
+  // Try case-insensitive matching
+  const lowerIds = ids.map(id => id.toLowerCase());
+  for (const key of Object.keys(_squads)) {
+    if (lowerIds.includes(key.toLowerCase())) {
+      return _squads[key];
+    }
+  }
+  return [];
 }
 
 export function getCompletedFixtures() {

@@ -1,5 +1,6 @@
-// Run with: node data/openFootballLayer.js
 import { getScrapedSquad } from './scrapedAdapter.js';
+import { getTeamCode } from './teamRegistry.js';
+import { TEAMS } from './teams.js';
 
 // Check environment
 const isNode = typeof window === 'undefined';
@@ -33,26 +34,6 @@ const URL_GROUPS = 'https://raw.githubusercontent.com/openfootball/worldcup.json
 const URL_TEAMS = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.teams.json';
 const URL_SQUADS = 'https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.squads.json';
 
-// Team name mapping: openfootball names to internal codes
-const teamNameToCode = {
-  "Mexico": "MEX", "South Africa": "RSA", "South Korea": "KOR",
-  "Czech Republic": "CZE", "Canada": "CAN", 
-  "Bosnia & Herzegovina": "BIH", "Qatar": "QAT", 
-  "Switzerland": "SUI", "Brazil": "BRA", "Morocco": "MAR",
-  "Haiti": "HAI", "Scotland": "SCO", "USA": "USA",
-  "Paraguay": "PAR", "Australia": "AUS", "Turkey": "TUR",
-  "Germany": "GER", "Curaçao": "CUW", "Ivory Coast": "CIV",
-  "Ecuador": "ECU", "Netherlands": "NED", "Japan": "JPN",
-  "Sweden": "SWE", "Tunisia": "TUN", "Belgium": "BEL",
-  "Egypt": "EGY", "Iran": "IRN", "New Zealand": "NZL",
-  "Spain": "ESP", "Cape Verde": "CPV", "Saudi Arabia": "SAU",
-  "Uruguay": "URU", "France": "FRA", "Senegal": "SEN",
-  "Iraq": "IRQ", "Norway": "NOR", "Argentina": "ARG",
-  "Algeria": "ALG", "Austria": "AUT", "Jordan": "JOR",
-  "Portugal": "POR", "DR Congo": "COD", "Uzbekistan": "UZB",
-  "Colombia": "COL", "England": "ENG", "Croatia": "CRO",
-  "Ghana": "GHA", "Panama": "PAN"
-};
 
 const DEFAULT_STATS = {
   goalsFor: 0,
@@ -123,8 +104,8 @@ function computeAll(matchesData, groupsData) {
   const upcomingMatches = [];
 
   for (const m of rawMatches) {
-    const team1Code = teamNameToCode[m.team1] || null;
-    const team2Code = teamNameToCode[m.team2] || null;
+    const team1Code = getTeamCode(m.team1) || null;
+    const team2Code = getTeamCode(m.team2) || null;
 
     if (m.score && m.score.ft) {
       completedMatches.push({
@@ -151,7 +132,7 @@ function computeAll(matchesData, groupsData) {
 
   // Compute stats running totals
   const stats = {};
-  for (const code of Object.values(teamNameToCode)) {
+  for (const code of Object.keys(TEAMS)) {
     stats[code] = {
       goalsFor: 0,
       goalsAgainst: 0,
@@ -193,7 +174,7 @@ function computeAll(matchesData, groupsData) {
 
   // Compute team forms (last 5 completed matches, chronological order)
   const form = {};
-  for (const code of Object.values(teamNameToCode)) {
+  for (const code of Object.keys(TEAMS)) {
     form[code] = [];
   }
 
@@ -231,7 +212,7 @@ function computeAll(matchesData, groupsData) {
     const groupTeams = grp.teams || [];
 
     const groupStandings = groupTeams.map(name => {
-      const code = teamNameToCode[name] || null;
+      const code = getTeamCode(name) || null;
       return {
         teamCode: code,
         played: 0,
@@ -525,8 +506,8 @@ export async function getFixture(team1Code, team2Code) {
     const homeName = m.home_team || m.team1;
     const awayName = m.away_team || m.team2;
     
-    const code1 = teamNameToCode[homeName] || null;
-    const code2 = teamNameToCode[awayName] || null;
+    const code1 = getTeamCode(homeName) || null;
+    const code2 = getTeamCode(awayName) || null;
     
     if ((code1 === team1Code && code2 === team2Code) || (code1 === team2Code && code2 === team1Code)) {
       return {
@@ -573,10 +554,8 @@ export function getAttendanceFactor(venueNameFromFixture) {
 
 export async function getTeamSquad(teamCode) {
   if (typeof window !== 'undefined') {
-    const teamName = Object.keys(teamNameToCode).find(k => teamNameToCode[k] === teamCode);
-    if (teamName) {
-      const scraped = getScrapedSquad(teamName);
-      if (scraped && scraped.length > 0) {
+    const scraped = getScrapedSquad(teamCode);
+    if (scraped && scraped.length > 0) {
         return scraped.map((p, idx) => {
           let posGroup = "FORWARDS";
           if (p.position === "GK") posGroup = "GOALKEEPERS";
@@ -595,7 +574,6 @@ export async function getTeamSquad(teamCode) {
             starter
           };
         });
-      }
     }
   }
 

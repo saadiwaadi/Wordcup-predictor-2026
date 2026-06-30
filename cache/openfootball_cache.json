@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-29T11:22:02.697Z",
+  "timestamp": "2026-06-30T21:46:17.563Z",
   "matches": {
     "name": "World Cup 2026",
     "matches": [
@@ -2518,6 +2518,36 @@
         "time": "16:30 UTC-4",
         "team1": "Germany",
         "team2": "Paraguay",
+        "score": {
+          "p": [
+            3,
+            4
+          ],
+          "et": [
+            1,
+            1
+          ],
+          "ft": [
+            1,
+            1
+          ],
+          "ht": [
+            0,
+            1
+          ]
+        },
+        "goals1": [
+          {
+            "name": "Kai Havertz",
+            "minute": "54"
+          }
+        ],
+        "goals2": [
+          {
+            "name": "Julio Enciso",
+            "minute": "42"
+          }
+        ],
         "ground": "Boston (Foxborough)"
       },
       {
@@ -2527,6 +2557,36 @@
         "time": "19:00 UTC-6",
         "team1": "Netherlands",
         "team2": "Morocco",
+        "score": {
+          "p": [
+            2,
+            3
+          ],
+          "et": [
+            1,
+            1
+          ],
+          "ft": [
+            1,
+            1
+          ],
+          "ht": [
+            0,
+            0
+          ]
+        },
+        "goals1": [
+          {
+            "name": "Cody Gakpo",
+            "minute": "72"
+          }
+        ],
+        "goals2": [
+          {
+            "name": "Issa Diop",
+            "minute": "90+1"
+          }
+        ],
         "ground": "Monterrey (Guadalupe)"
       },
       {
@@ -2536,6 +2596,32 @@
         "time": "12:00 UTC-5",
         "team1": "Brazil",
         "team2": "Japan",
+        "score": {
+          "ft": [
+            2,
+            1
+          ],
+          "ht": [
+            0,
+            1
+          ]
+        },
+        "goals1": [
+          {
+            "name": "Casemiro",
+            "minute": "56"
+          },
+          {
+            "name": "Gabriel Martinelli",
+            "minute": "90+5"
+          }
+        ],
+        "goals2": [
+          {
+            "name": "Kaishu Sano",
+            "minute": "29"
+          }
+        ],
         "ground": "Houston"
       },
       {
@@ -2554,6 +2640,32 @@
         "time": "12:00 UTC-5",
         "team1": "Ivory Coast",
         "team2": "Norway",
+        "score": {
+          "ft": [
+            1,
+            2
+          ],
+          "ht": [
+            0,
+            1
+          ]
+        },
+        "goals1": [
+          {
+            "name": "Amad Diallo",
+            "minute": "74"
+          }
+        ],
+        "goals2": [
+          {
+            "name": "Antonio Nusa",
+            "minute": "39"
+          },
+          {
+            "name": "Erling Haaland",
+            "minute": "86"
+          }
+        ],
         "ground": "Dallas (Arlington)"
       },
       {
@@ -2660,7 +2772,7 @@
         "num": 90,
         "date": "2026-07-04",
         "time": "12:00 UTC-5",
-        "team1": "W73",
+        "team1": "Canada",
         "team2": "W75",
         "ground": "Houston"
       },
@@ -18542,46 +18654,154 @@
         "date": "2026-06-28",
         "round": "Round of 32",
         "group": null
-      }
-    ],
-    "upcomingMatches": [
+      },
       {
         "team1Code": "GER",
         "team2Code": "PAR",
+        "score": {
+          "p": [
+            3,
+            4
+          ],
+          "et": [
+            1,
+            1
+          ],
+          "ft": [
+            1,
+            1
+          ],
+          "ht": [
+            0,
+            1
+          ]
+        },
+        "goals1": [
+          {
+            "name": "Kai Havertz",
+            "minute": "54"
+          }
+        ],
+        "goals2": [
+          {
+            "name": "Julio Enciso",
+            "minute": "42"
+          }
+        ],
         "date": "2026-06-29",
-        "time": "16:30 UTC-4",
         "round": "Round of 32",
         "group": null
       },
       {
         "team1Code": "NED",
         "team2Code": "MAR",
+        "score": {
+          "p": [
+            2,
+            3
+          ],
+          "et": [
+            1,
+            1
+          ],
+          "ft": [
+            1,
+            1
+          ],
+          "ht": [
+            0,
+            0
+          ]
+        },
+        "goals1": [
+          {
+            "name": "Cody Gakpo",
+            "minute": "72"
+          }
+        ],
+        "goals2": [
+          {
+            "name": "Issa Diop",
+            "minute": "90+1"
+          }
+        ],
         "date": "2026-06-29",
-        "time": "19:00 UTC-6",
         "round": "Round of 32",
         "group": null
       },
       {
         "team1Code": "BRA",
         "team2Code": "JPN",
+        "score": {
+          "ft": [
+            2,
+            1
+          ],
+          "ht": [
+            0,
+            1
+          ]
+        },
+        "goals1": [
+          {
+            "name": "Casemiro",
+            "minute": "56"
+          },
+          {
+            "name": "Gabriel Martinelli",
+            "minute": "90+5"
+          }
+        ],
+        "goals2": [
+          {
+            "name": "Kaishu Sano",
+            "minute": "29"
+          }
+        ],
         "date": "2026-06-29",
-        "time": "12:00 UTC-5",
-        "round": "Round of 32",
-        "group": null
-      },
-      {
-        "team1Code": "FRA",
-        "team2Code": "SWE",
-        "date": "2026-06-30",
-        "time": "17:00 UTC-4",
         "round": "Round of 32",
         "group": null
       },
       {
         "team1Code": "CIV",
         "team2Code": "NOR",
+        "score": {
+          "ft": [
+            1,
+            2
+          ],
+          "ht": [
+            0,
+            1
+          ]
+        },
+        "goals1": [
+          {
+            "name": "Amad Diallo",
+            "minute": "74"
+          }
+        ],
+        "goals2": [
+          {
+            "name": "Antonio Nusa",
+            "minute": "39"
+          },
+          {
+            "name": "Erling Haaland",
+            "minute": "86"
+          }
+        ],
         "date": "2026-06-30",
-        "time": "12:00 UTC-5",
+        "round": "Round of 32",
+        "group": null
+      }
+    ],
+    "upcomingMatches": [
+      {
+        "team1Code": "FRA",
+        "team2Code": "SWE",
+        "date": "2026-06-30",
+        "time": "17:00 UTC-4",
         "round": "Round of 32",
         "group": null
       },
@@ -18674,7 +18894,7 @@
         "group": null
       },
       {
-        "team1Code": null,
+        "team1Code": "CAN",
         "team2Code": null,
         "date": "2026-07-04",
         "time": "12:00 UTC-5",
@@ -18795,11 +19015,319 @@
       }
     ],
     "stats": {
+      "BRA": {
+        "goalsFor": 9,
+        "goalsAgainst": 2,
+        "matchesPlayed": 4,
+        "avgGoalsFor": 2.25,
+        "avgGoalsAgainst": 0.5
+      },
+      "FRA": {
+        "goalsFor": 10,
+        "goalsAgainst": 2,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 3.3333,
+        "avgGoalsAgainst": 0.6667
+      },
+      "ENG": {
+        "goalsFor": 6,
+        "goalsAgainst": 2,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 2,
+        "avgGoalsAgainst": 0.6667
+      },
+      "GER": {
+        "goalsFor": 11,
+        "goalsAgainst": 5,
+        "matchesPlayed": 4,
+        "avgGoalsFor": 2.75,
+        "avgGoalsAgainst": 1.25
+      },
+      "ESP": {
+        "goalsFor": 5,
+        "goalsAgainst": 0,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 1.6667,
+        "avgGoalsAgainst": 0
+      },
+      "ARG": {
+        "goalsFor": 8,
+        "goalsAgainst": 1,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 2.6667,
+        "avgGoalsAgainst": 0.3333
+      },
+      "POR": {
+        "goalsFor": 6,
+        "goalsAgainst": 1,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 2,
+        "avgGoalsAgainst": 0.3333
+      },
+      "NED": {
+        "goalsFor": 11,
+        "goalsAgainst": 5,
+        "matchesPlayed": 4,
+        "avgGoalsFor": 2.75,
+        "avgGoalsAgainst": 1.25
+      },
+      "BEL": {
+        "goalsFor": 6,
+        "goalsAgainst": 2,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 2,
+        "avgGoalsAgainst": 0.6667
+      },
+      "CRO": {
+        "goalsFor": 5,
+        "goalsAgainst": 5,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 1.6667,
+        "avgGoalsAgainst": 1.6667
+      },
+      "SEN": {
+        "goalsFor": 8,
+        "goalsAgainst": 6,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 2.6667,
+        "avgGoalsAgainst": 2
+      },
+      "MAR": {
+        "goalsFor": 7,
+        "goalsAgainst": 4,
+        "matchesPlayed": 4,
+        "avgGoalsFor": 1.75,
+        "avgGoalsAgainst": 1
+      },
+      "JPN": {
+        "goalsFor": 8,
+        "goalsAgainst": 5,
+        "matchesPlayed": 4,
+        "avgGoalsFor": 2,
+        "avgGoalsAgainst": 1.25
+      },
+      "USA": {
+        "goalsFor": 8,
+        "goalsAgainst": 4,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 2.6667,
+        "avgGoalsAgainst": 1.3333
+      },
       "MEX": {
         "goalsFor": 6,
         "goalsAgainst": 0,
         "matchesPlayed": 3,
         "avgGoalsFor": 2,
+        "avgGoalsAgainst": 0
+      },
+      "CAN": {
+        "goalsFor": 9,
+        "goalsAgainst": 3,
+        "matchesPlayed": 4,
+        "avgGoalsFor": 2.25,
+        "avgGoalsAgainst": 0.75
+      },
+      "COL": {
+        "goalsFor": 4,
+        "goalsAgainst": 1,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 1.3333,
+        "avgGoalsAgainst": 0.3333
+      },
+      "URU": {
+        "goalsFor": 3,
+        "goalsAgainst": 4,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 1,
+        "avgGoalsAgainst": 1.3333
+      },
+      "SUI": {
+        "goalsFor": 7,
+        "goalsAgainst": 3,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 2.3333,
+        "avgGoalsAgainst": 1
+      },
+      "SRB": {
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "matchesPlayed": 0,
+        "avgGoalsFor": 0,
+        "avgGoalsAgainst": 0
+      },
+      "DEN": {
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "matchesPlayed": 0,
+        "avgGoalsFor": 0,
+        "avgGoalsAgainst": 0
+      },
+      "AUT": {
+        "goalsFor": 6,
+        "goalsAgainst": 6,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 2,
+        "avgGoalsAgainst": 2
+      },
+      "TUR": {
+        "goalsFor": 3,
+        "goalsAgainst": 5,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 1,
+        "avgGoalsAgainst": 1.6667
+      },
+      "KOR": {
+        "goalsFor": 2,
+        "goalsAgainst": 3,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 0.6667,
+        "avgGoalsAgainst": 1
+      },
+      "POL": {
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "matchesPlayed": 0,
+        "avgGoalsFor": 0,
+        "avgGoalsAgainst": 0
+      },
+      "AUS": {
+        "goalsFor": 2,
+        "goalsAgainst": 2,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 0.6667,
+        "avgGoalsAgainst": 0.6667
+      },
+      "IRN": {
+        "goalsFor": 3,
+        "goalsAgainst": 3,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 1,
+        "avgGoalsAgainst": 1
+      },
+      "ECU": {
+        "goalsFor": 2,
+        "goalsAgainst": 2,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 0.6667,
+        "avgGoalsAgainst": 0.6667
+      },
+      "NGR": {
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "matchesPlayed": 0,
+        "avgGoalsFor": 0,
+        "avgGoalsAgainst": 0
+      },
+      "GHA": {
+        "goalsFor": 2,
+        "goalsAgainst": 2,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 0.6667,
+        "avgGoalsAgainst": 0.6667
+      },
+      "CMR": {
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "matchesPlayed": 0,
+        "avgGoalsFor": 0,
+        "avgGoalsAgainst": 0
+      },
+      "EGY": {
+        "goalsFor": 5,
+        "goalsAgainst": 3,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 1.6667,
+        "avgGoalsAgainst": 1
+      },
+      "ALG": {
+        "goalsFor": 5,
+        "goalsAgainst": 7,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 1.6667,
+        "avgGoalsAgainst": 2.3333
+      },
+      "CIV": {
+        "goalsFor": 5,
+        "goalsAgainst": 4,
+        "matchesPlayed": 4,
+        "avgGoalsFor": 1.25,
+        "avgGoalsAgainst": 1
+      },
+      "SAU": {
+        "goalsFor": 1,
+        "goalsAgainst": 5,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 0.3333,
+        "avgGoalsAgainst": 1.6667
+      },
+      "QAT": {
+        "goalsFor": 2,
+        "goalsAgainst": 10,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 0.6667,
+        "avgGoalsAgainst": 3.3333
+      },
+      "SLV": {
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "matchesPlayed": 0,
+        "avgGoalsFor": 0,
+        "avgGoalsAgainst": 0
+      },
+      "CRI": {
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "matchesPlayed": 0,
+        "avgGoalsFor": 0,
+        "avgGoalsAgainst": 0
+      },
+      "PAN": {
+        "goalsFor": 0,
+        "goalsAgainst": 4,
+        "matchesPlayed": 3,
+        "avgGoalsFor": 0,
+        "avgGoalsAgainst": 1.3333
+      },
+      "VEN": {
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "matchesPlayed": 0,
+        "avgGoalsFor": 0,
+        "avgGoalsAgainst": 0
+      },
+      "CHI": {
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "matchesPlayed": 0,
+        "avgGoalsFor": 0,
+        "avgGoalsAgainst": 0
+      },
+      "SLO": {
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "matchesPlayed": 0,
+        "avgGoalsFor": 0,
+        "avgGoalsAgainst": 0
+      },
+      "ROU": {
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "matchesPlayed": 0,
+        "avgGoalsFor": 0,
+        "avgGoalsAgainst": 0
+      },
+      "GEO": {
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "matchesPlayed": 0,
+        "avgGoalsFor": 0,
+        "avgGoalsAgainst": 0
+      },
+      "UKR": {
+        "goalsFor": 0,
+        "goalsAgainst": 0,
+        "matchesPlayed": 0,
+        "avgGoalsFor": 0,
         "avgGoalsAgainst": 0
       },
       "RSA": {
@@ -18809,26 +19337,12 @@
         "avgGoalsFor": 0.5,
         "avgGoalsAgainst": 1
       },
-      "KOR": {
-        "goalsFor": 2,
-        "goalsAgainst": 3,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 0.6667,
-        "avgGoalsAgainst": 1
-      },
       "CZE": {
         "goalsFor": 2,
         "goalsAgainst": 6,
         "matchesPlayed": 3,
         "avgGoalsFor": 0.6667,
         "avgGoalsAgainst": 2
-      },
-      "CAN": {
-        "goalsFor": 9,
-        "goalsAgainst": 3,
-        "matchesPlayed": 4,
-        "avgGoalsFor": 2.25,
-        "avgGoalsAgainst": 0.75
       },
       "BIH": {
         "goalsFor": 5,
@@ -18837,40 +19351,12 @@
         "avgGoalsFor": 1.6667,
         "avgGoalsAgainst": 2
       },
-      "QAT": {
-        "goalsFor": 2,
-        "goalsAgainst": 10,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 0.6667,
-        "avgGoalsAgainst": 3.3333
-      },
-      "SUI": {
-        "goalsFor": 7,
-        "goalsAgainst": 3,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 2.3333,
-        "avgGoalsAgainst": 1
-      },
-      "BRA": {
-        "goalsFor": 7,
-        "goalsAgainst": 1,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 2.3333,
-        "avgGoalsAgainst": 0.3333
-      },
-      "MAR": {
-        "goalsFor": 6,
-        "goalsAgainst": 3,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 2,
-        "avgGoalsAgainst": 1
-      },
-      "HAI": {
-        "goalsFor": 2,
-        "goalsAgainst": 8,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 0.6667,
-        "avgGoalsAgainst": 2.6667
+      "PAR": {
+        "goalsFor": 3,
+        "goalsAgainst": 5,
+        "matchesPlayed": 4,
+        "avgGoalsFor": 0.75,
+        "avgGoalsAgainst": 1.25
       },
       "SCO": {
         "goalsFor": 1,
@@ -18879,40 +19365,12 @@
         "avgGoalsFor": 0.3333,
         "avgGoalsAgainst": 1.3333
       },
-      "USA": {
-        "goalsFor": 8,
-        "goalsAgainst": 4,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 2.6667,
-        "avgGoalsAgainst": 1.3333
-      },
-      "PAR": {
+      "HAI": {
         "goalsFor": 2,
-        "goalsAgainst": 4,
+        "goalsAgainst": 8,
         "matchesPlayed": 3,
         "avgGoalsFor": 0.6667,
-        "avgGoalsAgainst": 1.3333
-      },
-      "AUS": {
-        "goalsFor": 2,
-        "goalsAgainst": 2,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 0.6667,
-        "avgGoalsAgainst": 0.6667
-      },
-      "TUR": {
-        "goalsFor": 3,
-        "goalsAgainst": 5,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 1,
-        "avgGoalsAgainst": 1.6667
-      },
-      "GER": {
-        "goalsFor": 10,
-        "goalsAgainst": 4,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 3.3333,
-        "avgGoalsAgainst": 1.3333
+        "avgGoalsAgainst": 2.6667
       },
       "CUW": {
         "goalsFor": 1,
@@ -18920,34 +19378,6 @@
         "matchesPlayed": 3,
         "avgGoalsFor": 0.3333,
         "avgGoalsAgainst": 3
-      },
-      "CIV": {
-        "goalsFor": 4,
-        "goalsAgainst": 2,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 1.3333,
-        "avgGoalsAgainst": 0.6667
-      },
-      "ECU": {
-        "goalsFor": 2,
-        "goalsAgainst": 2,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 0.6667,
-        "avgGoalsAgainst": 0.6667
-      },
-      "NED": {
-        "goalsFor": 10,
-        "goalsAgainst": 4,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 3.3333,
-        "avgGoalsAgainst": 1.3333
-      },
-      "JPN": {
-        "goalsFor": 7,
-        "goalsAgainst": 3,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 2.3333,
-        "avgGoalsAgainst": 1
       },
       "SWE": {
         "goalsFor": 7,
@@ -18963,26 +19393,12 @@
         "avgGoalsFor": 0.6667,
         "avgGoalsAgainst": 4
       },
-      "BEL": {
-        "goalsFor": 6,
-        "goalsAgainst": 2,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 2,
-        "avgGoalsAgainst": 0.6667
-      },
-      "EGY": {
-        "goalsFor": 5,
-        "goalsAgainst": 3,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 1.6667,
-        "avgGoalsAgainst": 1
-      },
-      "IRN": {
-        "goalsFor": 3,
-        "goalsAgainst": 3,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 1,
-        "avgGoalsAgainst": 1
+      "NOR": {
+        "goalsFor": 10,
+        "goalsAgainst": 8,
+        "matchesPlayed": 4,
+        "avgGoalsFor": 2.5,
+        "avgGoalsAgainst": 2
       },
       "NZL": {
         "goalsFor": 4,
@@ -18991,47 +19407,12 @@
         "avgGoalsFor": 1.3333,
         "avgGoalsAgainst": 3.3333
       },
-      "ESP": {
-        "goalsFor": 5,
-        "goalsAgainst": 0,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 1.6667,
-        "avgGoalsAgainst": 0
-      },
       "CPV": {
         "goalsFor": 2,
         "goalsAgainst": 2,
         "matchesPlayed": 3,
         "avgGoalsFor": 0.6667,
         "avgGoalsAgainst": 0.6667
-      },
-      "SAU": {
-        "goalsFor": 1,
-        "goalsAgainst": 5,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 0.3333,
-        "avgGoalsAgainst": 1.6667
-      },
-      "URU": {
-        "goalsFor": 3,
-        "goalsAgainst": 4,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 1,
-        "avgGoalsAgainst": 1.3333
-      },
-      "FRA": {
-        "goalsFor": 10,
-        "goalsAgainst": 2,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 3.3333,
-        "avgGoalsAgainst": 0.6667
-      },
-      "SEN": {
-        "goalsFor": 8,
-        "goalsAgainst": 6,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 2.6667,
-        "avgGoalsAgainst": 2
       },
       "IRQ": {
         "goalsFor": 1,
@@ -19040,47 +19421,12 @@
         "avgGoalsFor": 0.3333,
         "avgGoalsAgainst": 4
       },
-      "NOR": {
-        "goalsFor": 8,
-        "goalsAgainst": 7,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 2.6667,
-        "avgGoalsAgainst": 2.3333
-      },
-      "ARG": {
-        "goalsFor": 8,
-        "goalsAgainst": 1,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 2.6667,
-        "avgGoalsAgainst": 0.3333
-      },
-      "ALG": {
-        "goalsFor": 5,
-        "goalsAgainst": 7,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 1.6667,
-        "avgGoalsAgainst": 2.3333
-      },
-      "AUT": {
-        "goalsFor": 6,
-        "goalsAgainst": 6,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 2,
-        "avgGoalsAgainst": 2
-      },
       "JOR": {
         "goalsFor": 3,
         "goalsAgainst": 8,
         "matchesPlayed": 3,
         "avgGoalsFor": 1,
         "avgGoalsAgainst": 2.6667
-      },
-      "POR": {
-        "goalsFor": 6,
-        "goalsAgainst": 1,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 2,
-        "avgGoalsAgainst": 0.3333
       },
       "COD": {
         "goalsFor": 4,
@@ -19095,44 +19441,366 @@
         "matchesPlayed": 3,
         "avgGoalsFor": 0.6667,
         "avgGoalsAgainst": 3.6667
-      },
-      "COL": {
-        "goalsFor": 4,
-        "goalsAgainst": 1,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 1.3333,
-        "avgGoalsAgainst": 0.3333
-      },
-      "ENG": {
-        "goalsFor": 6,
-        "goalsAgainst": 2,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 2,
-        "avgGoalsAgainst": 0.6667
-      },
-      "CRO": {
-        "goalsFor": 5,
-        "goalsAgainst": 5,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 1.6667,
-        "avgGoalsAgainst": 1.6667
-      },
-      "GHA": {
-        "goalsFor": 2,
-        "goalsAgainst": 2,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 0.6667,
-        "avgGoalsAgainst": 0.6667
-      },
-      "PAN": {
-        "goalsFor": 0,
-        "goalsAgainst": 4,
-        "matchesPlayed": 3,
-        "avgGoalsFor": 0,
-        "avgGoalsAgainst": 1.3333
       }
     },
     "form": {
+      "BRA": [
+        {
+          "opponent": "MAR",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-13"
+        },
+        {
+          "opponent": "HAI",
+          "result": "W",
+          "goalsFor": 3,
+          "goalsAgainst": 0,
+          "date": "2026-06-19"
+        },
+        {
+          "opponent": "SCO",
+          "result": "W",
+          "goalsFor": 3,
+          "goalsAgainst": 0,
+          "date": "2026-06-24"
+        },
+        {
+          "opponent": "JPN",
+          "result": "W",
+          "goalsFor": 2,
+          "goalsAgainst": 1,
+          "date": "2026-06-29"
+        }
+      ],
+      "FRA": [
+        {
+          "opponent": "SEN",
+          "result": "W",
+          "goalsFor": 3,
+          "goalsAgainst": 1,
+          "date": "2026-06-16"
+        },
+        {
+          "opponent": "IRQ",
+          "result": "W",
+          "goalsFor": 3,
+          "goalsAgainst": 0,
+          "date": "2026-06-22"
+        },
+        {
+          "opponent": "NOR",
+          "result": "W",
+          "goalsFor": 4,
+          "goalsAgainst": 1,
+          "date": "2026-06-26"
+        }
+      ],
+      "ENG": [
+        {
+          "opponent": "CRO",
+          "result": "W",
+          "goalsFor": 4,
+          "goalsAgainst": 2,
+          "date": "2026-06-17"
+        },
+        {
+          "opponent": "GHA",
+          "result": "D",
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "date": "2026-06-23"
+        },
+        {
+          "opponent": "PAN",
+          "result": "W",
+          "goalsFor": 2,
+          "goalsAgainst": 0,
+          "date": "2026-06-27"
+        }
+      ],
+      "GER": [
+        {
+          "opponent": "CUW",
+          "result": "W",
+          "goalsFor": 7,
+          "goalsAgainst": 1,
+          "date": "2026-06-14"
+        },
+        {
+          "opponent": "CIV",
+          "result": "W",
+          "goalsFor": 2,
+          "goalsAgainst": 1,
+          "date": "2026-06-20"
+        },
+        {
+          "opponent": "ECU",
+          "result": "L",
+          "goalsFor": 1,
+          "goalsAgainst": 2,
+          "date": "2026-06-25"
+        },
+        {
+          "opponent": "PAR",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-29"
+        }
+      ],
+      "ESP": [
+        {
+          "opponent": "CPV",
+          "result": "D",
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "date": "2026-06-15"
+        },
+        {
+          "opponent": "SAU",
+          "result": "W",
+          "goalsFor": 4,
+          "goalsAgainst": 0,
+          "date": "2026-06-21"
+        },
+        {
+          "opponent": "URU",
+          "result": "W",
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "date": "2026-06-26"
+        }
+      ],
+      "ARG": [
+        {
+          "opponent": "ALG",
+          "result": "W",
+          "goalsFor": 3,
+          "goalsAgainst": 0,
+          "date": "2026-06-16"
+        },
+        {
+          "opponent": "AUT",
+          "result": "W",
+          "goalsFor": 2,
+          "goalsAgainst": 0,
+          "date": "2026-06-22"
+        },
+        {
+          "opponent": "JOR",
+          "result": "W",
+          "goalsFor": 3,
+          "goalsAgainst": 1,
+          "date": "2026-06-27"
+        }
+      ],
+      "POR": [
+        {
+          "opponent": "COD",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-17"
+        },
+        {
+          "opponent": "UZB",
+          "result": "W",
+          "goalsFor": 5,
+          "goalsAgainst": 0,
+          "date": "2026-06-23"
+        },
+        {
+          "opponent": "COL",
+          "result": "D",
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "date": "2026-06-27"
+        }
+      ],
+      "NED": [
+        {
+          "opponent": "JPN",
+          "result": "D",
+          "goalsFor": 2,
+          "goalsAgainst": 2,
+          "date": "2026-06-14"
+        },
+        {
+          "opponent": "SWE",
+          "result": "W",
+          "goalsFor": 5,
+          "goalsAgainst": 1,
+          "date": "2026-06-20"
+        },
+        {
+          "opponent": "TUN",
+          "result": "W",
+          "goalsFor": 3,
+          "goalsAgainst": 1,
+          "date": "2026-06-25"
+        },
+        {
+          "opponent": "MAR",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-29"
+        }
+      ],
+      "BEL": [
+        {
+          "opponent": "EGY",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-15"
+        },
+        {
+          "opponent": "IRN",
+          "result": "D",
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "date": "2026-06-21"
+        },
+        {
+          "opponent": "NZL",
+          "result": "W",
+          "goalsFor": 5,
+          "goalsAgainst": 1,
+          "date": "2026-06-26"
+        }
+      ],
+      "CRO": [
+        {
+          "opponent": "ENG",
+          "result": "L",
+          "goalsFor": 2,
+          "goalsAgainst": 4,
+          "date": "2026-06-17"
+        },
+        {
+          "opponent": "PAN",
+          "result": "W",
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "date": "2026-06-23"
+        },
+        {
+          "opponent": "GHA",
+          "result": "W",
+          "goalsFor": 2,
+          "goalsAgainst": 1,
+          "date": "2026-06-27"
+        }
+      ],
+      "SEN": [
+        {
+          "opponent": "FRA",
+          "result": "L",
+          "goalsFor": 1,
+          "goalsAgainst": 3,
+          "date": "2026-06-16"
+        },
+        {
+          "opponent": "NOR",
+          "result": "L",
+          "goalsFor": 2,
+          "goalsAgainst": 3,
+          "date": "2026-06-22"
+        },
+        {
+          "opponent": "IRQ",
+          "result": "W",
+          "goalsFor": 5,
+          "goalsAgainst": 0,
+          "date": "2026-06-26"
+        }
+      ],
+      "MAR": [
+        {
+          "opponent": "BRA",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-13"
+        },
+        {
+          "opponent": "SCO",
+          "result": "W",
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "date": "2026-06-19"
+        },
+        {
+          "opponent": "HAI",
+          "result": "W",
+          "goalsFor": 4,
+          "goalsAgainst": 2,
+          "date": "2026-06-24"
+        },
+        {
+          "opponent": "NED",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-29"
+        }
+      ],
+      "JPN": [
+        {
+          "opponent": "NED",
+          "result": "D",
+          "goalsFor": 2,
+          "goalsAgainst": 2,
+          "date": "2026-06-14"
+        },
+        {
+          "opponent": "TUN",
+          "result": "W",
+          "goalsFor": 4,
+          "goalsAgainst": 0,
+          "date": "2026-06-20"
+        },
+        {
+          "opponent": "SWE",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-25"
+        },
+        {
+          "opponent": "BRA",
+          "result": "L",
+          "goalsFor": 1,
+          "goalsAgainst": 2,
+          "date": "2026-06-29"
+        }
+      ],
+      "USA": [
+        {
+          "opponent": "PAR",
+          "result": "W",
+          "goalsFor": 4,
+          "goalsAgainst": 1,
+          "date": "2026-06-12"
+        },
+        {
+          "opponent": "AUS",
+          "result": "W",
+          "goalsFor": 2,
+          "goalsAgainst": 0,
+          "date": "2026-06-19"
+        },
+        {
+          "opponent": "TUR",
+          "result": "L",
+          "goalsFor": 2,
+          "goalsAgainst": 3,
+          "date": "2026-06-25"
+        }
+      ],
       "MEX": [
         {
           "opponent": "RSA",
@@ -19153,82 +19821,6 @@
           "result": "W",
           "goalsFor": 3,
           "goalsAgainst": 0,
-          "date": "2026-06-24"
-        }
-      ],
-      "RSA": [
-        {
-          "opponent": "MEX",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 2,
-          "date": "2026-06-11"
-        },
-        {
-          "opponent": "CZE",
-          "result": "D",
-          "goalsFor": 1,
-          "goalsAgainst": 1,
-          "date": "2026-06-18"
-        },
-        {
-          "opponent": "KOR",
-          "result": "W",
-          "goalsFor": 1,
-          "goalsAgainst": 0,
-          "date": "2026-06-24"
-        },
-        {
-          "opponent": "CAN",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 1,
-          "date": "2026-06-28"
-        }
-      ],
-      "KOR": [
-        {
-          "opponent": "CZE",
-          "result": "W",
-          "goalsFor": 2,
-          "goalsAgainst": 1,
-          "date": "2026-06-11"
-        },
-        {
-          "opponent": "MEX",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 1,
-          "date": "2026-06-18"
-        },
-        {
-          "opponent": "RSA",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 1,
-          "date": "2026-06-24"
-        }
-      ],
-      "CZE": [
-        {
-          "opponent": "KOR",
-          "result": "L",
-          "goalsFor": 1,
-          "goalsAgainst": 2,
-          "date": "2026-06-11"
-        },
-        {
-          "opponent": "RSA",
-          "result": "D",
-          "goalsFor": 1,
-          "goalsAgainst": 1,
-          "date": "2026-06-18"
-        },
-        {
-          "opponent": "MEX",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 3,
           "date": "2026-06-24"
         }
       ],
@@ -19262,50 +19854,50 @@
           "date": "2026-06-28"
         }
       ],
-      "BIH": [
+      "COL": [
         {
-          "opponent": "CAN",
-          "result": "D",
-          "goalsFor": 1,
-          "goalsAgainst": 1,
-          "date": "2026-06-12"
-        },
-        {
-          "opponent": "SUI",
-          "result": "L",
-          "goalsFor": 1,
-          "goalsAgainst": 4,
-          "date": "2026-06-18"
-        },
-        {
-          "opponent": "QAT",
+          "opponent": "UZB",
           "result": "W",
           "goalsFor": 3,
           "goalsAgainst": 1,
-          "date": "2026-06-24"
+          "date": "2026-06-17"
+        },
+        {
+          "opponent": "COD",
+          "result": "W",
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "date": "2026-06-23"
+        },
+        {
+          "opponent": "POR",
+          "result": "D",
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "date": "2026-06-27"
         }
       ],
-      "QAT": [
+      "URU": [
         {
-          "opponent": "SUI",
+          "opponent": "SAU",
           "result": "D",
           "goalsFor": 1,
           "goalsAgainst": 1,
-          "date": "2026-06-13"
+          "date": "2026-06-15"
         },
         {
-          "opponent": "CAN",
+          "opponent": "CPV",
+          "result": "D",
+          "goalsFor": 2,
+          "goalsAgainst": 2,
+          "date": "2026-06-21"
+        },
+        {
+          "opponent": "ESP",
           "result": "L",
           "goalsFor": 0,
-          "goalsAgainst": 6,
-          "date": "2026-06-18"
-        },
-        {
-          "opponent": "BIH",
-          "result": "L",
-          "goalsFor": 1,
-          "goalsAgainst": 3,
-          "date": "2026-06-24"
+          "goalsAgainst": 1,
+          "date": "2026-06-26"
         }
       ],
       "SUI": [
@@ -19331,49 +19923,451 @@
           "date": "2026-06-24"
         }
       ],
-      "BRA": [
+      "SRB": [],
+      "DEN": [],
+      "AUT": [
         {
-          "opponent": "MAR",
-          "result": "D",
-          "goalsFor": 1,
+          "opponent": "JOR",
+          "result": "W",
+          "goalsFor": 3,
           "goalsAgainst": 1,
+          "date": "2026-06-16"
+        },
+        {
+          "opponent": "ARG",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 2,
+          "date": "2026-06-22"
+        },
+        {
+          "opponent": "ALG",
+          "result": "D",
+          "goalsFor": 3,
+          "goalsAgainst": 3,
+          "date": "2026-06-27"
+        }
+      ],
+      "TUR": [
+        {
+          "opponent": "AUS",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 2,
           "date": "2026-06-13"
         },
         {
-          "opponent": "HAI",
-          "result": "W",
-          "goalsFor": 3,
-          "goalsAgainst": 0,
+          "opponent": "PAR",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 1,
           "date": "2026-06-19"
         },
         {
-          "opponent": "SCO",
+          "opponent": "USA",
           "result": "W",
           "goalsFor": 3,
-          "goalsAgainst": 0,
+          "goalsAgainst": 2,
+          "date": "2026-06-25"
+        }
+      ],
+      "KOR": [
+        {
+          "opponent": "CZE",
+          "result": "W",
+          "goalsFor": 2,
+          "goalsAgainst": 1,
+          "date": "2026-06-11"
+        },
+        {
+          "opponent": "MEX",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "date": "2026-06-18"
+        },
+        {
+          "opponent": "RSA",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 1,
           "date": "2026-06-24"
         }
       ],
-      "MAR": [
+      "POL": [],
+      "AUS": [
         {
-          "opponent": "BRA",
+          "opponent": "TUR",
+          "result": "W",
+          "goalsFor": 2,
+          "goalsAgainst": 0,
+          "date": "2026-06-13"
+        },
+        {
+          "opponent": "USA",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 2,
+          "date": "2026-06-19"
+        },
+        {
+          "opponent": "PAR",
+          "result": "D",
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "date": "2026-06-25"
+        }
+      ],
+      "IRN": [
+        {
+          "opponent": "NZL",
+          "result": "D",
+          "goalsFor": 2,
+          "goalsAgainst": 2,
+          "date": "2026-06-15"
+        },
+        {
+          "opponent": "BEL",
+          "result": "D",
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "date": "2026-06-21"
+        },
+        {
+          "opponent": "EGY",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-26"
+        }
+      ],
+      "ECU": [
+        {
+          "opponent": "CIV",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "date": "2026-06-14"
+        },
+        {
+          "opponent": "CUW",
+          "result": "D",
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "date": "2026-06-20"
+        },
+        {
+          "opponent": "GER",
+          "result": "W",
+          "goalsFor": 2,
+          "goalsAgainst": 1,
+          "date": "2026-06-25"
+        }
+      ],
+      "NGR": [],
+      "GHA": [
+        {
+          "opponent": "PAN",
+          "result": "W",
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "date": "2026-06-17"
+        },
+        {
+          "opponent": "ENG",
+          "result": "D",
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "date": "2026-06-23"
+        },
+        {
+          "opponent": "CRO",
+          "result": "L",
+          "goalsFor": 1,
+          "goalsAgainst": 2,
+          "date": "2026-06-27"
+        }
+      ],
+      "CMR": [],
+      "EGY": [
+        {
+          "opponent": "BEL",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-15"
+        },
+        {
+          "opponent": "NZL",
+          "result": "W",
+          "goalsFor": 3,
+          "goalsAgainst": 1,
+          "date": "2026-06-21"
+        },
+        {
+          "opponent": "IRN",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-26"
+        }
+      ],
+      "ALG": [
+        {
+          "opponent": "ARG",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 3,
+          "date": "2026-06-16"
+        },
+        {
+          "opponent": "JOR",
+          "result": "W",
+          "goalsFor": 2,
+          "goalsAgainst": 1,
+          "date": "2026-06-22"
+        },
+        {
+          "opponent": "AUT",
+          "result": "D",
+          "goalsFor": 3,
+          "goalsAgainst": 3,
+          "date": "2026-06-27"
+        }
+      ],
+      "CIV": [
+        {
+          "opponent": "ECU",
+          "result": "W",
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "date": "2026-06-14"
+        },
+        {
+          "opponent": "GER",
+          "result": "L",
+          "goalsFor": 1,
+          "goalsAgainst": 2,
+          "date": "2026-06-20"
+        },
+        {
+          "opponent": "CUW",
+          "result": "W",
+          "goalsFor": 2,
+          "goalsAgainst": 0,
+          "date": "2026-06-25"
+        },
+        {
+          "opponent": "NOR",
+          "result": "L",
+          "goalsFor": 1,
+          "goalsAgainst": 2,
+          "date": "2026-06-30"
+        }
+      ],
+      "SAU": [
+        {
+          "opponent": "URU",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-15"
+        },
+        {
+          "opponent": "ESP",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 4,
+          "date": "2026-06-21"
+        },
+        {
+          "opponent": "CPV",
+          "result": "D",
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "date": "2026-06-26"
+        }
+      ],
+      "QAT": [
+        {
+          "opponent": "SUI",
           "result": "D",
           "goalsFor": 1,
           "goalsAgainst": 1,
           "date": "2026-06-13"
         },
         {
-          "opponent": "SCO",
+          "opponent": "CAN",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 6,
+          "date": "2026-06-18"
+        },
+        {
+          "opponent": "BIH",
+          "result": "L",
+          "goalsFor": 1,
+          "goalsAgainst": 3,
+          "date": "2026-06-24"
+        }
+      ],
+      "SLV": [],
+      "CRI": [],
+      "PAN": [
+        {
+          "opponent": "GHA",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "date": "2026-06-17"
+        },
+        {
+          "opponent": "CRO",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "date": "2026-06-23"
+        },
+        {
+          "opponent": "ENG",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 2,
+          "date": "2026-06-27"
+        }
+      ],
+      "VEN": [],
+      "CHI": [],
+      "SLO": [],
+      "ROU": [],
+      "GEO": [],
+      "UKR": [],
+      "RSA": [
+        {
+          "opponent": "MEX",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 2,
+          "date": "2026-06-11"
+        },
+        {
+          "opponent": "CZE",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-18"
+        },
+        {
+          "opponent": "KOR",
+          "result": "W",
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "date": "2026-06-24"
+        },
+        {
+          "opponent": "CAN",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "date": "2026-06-28"
+        }
+      ],
+      "CZE": [
+        {
+          "opponent": "KOR",
+          "result": "L",
+          "goalsFor": 1,
+          "goalsAgainst": 2,
+          "date": "2026-06-11"
+        },
+        {
+          "opponent": "RSA",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-18"
+        },
+        {
+          "opponent": "MEX",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 3,
+          "date": "2026-06-24"
+        }
+      ],
+      "BIH": [
+        {
+          "opponent": "CAN",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-12"
+        },
+        {
+          "opponent": "SUI",
+          "result": "L",
+          "goalsFor": 1,
+          "goalsAgainst": 4,
+          "date": "2026-06-18"
+        },
+        {
+          "opponent": "QAT",
+          "result": "W",
+          "goalsFor": 3,
+          "goalsAgainst": 1,
+          "date": "2026-06-24"
+        }
+      ],
+      "PAR": [
+        {
+          "opponent": "USA",
+          "result": "L",
+          "goalsFor": 1,
+          "goalsAgainst": 4,
+          "date": "2026-06-12"
+        },
+        {
+          "opponent": "TUR",
           "result": "W",
           "goalsFor": 1,
           "goalsAgainst": 0,
           "date": "2026-06-19"
         },
         {
+          "opponent": "AUS",
+          "result": "D",
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "date": "2026-06-25"
+        },
+        {
+          "opponent": "GER",
+          "result": "D",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "date": "2026-06-29"
+        }
+      ],
+      "SCO": [
+        {
           "opponent": "HAI",
           "result": "W",
-          "goalsFor": 4,
-          "goalsAgainst": 2,
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "date": "2026-06-13"
+        },
+        {
+          "opponent": "MAR",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "date": "2026-06-19"
+        },
+        {
+          "opponent": "BRA",
+          "result": "L",
+          "goalsFor": 0,
+          "goalsAgainst": 3,
           "date": "2026-06-24"
         }
       ],
@@ -19400,144 +20394,6 @@
           "date": "2026-06-24"
         }
       ],
-      "SCO": [
-        {
-          "opponent": "HAI",
-          "result": "W",
-          "goalsFor": 1,
-          "goalsAgainst": 0,
-          "date": "2026-06-13"
-        },
-        {
-          "opponent": "MAR",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 1,
-          "date": "2026-06-19"
-        },
-        {
-          "opponent": "BRA",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 3,
-          "date": "2026-06-24"
-        }
-      ],
-      "USA": [
-        {
-          "opponent": "PAR",
-          "result": "W",
-          "goalsFor": 4,
-          "goalsAgainst": 1,
-          "date": "2026-06-12"
-        },
-        {
-          "opponent": "AUS",
-          "result": "W",
-          "goalsFor": 2,
-          "goalsAgainst": 0,
-          "date": "2026-06-19"
-        },
-        {
-          "opponent": "TUR",
-          "result": "L",
-          "goalsFor": 2,
-          "goalsAgainst": 3,
-          "date": "2026-06-25"
-        }
-      ],
-      "PAR": [
-        {
-          "opponent": "USA",
-          "result": "L",
-          "goalsFor": 1,
-          "goalsAgainst": 4,
-          "date": "2026-06-12"
-        },
-        {
-          "opponent": "TUR",
-          "result": "W",
-          "goalsFor": 1,
-          "goalsAgainst": 0,
-          "date": "2026-06-19"
-        },
-        {
-          "opponent": "AUS",
-          "result": "D",
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "date": "2026-06-25"
-        }
-      ],
-      "AUS": [
-        {
-          "opponent": "TUR",
-          "result": "W",
-          "goalsFor": 2,
-          "goalsAgainst": 0,
-          "date": "2026-06-13"
-        },
-        {
-          "opponent": "USA",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 2,
-          "date": "2026-06-19"
-        },
-        {
-          "opponent": "PAR",
-          "result": "D",
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "date": "2026-06-25"
-        }
-      ],
-      "TUR": [
-        {
-          "opponent": "AUS",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 2,
-          "date": "2026-06-13"
-        },
-        {
-          "opponent": "PAR",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 1,
-          "date": "2026-06-19"
-        },
-        {
-          "opponent": "USA",
-          "result": "W",
-          "goalsFor": 3,
-          "goalsAgainst": 2,
-          "date": "2026-06-25"
-        }
-      ],
-      "GER": [
-        {
-          "opponent": "CUW",
-          "result": "W",
-          "goalsFor": 7,
-          "goalsAgainst": 1,
-          "date": "2026-06-14"
-        },
-        {
-          "opponent": "CIV",
-          "result": "W",
-          "goalsFor": 2,
-          "goalsAgainst": 1,
-          "date": "2026-06-20"
-        },
-        {
-          "opponent": "ECU",
-          "result": "L",
-          "goalsFor": 1,
-          "goalsAgainst": 2,
-          "date": "2026-06-25"
-        }
-      ],
       "CUW": [
         {
           "opponent": "GER",
@@ -19558,98 +20414,6 @@
           "result": "L",
           "goalsFor": 0,
           "goalsAgainst": 2,
-          "date": "2026-06-25"
-        }
-      ],
-      "CIV": [
-        {
-          "opponent": "ECU",
-          "result": "W",
-          "goalsFor": 1,
-          "goalsAgainst": 0,
-          "date": "2026-06-14"
-        },
-        {
-          "opponent": "GER",
-          "result": "L",
-          "goalsFor": 1,
-          "goalsAgainst": 2,
-          "date": "2026-06-20"
-        },
-        {
-          "opponent": "CUW",
-          "result": "W",
-          "goalsFor": 2,
-          "goalsAgainst": 0,
-          "date": "2026-06-25"
-        }
-      ],
-      "ECU": [
-        {
-          "opponent": "CIV",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 1,
-          "date": "2026-06-14"
-        },
-        {
-          "opponent": "CUW",
-          "result": "D",
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "date": "2026-06-20"
-        },
-        {
-          "opponent": "GER",
-          "result": "W",
-          "goalsFor": 2,
-          "goalsAgainst": 1,
-          "date": "2026-06-25"
-        }
-      ],
-      "NED": [
-        {
-          "opponent": "JPN",
-          "result": "D",
-          "goalsFor": 2,
-          "goalsAgainst": 2,
-          "date": "2026-06-14"
-        },
-        {
-          "opponent": "SWE",
-          "result": "W",
-          "goalsFor": 5,
-          "goalsAgainst": 1,
-          "date": "2026-06-20"
-        },
-        {
-          "opponent": "TUN",
-          "result": "W",
-          "goalsFor": 3,
-          "goalsAgainst": 1,
-          "date": "2026-06-25"
-        }
-      ],
-      "JPN": [
-        {
-          "opponent": "NED",
-          "result": "D",
-          "goalsFor": 2,
-          "goalsAgainst": 2,
-          "date": "2026-06-14"
-        },
-        {
-          "opponent": "TUN",
-          "result": "W",
-          "goalsFor": 4,
-          "goalsAgainst": 0,
-          "date": "2026-06-20"
-        },
-        {
-          "opponent": "SWE",
-          "result": "D",
-          "goalsFor": 1,
-          "goalsAgainst": 1,
           "date": "2026-06-25"
         }
       ],
@@ -19699,73 +20463,34 @@
           "date": "2026-06-25"
         }
       ],
-      "BEL": [
+      "NOR": [
         {
-          "opponent": "EGY",
-          "result": "D",
-          "goalsFor": 1,
-          "goalsAgainst": 1,
-          "date": "2026-06-15"
-        },
-        {
-          "opponent": "IRN",
-          "result": "D",
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "date": "2026-06-21"
-        },
-        {
-          "opponent": "NZL",
+          "opponent": "IRQ",
           "result": "W",
-          "goalsFor": 5,
+          "goalsFor": 4,
           "goalsAgainst": 1,
-          "date": "2026-06-26"
-        }
-      ],
-      "EGY": [
-        {
-          "opponent": "BEL",
-          "result": "D",
-          "goalsFor": 1,
-          "goalsAgainst": 1,
-          "date": "2026-06-15"
+          "date": "2026-06-16"
         },
         {
-          "opponent": "NZL",
+          "opponent": "SEN",
           "result": "W",
           "goalsFor": 3,
-          "goalsAgainst": 1,
-          "date": "2026-06-21"
-        },
-        {
-          "opponent": "IRN",
-          "result": "D",
-          "goalsFor": 1,
-          "goalsAgainst": 1,
-          "date": "2026-06-26"
-        }
-      ],
-      "IRN": [
-        {
-          "opponent": "NZL",
-          "result": "D",
-          "goalsFor": 2,
           "goalsAgainst": 2,
-          "date": "2026-06-15"
+          "date": "2026-06-22"
         },
         {
-          "opponent": "BEL",
-          "result": "D",
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "date": "2026-06-21"
-        },
-        {
-          "opponent": "EGY",
-          "result": "D",
+          "opponent": "FRA",
+          "result": "L",
           "goalsFor": 1,
-          "goalsAgainst": 1,
+          "goalsAgainst": 4,
           "date": "2026-06-26"
+        },
+        {
+          "opponent": "CIV",
+          "result": "W",
+          "goalsFor": 2,
+          "goalsAgainst": 1,
+          "date": "2026-06-30"
         }
       ],
       "NZL": [
@@ -19791,29 +20516,6 @@
           "date": "2026-06-26"
         }
       ],
-      "ESP": [
-        {
-          "opponent": "CPV",
-          "result": "D",
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "date": "2026-06-15"
-        },
-        {
-          "opponent": "SAU",
-          "result": "W",
-          "goalsFor": 4,
-          "goalsAgainst": 0,
-          "date": "2026-06-21"
-        },
-        {
-          "opponent": "URU",
-          "result": "W",
-          "goalsFor": 1,
-          "goalsAgainst": 0,
-          "date": "2026-06-26"
-        }
-      ],
       "CPV": [
         {
           "opponent": "ESP",
@@ -19833,98 +20535,6 @@
           "opponent": "SAU",
           "result": "D",
           "goalsFor": 0,
-          "goalsAgainst": 0,
-          "date": "2026-06-26"
-        }
-      ],
-      "SAU": [
-        {
-          "opponent": "URU",
-          "result": "D",
-          "goalsFor": 1,
-          "goalsAgainst": 1,
-          "date": "2026-06-15"
-        },
-        {
-          "opponent": "ESP",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 4,
-          "date": "2026-06-21"
-        },
-        {
-          "opponent": "CPV",
-          "result": "D",
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "date": "2026-06-26"
-        }
-      ],
-      "URU": [
-        {
-          "opponent": "SAU",
-          "result": "D",
-          "goalsFor": 1,
-          "goalsAgainst": 1,
-          "date": "2026-06-15"
-        },
-        {
-          "opponent": "CPV",
-          "result": "D",
-          "goalsFor": 2,
-          "goalsAgainst": 2,
-          "date": "2026-06-21"
-        },
-        {
-          "opponent": "ESP",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 1,
-          "date": "2026-06-26"
-        }
-      ],
-      "FRA": [
-        {
-          "opponent": "SEN",
-          "result": "W",
-          "goalsFor": 3,
-          "goalsAgainst": 1,
-          "date": "2026-06-16"
-        },
-        {
-          "opponent": "IRQ",
-          "result": "W",
-          "goalsFor": 3,
-          "goalsAgainst": 0,
-          "date": "2026-06-22"
-        },
-        {
-          "opponent": "NOR",
-          "result": "W",
-          "goalsFor": 4,
-          "goalsAgainst": 1,
-          "date": "2026-06-26"
-        }
-      ],
-      "SEN": [
-        {
-          "opponent": "FRA",
-          "result": "L",
-          "goalsFor": 1,
-          "goalsAgainst": 3,
-          "date": "2026-06-16"
-        },
-        {
-          "opponent": "NOR",
-          "result": "L",
-          "goalsFor": 2,
-          "goalsAgainst": 3,
-          "date": "2026-06-22"
-        },
-        {
-          "opponent": "IRQ",
-          "result": "W",
-          "goalsFor": 5,
           "goalsAgainst": 0,
           "date": "2026-06-26"
         }
@@ -19952,98 +20562,6 @@
           "date": "2026-06-26"
         }
       ],
-      "NOR": [
-        {
-          "opponent": "IRQ",
-          "result": "W",
-          "goalsFor": 4,
-          "goalsAgainst": 1,
-          "date": "2026-06-16"
-        },
-        {
-          "opponent": "SEN",
-          "result": "W",
-          "goalsFor": 3,
-          "goalsAgainst": 2,
-          "date": "2026-06-22"
-        },
-        {
-          "opponent": "FRA",
-          "result": "L",
-          "goalsFor": 1,
-          "goalsAgainst": 4,
-          "date": "2026-06-26"
-        }
-      ],
-      "ARG": [
-        {
-          "opponent": "ALG",
-          "result": "W",
-          "goalsFor": 3,
-          "goalsAgainst": 0,
-          "date": "2026-06-16"
-        },
-        {
-          "opponent": "AUT",
-          "result": "W",
-          "goalsFor": 2,
-          "goalsAgainst": 0,
-          "date": "2026-06-22"
-        },
-        {
-          "opponent": "JOR",
-          "result": "W",
-          "goalsFor": 3,
-          "goalsAgainst": 1,
-          "date": "2026-06-27"
-        }
-      ],
-      "ALG": [
-        {
-          "opponent": "ARG",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 3,
-          "date": "2026-06-16"
-        },
-        {
-          "opponent": "JOR",
-          "result": "W",
-          "goalsFor": 2,
-          "goalsAgainst": 1,
-          "date": "2026-06-22"
-        },
-        {
-          "opponent": "AUT",
-          "result": "D",
-          "goalsFor": 3,
-          "goalsAgainst": 3,
-          "date": "2026-06-27"
-        }
-      ],
-      "AUT": [
-        {
-          "opponent": "JOR",
-          "result": "W",
-          "goalsFor": 3,
-          "goalsAgainst": 1,
-          "date": "2026-06-16"
-        },
-        {
-          "opponent": "ARG",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 2,
-          "date": "2026-06-22"
-        },
-        {
-          "opponent": "ALG",
-          "result": "D",
-          "goalsFor": 3,
-          "goalsAgainst": 3,
-          "date": "2026-06-27"
-        }
-      ],
       "JOR": [
         {
           "opponent": "AUT",
@@ -20064,29 +20582,6 @@
           "result": "L",
           "goalsFor": 1,
           "goalsAgainst": 3,
-          "date": "2026-06-27"
-        }
-      ],
-      "POR": [
-        {
-          "opponent": "COD",
-          "result": "D",
-          "goalsFor": 1,
-          "goalsAgainst": 1,
-          "date": "2026-06-17"
-        },
-        {
-          "opponent": "UZB",
-          "result": "W",
-          "goalsFor": 5,
-          "goalsAgainst": 0,
-          "date": "2026-06-23"
-        },
-        {
-          "opponent": "COL",
-          "result": "D",
-          "goalsFor": 0,
-          "goalsAgainst": 0,
           "date": "2026-06-27"
         }
       ],
@@ -20133,121 +20628,6 @@
           "result": "L",
           "goalsFor": 1,
           "goalsAgainst": 3,
-          "date": "2026-06-27"
-        }
-      ],
-      "COL": [
-        {
-          "opponent": "UZB",
-          "result": "W",
-          "goalsFor": 3,
-          "goalsAgainst": 1,
-          "date": "2026-06-17"
-        },
-        {
-          "opponent": "COD",
-          "result": "W",
-          "goalsFor": 1,
-          "goalsAgainst": 0,
-          "date": "2026-06-23"
-        },
-        {
-          "opponent": "POR",
-          "result": "D",
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "date": "2026-06-27"
-        }
-      ],
-      "ENG": [
-        {
-          "opponent": "CRO",
-          "result": "W",
-          "goalsFor": 4,
-          "goalsAgainst": 2,
-          "date": "2026-06-17"
-        },
-        {
-          "opponent": "GHA",
-          "result": "D",
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "date": "2026-06-23"
-        },
-        {
-          "opponent": "PAN",
-          "result": "W",
-          "goalsFor": 2,
-          "goalsAgainst": 0,
-          "date": "2026-06-27"
-        }
-      ],
-      "CRO": [
-        {
-          "opponent": "ENG",
-          "result": "L",
-          "goalsFor": 2,
-          "goalsAgainst": 4,
-          "date": "2026-06-17"
-        },
-        {
-          "opponent": "PAN",
-          "result": "W",
-          "goalsFor": 1,
-          "goalsAgainst": 0,
-          "date": "2026-06-23"
-        },
-        {
-          "opponent": "GHA",
-          "result": "W",
-          "goalsFor": 2,
-          "goalsAgainst": 1,
-          "date": "2026-06-27"
-        }
-      ],
-      "GHA": [
-        {
-          "opponent": "PAN",
-          "result": "W",
-          "goalsFor": 1,
-          "goalsAgainst": 0,
-          "date": "2026-06-17"
-        },
-        {
-          "opponent": "ENG",
-          "result": "D",
-          "goalsFor": 0,
-          "goalsAgainst": 0,
-          "date": "2026-06-23"
-        },
-        {
-          "opponent": "CRO",
-          "result": "L",
-          "goalsFor": 1,
-          "goalsAgainst": 2,
-          "date": "2026-06-27"
-        }
-      ],
-      "PAN": [
-        {
-          "opponent": "GHA",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 1,
-          "date": "2026-06-17"
-        },
-        {
-          "opponent": "CRO",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 1,
-          "date": "2026-06-23"
-        },
-        {
-          "opponent": "ENG",
-          "result": "L",
-          "goalsFor": 0,
-          "goalsAgainst": 2,
           "date": "2026-06-27"
         }
       ]

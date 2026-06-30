@@ -400,10 +400,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const squadAnalysisPlaceholder = document.getElementById("squad-analysis-placeholder");
   const stageSelect = document.getElementById("stage-select");
 
-  const staleToggle = document.getElementById("toggle-stale");
-  const injuryAToggle = document.getElementById("toggle-injury-a");
-  const injuryBToggle = document.getElementById("toggle-injury-b");
-
   const predictBtn = document.getElementById("predict-btn");
   const selectionError = document.getElementById("selection-error");
   const loadingState = document.getElementById("loading-state");
@@ -643,17 +639,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const { enrichedA, enrichedB, fixture } = await enrichMatchup(teamA, teamB);
 
     // Set staleData dynamically based on team live data
-    let staleData = staleToggle.checked;
-    if (enrichedA.hasLiveData || enrichedB.hasLiveData) {
-      staleData = false;
-    } else {
-      staleData = true;
-    }
+    const staleData = !(enrichedA.hasLiveData || enrichedB.hasLiveData);
 
     const options = {
       staleData,
-      injureKeyA: injuryAToggle.checked || (enrichedA.injuries && enrichedA.injuries.includes("lineup_absence")),
-      injureKeyB: injuryBToggle.checked || (enrichedB.injuries && enrichedB.injuries.includes("lineup_absence")),
+      injureKeyA: !!(enrichedA.injuries && enrichedA.injuries.includes("lineup_absence")),
+      injureKeyB: !!(enrichedB.injuries && enrichedB.injuries.includes("lineup_absence")),
       stage: stageSelect.value
     };
 
@@ -1068,18 +1059,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Update active formation button styling
-    const formationSelector = document.getElementById("formation-selector");
-    if (formationSelector) {
-      const activeFormation = lineupState.teamA.formation || "4-3-3";
-      formationSelector.querySelectorAll(".formation-btn").forEach(btn => {
-        if (btn.dataset.formation === activeFormation) {
-          btn.classList.add("active");
-        } else {
-          btn.classList.remove("active");
-        }
-      });
-    }
   }
 
 
@@ -1850,6 +1829,63 @@ document.addEventListener("DOMContentLoaded", () => {
         <span class="flat-value" style="font-weight: bold; color: ${verdictColor};">${metrics.verdict}</span>
       </div>
     `;
+
+    // Update System Info Modal dynamically
+    const modalAccuracyHeading = document.getElementById("modal-accuracy-heading");
+    const modalOutcomeAccuracy = document.getElementById("modal-outcome-accuracy");
+    const modalCorrectCount = document.getElementById("modal-correct-count");
+    const modalVsRandom = document.getElementById("modal-vs-random");
+    const modalVsNaive = document.getElementById("modal-vs-naive");
+    const modalBrierScore = document.getElementById("modal-brier-score");
+    const modalBrierInterpretation = document.getElementById("modal-brier-interpretation");
+    const modalCalibrationTrend = document.getElementById("modal-calibration-trend");
+    const modalVerdict = document.getElementById("modal-verdict");
+    const modalExactScore = document.getElementById("modal-exact-score");
+    const modalTop5Score = document.getElementById("modal-top5-score");
+    const modalLimitationSample = document.getElementById("modal-limitation-sample");
+
+    if (modalAccuracyHeading) {
+      modalAccuracyHeading.textContent = `ACCURACY BENCHMARK (${metrics.overall.totalMatches} matches)`;
+    }
+    if (modalOutcomeAccuracy) {
+      modalOutcomeAccuracy.textContent = `${metrics.overall.outcomeAccuracy.toFixed(1)}%`;
+      modalOutcomeAccuracy.style.color = metrics.overall.outcomeAccuracy >= 60 ? '#1aff6e' : (metrics.overall.outcomeAccuracy < 50 ? '#ef4444' : '#f59e0b');
+    }
+    if (modalCorrectCount) {
+      modalCorrectCount.textContent = metrics.overall.outcomeCorrect;
+    }
+    if (modalVsRandom) {
+      modalVsRandom.textContent = formatDiff(metrics.baselines.vsRandom);
+      modalVsRandom.style.color = metrics.baselines.vsRandom >= 0 ? '#1aff6e' : '#ef4444';
+    }
+    if (modalVsNaive) {
+      modalVsNaive.textContent = formatDiff(metrics.baselines.vsFIFA);
+      modalVsNaive.style.color = metrics.baselines.vsFIFA >= 0 ? '#1aff6e' : '#ef4444';
+    }
+    if (modalBrierScore) {
+      modalBrierScore.textContent = metrics.brier.score.toFixed(3);
+    }
+    if (modalBrierInterpretation) {
+      modalBrierInterpretation.textContent = metrics.brier.interpretation;
+      modalBrierInterpretation.style.color = metrics.brier.interpretation === 'EXCELLENT' || metrics.brier.interpretation === 'GOOD' ? '#1aff6e' : '#f59e0b';
+    }
+    if (modalCalibrationTrend) {
+      modalCalibrationTrend.textContent = metrics.calibration.trend;
+      modalCalibrationTrend.style.color = metrics.calibration.trend === 'IMPROVING' ? '#1aff6e' : '#f59e0b';
+    }
+    if (modalVerdict) {
+      modalVerdict.textContent = metrics.verdict;
+      modalVerdict.style.color = metrics.verdict === 'STRONG SIGNAL' ? '#1aff6e' : (metrics.verdict === 'MODERATE SIGNAL' ? '#f59e0b' : '#ef4444');
+    }
+    if (modalExactScore) {
+      modalExactScore.textContent = `${metrics.overall.exactScoreAccuracy.toFixed(1)}%`;
+    }
+    if (modalTop5Score) {
+      modalTop5Score.textContent = `${metrics.overall.top5Accuracy.toFixed(1)}%`;
+    }
+    if (modalLimitationSample) {
+      modalLimitationSample.textContent = metrics.overall.totalMatches;
+    }
   }
 
   function renderEngineNotes(metrics, results) {
@@ -2435,24 +2471,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const formationSelector = document.getElementById("formation-selector");
-  if (formationSelector) {
-    formationSelector.addEventListener("click", (e) => {
-      const btn = e.target.closest(".formation-btn");
-      if (!btn) return;
-
-      formationSelector.querySelectorAll(".formation-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-
-      const formation = btn.dataset.formation;
-
-      adjustStartersForFormation(lineupState.teamA, formation);
-      adjustStartersForFormation(lineupState.teamB, formation);
-      lineupState.modified = true;
-      lineupState.selectedPlayer = null;
-      renderSquadAnalysis();
-    });
-  }
 
   document.addEventListener("click", (e) => {
     if (lineupState.selectedPlayer) {
