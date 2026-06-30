@@ -52,6 +52,46 @@ class TestTeamStatus(unittest.TestCase):
         self.assertEqual(get_match_outcome("Germany", match_2), "loss")
         self.assertEqual(get_match_outcome("Paraguay", match_2), "win")
 
+        # Draw match
+        match_draw = {
+            "home_team": "Canada",
+            "away_team": "South Africa",
+            "result": {"ft": [1, 1]}
+        }
+        self.assertEqual(get_match_outcome("Canada", match_draw), "draw")
+        self.assertEqual(get_match_outcome("South Africa", match_draw), "draw")
+
+        # Extra time win without penalties
+        match_et = {
+            "home_team": "Germany",
+            "away_team": "Paraguay",
+            "result": {"et": [2, 1], "ft": [1, 1]}
+        }
+        self.assertEqual(get_match_outcome("Germany", match_et), "win")
+        self.assertEqual(get_match_outcome("Paraguay", match_et), "loss")
+
+        # Invalid/empty result cases
+        match_no_res = {
+            "home_team": "Canada",
+            "away_team": "South Africa",
+            "result": None
+        }
+        self.assertIsNone(get_match_outcome("Canada", match_no_res))
+
+        match_invalid_res1 = {
+            "home_team": "Canada",
+            "away_team": "South Africa",
+            "result": {"ft": None}
+        }
+        self.assertIsNone(get_match_outcome("Canada", match_invalid_res1))
+
+        match_invalid_res2 = {
+            "home_team": "Canada",
+            "away_team": "South Africa",
+            "result": {"ft": [2]}
+        }
+        self.assertIsNone(get_match_outcome("Canada", match_invalid_res2))
+
     def test_is_confirmed_eliminated_group_stage_ongoing(self):
         # One group match completed, one group match unplayed
         fixtures = [
@@ -173,6 +213,18 @@ class TestTeamStatus(unittest.TestCase):
         # South Africa has finished group matches, but wait! Are they in knockout? No.
         # Bracket resolution has started. So they are skipped.
         self.assertIn("South Africa", skipped)
+
+        # Assert no placeholders like W74 or W75 are in any returned sets
+        for s in [normally_active, gap_window, skipped]:
+            for team in s:
+                self.assertIsNotNone(team)
+                self.assertFalse(team.startswith("W") and team[1:].isdigit(), f"Placeholder {team} should not be in status sets")
+                self.assertFalse(team.startswith("L") and team[1:].isdigit(), f"Placeholder {team} should not be in status sets")
+
+        # Assert sets are mutually exclusive
+        self.assertEqual(normally_active & gap_window, set())
+        self.assertEqual(normally_active & skipped, set())
+        self.assertEqual(gap_window & skipped, set())
 
 if __name__ == "__main__":
     unittest.main()

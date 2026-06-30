@@ -1,29 +1,29 @@
 {
     "tests_by_mangled_function_name": {
         "scripts.config.x_get_match_outcome": [
-            "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_knockout_winner_and_loser",
-            "scripts/tests/test_team_status.py::TestTeamStatus::test_get_match_outcome"
+            "scripts/tests/test_team_status.py::TestTeamStatus::test_get_match_outcome",
+            "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_knockout_winner_and_loser"
         ],
         "scripts.config.x_is_confirmed_eliminated": [
-            "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_knockout_winner_and_loser",
+            "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_group_stage_finished_gap_window",
             "scripts/tests/test_team_status.py::TestTeamStatus::test_resolve_team_statuses",
             "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_group_stage_finished_confirmed_eliminated",
-            "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_group_stage_ongoing",
-            "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_group_stage_finished_gap_window"
+            "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_knockout_winner_and_loser",
+            "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_group_stage_ongoing"
         ],
         "scripts.config.x_resolve_team_statuses": [
             "scripts/tests/test_team_status.py::TestTeamStatus::test_resolve_team_statuses"
         ]
     },
     "duration_by_test": {
-        "scripts/tests/test_team_status.py::TestTeamStatus::test_get_match_outcome": 0.0012837999993280391,
-        "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_group_stage_finished_confirmed_eliminated": 0.0006154000002425164,
-        "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_group_stage_finished_gap_window": 0.0004914999999527936,
-        "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_group_stage_ongoing": 0.0004760000001624576,
-        "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_knockout_winner_and_loser": 0.0007770000001983135,
-        "scripts/tests/test_team_status.py::TestTeamStatus::test_is_placeholder": 0.0003651000006357208,
-        "scripts/tests/test_team_status.py::TestTeamStatus::test_normalize_team_name_case_insensitive": 0.0003406000005270471,
-        "scripts/tests/test_team_status.py::TestTeamStatus::test_resolve_team_statuses": 0.0007345000012719538
+        "scripts/tests/test_team_status.py::TestTeamStatus::test_get_match_outcome": 0.0017213999999512453,
+        "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_group_stage_finished_confirmed_eliminated": 0.0006089000007705181,
+        "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_group_stage_finished_gap_window": 0.0004939000000376836,
+        "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_group_stage_ongoing": 0.0004850999994232552,
+        "scripts/tests/test_team_status.py::TestTeamStatus::test_is_confirmed_eliminated_knockout_winner_and_loser": 0.0007823999994798214,
+        "scripts/tests/test_team_status.py::TestTeamStatus::test_is_placeholder": 0.0003583999987313291,
+        "scripts/tests/test_team_status.py::TestTeamStatus::test_normalize_team_name_case_insensitive": 0.00035740000112127746,
+        "scripts/tests/test_team_status.py::TestTeamStatus::test_resolve_team_statuses": 0.0007361000007222174
     },
-    "stats_time": 0.3125
+    "stats_time": 0.328125
 }
