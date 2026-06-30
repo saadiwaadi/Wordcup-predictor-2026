@@ -28,10 +28,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4
 
-      - name: Run Lineup Bot
-        continue-on-error: true
-        run: python scripts/bots/lineup_bot.py
-
       - name: Run Fixture Bot
         continue-on-error: true
         run: python scripts/bots/fixture_bot.py
@@ -43,6 +39,10 @@ jobs:
       - name: Run Injury Bot
         continue-on-error: true
         run: python scripts/bots/injury_bot.py
+
+      - name: Run Lineup Bot
+        continue-on-error: true
+        run: python scripts/bots/lineup_bot.py
 
       - name: Run Match Bot
         continue-on-error: true

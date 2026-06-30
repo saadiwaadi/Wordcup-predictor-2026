@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 
 # Add parent directory to path to allow importing config
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from config import COMPETITION_CONFIG
+from config import COMPETITION_CONFIG, normalize_team_name
 
 def parse_kickoff_utc(date_str, time_str):
     if not time_str:
@@ -35,25 +35,7 @@ def generate_match_id(home, away, date):
     unique_str = f"{home.lower()}_vs_{away.lower()}_{date}"
     return hashlib.md5(unique_str.encode('utf-8')).hexdigest()[:12]
 
-def normalize_team_name(name):
-    if not name:
-        return ""
-    name = name.strip()
-    mapping = {
-        "Korea Republic": "South Korea",
-        "Côte d'Ivoire": "Ivory Coast",
-        "Cabo Verde": "Cape Verde",
-        "Cape Verde": "Cape Verde",
-        "Türkiye": "Turkey",
-        "IR Iran": "Iran",
-        "Congo DR": "DR Congo",
-        "United States": "USA",
-        "Czechia": "Czech Republic",
-        "Czech Republic": "Czech Republic",
-        "Bosnia and Herzegovina": "Bosnia & Herzegovina",
-        "Bosnia & Herzegovina": "Bosnia & Herzegovina",
-    }
-    return mapping.get(name, name)
+
 
 def find_fifa_match(fixture, fifa_matches):
     # Try by kickoff date first since it's UTC and standardized

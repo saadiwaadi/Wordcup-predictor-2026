@@ -25,6 +25,14 @@ const TACTICAL_ICONS = {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Hide Remote Control and Sync Console in production
+  if (import.meta.env.PROD) {
+    const remoteControlSection = document.getElementById("remote-control-section");
+    if (remoteControlSection) {
+      remoteControlSection.classList.add("hidden");
+    }
+  }
+
   // Load match events keyed by FIFA ID into window cache
   fetch('/data/scraped/match_events.json')
     .then(r => r.json())
@@ -1955,17 +1963,19 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Silent check for new matches every 10 minutes
-  setInterval(async () => {
-    try {
-      const cache = await getCache();
-      const completed = cache.computed?.completedMatches || [];
-      if (completed.length > lastCompletedCount) {
-        showRecomputeBanner();
+  if (import.meta.env.DEV) {
+    setInterval(async () => {
+      try {
+        const cache = await getCache();
+        const completed = cache.computed?.completedMatches || [];
+        if (completed.length > lastCompletedCount) {
+          showRecomputeBanner();
+        }
+      } catch (e) {
+        console.warn("Failed to check cache refresh silently:", e);
       }
-    } catch (e) {
-      console.warn("Failed to check cache refresh silently:", e);
-    }
-  }, 10 * 60 * 1000);
+    }, 10 * 60 * 1000);
+  }
 
   // Pre-Match Flags Rendering in Match Prediction
   function renderPreMatchFlags() {
@@ -2169,9 +2179,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Setup Remote Control Synchronization Handlers
   // Setup Remote Control Synchronization Handlers
   const btnPullSquad = document.getElementById("btn-pull-squad");
-  btnPullSquad.addEventListener("click", async () => {
-    btnPullSquad.disabled = true;
-    btnPullSquad.style.opacity = 0.5;
+  if (btnPullSquad) {
+    btnPullSquad.addEventListener("click", async () => {
+      if (import.meta.env.PROD) return;
+      btnPullSquad.disabled = true;
+      btnPullSquad.style.opacity = 0.5;
 
     const syncConsole = document.getElementById("sync-console");
     syncConsole.innerHTML = "> INITIATING SQUAD DATA SYNC VIA DELTA sync engine...\n";
@@ -2253,11 +2265,14 @@ document.addEventListener("DOMContentLoaded", () => {
       btnPullSquad.style.opacity = 1;
     }
   });
+}
 
   const btnUpdateInjuries = document.getElementById("btn-update-injuries");
-  btnUpdateInjuries.addEventListener("click", () => {
-    btnUpdateInjuries.disabled = true;
-    btnUpdateInjuries.style.opacity = 0.5;
+  if (btnUpdateInjuries) {
+    btnUpdateInjuries.addEventListener("click", () => {
+      if (import.meta.env.PROD) return;
+      btnUpdateInjuries.disabled = true;
+      btnUpdateInjuries.style.opacity = 0.5;
 
     const syncConsole = document.getElementById("sync-console");
     syncConsole.innerHTML = "> INITIATING INJURY INDEX SYNC FOR SELECTED TEAMS...\n";
@@ -2310,8 +2325,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+}
 
   async function syncLocalWithServerCache() {
+    if (import.meta.env.PROD) return;
     try {
       const response = await fetch("http://localhost:3001/api/cache-status");
       if (!response.ok) return;

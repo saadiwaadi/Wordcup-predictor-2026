@@ -372,10 +372,12 @@ async function fetchCacheFromBrowser() {
     const res = await fetch('/cache/openfootball_cache.json');
     if (res.ok) return await res.json();
   } catch {}
-  try {
-    const res = await fetch('http://localhost:3001/cache/openfootball_cache.json');
-    if (res.ok) return await res.json();
-  } catch {}
+  if (import.meta.env.DEV) {
+    try {
+      const res = await fetch('http://localhost:3001/cache/openfootball_cache.json');
+      if (res.ok) return await res.json();
+    } catch {}
+  }
   return {
     computed: {
       completedMatches: [],

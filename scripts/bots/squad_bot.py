@@ -11,25 +11,10 @@ headers = {
 ID_COMPETITION = 17
 ID_SEASON = 285023
 
-def normalize_team_name(name):
-    if not name:
-        return ""
-    name = name.strip()
-    mapping = {
-        "Korea Republic": "South Korea",
-        "Côte d'Ivoire": "Ivory Coast",
-        "Cabo Verde": "Cape Verde",
-        "Cape Verde": "Cape Verde",
-        "Türkiye": "Turkey",
-        "IR Iran": "Iran",
-        "Congo DR": "DR Congo",
-        "United States": "USA",
-        "Czechia": "Czech Republic",
-        "Czech Republic": "Czech Republic",
-        "Bosnia and Herzegovina": "Bosnia & Herzegovina",
-        "Bosnia & Herzegovina": "Bosnia & Herzegovina",
-    }
-    return mapping.get(name, name)
+# Add parent directory to path to allow importing config
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import normalize_team_name, resolve_team_statuses
+
 
 def run_squad_bot():
     try:
@@ -53,14 +38,19 @@ def run_squad_bot():
             print(f"Warning: failed to load fixtures.json: {e}", file=sys.stderr)
             sys.exit(0)
 
-        unique_teams = set()
-        for fixture in fixtures_data:
-            h = fixture.get("home_team")
-            a = fixture.get("away_team")
-            if h:
-                unique_teams.add(h)
-            if a:
-                unique_teams.add(a)
+        from datetime import datetime, timezone
+        now = datetime.now(timezone.utc)
+
+        from datetime import datetime, timezone
+        now = datetime.now(timezone.utc)
+
+        normally_active, gap_window, skipped = resolve_team_statuses(fixtures_data, now)
+        active_teams = normally_active.union(gap_window)
+        all_teams = normally_active.union(gap_window).union(skipped)
+
+        gap_names = sorted(list(gap_window))
+        if gap_names:
+            print(f"Active (gap window — placeholder unresolved): {', '.join(gap_names)}")
 
         squads = {}
         if os.path.exists(squads_path):
@@ -130,8 +120,22 @@ def run_squad_bot():
                         "names": names
                     }
 
+        all_matched_teams = []
+        for fixture_name in all_teams:
+            fixture_name_lower = fixture_name.strip().lower()
+            fixture_name_norm_lower = normalize_team_name(fixture_name).lower()
+            
+            matched_team = None
+            for team_id, team_info in fifa_teams.items():
+                if (fixture_name_lower in team_info["names"] or 
+                    fixture_name_norm_lower in team_info["names"]):
+                    matched_team = team_info
+                    break
+            if matched_team and matched_team not in all_matched_teams:
+                all_matched_teams.append(matched_team)
+
         teams_to_fetch = []
-        for fixture_name in unique_teams:
+        for fixture_name in active_teams:
             fixture_name_lower = fixture_name.strip().lower()
             fixture_name_norm_lower = normalize_team_name(fixture_name).lower()
             
@@ -146,9 +150,14 @@ def run_squad_bot():
                 if matched_team not in teams_to_fetch:
                     teams_to_fetch.append(matched_team)
             else:
-                print(f"Warning: Could not find FIFA team ID for fixture team '{fixture_name}'", file=sys.stderr)
+                import re
+                if not re.match(r'^[WL]\d+', fixture_name):
+                    print(f"Warning: Could not find FIFA team ID for fixture team '{fixture_name}'", file=sys.stderr)
 
-        print(f"Found {len(teams_to_fetch)} teams from fixtures. Fetching squads...")
+        skipped_teams = [t for t in all_matched_teams if t not in teams_to_fetch]
+        skipped_names = sorted(list(set(t["team_name"] for t in skipped_teams)))
+        print(f"Squad Bot Summary: Pulled squads for {len(teams_to_fetch)} teams. Skipped {len(skipped_names)} teams: {', '.join(skipped_names)}")
+        print(f"Found {len(teams_to_fetch)} active teams from fixtures. Fetching squads...")
         updated = 0
 
         for team in teams_to_fetch:

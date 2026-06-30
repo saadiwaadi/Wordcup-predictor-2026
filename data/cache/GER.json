@@ -88,7 +88,7 @@
     },
     {
       "name": "D. Raum",
-      "position": "CB",
+      "position": "CM",
       "club_appearances": 2,
       "caps": 0,
       "caps_source": "UNAVAILABLE",
@@ -292,7 +292,7 @@
     },
     {
       "name": "J. Musiala",
-      "position": "CM",
+      "position": "FW",
       "club_appearances": 0,
       "caps": 0,
       "caps_source": "UNAVAILABLE",
@@ -377,7 +377,7 @@
     },
     {
       "name": "F. Wirtz",
-      "position": "CM",
+      "position": "FW",
       "club_appearances": 0,
       "caps": 0,
       "caps_source": "UNAVAILABLE",
@@ -444,5 +444,5 @@
       "xG_source": "APPROX"
     }
   ],
-  "updated_at": "2026-06-27T16:56:02.919Z"
+  "updated_at": "2026-06-30T19:50:40.304Z"
 }
