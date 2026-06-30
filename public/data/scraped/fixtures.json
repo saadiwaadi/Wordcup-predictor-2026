@@ -1964,8 +1964,31 @@
     "kickoff_utc": "2026-06-30T01:00:00Z",
     "stage": "Round of 32",
     "venue": "Monterrey Stadium",
-    "result": null,
-    "weather": {},
+    "result": {
+      "p": [
+        2,
+        3
+      ],
+      "et": [
+        1,
+        1
+      ],
+      "ft": [
+        1,
+        1
+      ],
+      "ht": [
+        0,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
     "attendance": "51243"
   },
   {
