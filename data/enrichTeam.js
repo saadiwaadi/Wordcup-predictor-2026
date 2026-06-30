@@ -3,6 +3,7 @@
 import fs from 'fs';
 import { getTeamForm, getTeamStats, getH2HResults, getFixture, STADIUM_CAPACITIES } from './openFootballLayer.js';
 import { TEAMS } from './index.js';
+import { getCompletedFixtures } from './scrapedAdapter.js';
 
 export async function enrichTeamWithLiveData(teamObject) {
   if (!teamObject) return null;
@@ -86,7 +87,23 @@ export const CALIBRATION_CONSTANTS = {
 };
 
 
-export function getLambdaOverride(enrichedTeam, P_dynamic, isHome) {
+export const DEFENSE_SHRINKAGE_K = 3.5;
+
+export function getTournamentAvgGoalsAgainst() {
+  const completed = getCompletedFixtures();
+  if (completed.length === 0) {
+    return 1.3; // safe fallback (approximate baseline)
+  }
+  let totalGoals = 0;
+  for (const m of completed) {
+    if (m.result && m.result.ft) {
+      totalGoals += (m.result.ft[0] || 0) + (m.result.ft[1] || 0);
+    }
+  }
+  return totalGoals / (2 * completed.length);
+}
+
+export function getLambdaOverride(enrichedTeam, P_dynamic, isHome, opponentTeam = null) {
   if (!enrichedTeam) {
     const defaultLambda = Math.max(0.1, 1.8 * P_dynamic + 0.27);
     const residual_adj = isHome ? 0.54 * 0.65 : -0.27 * 0.3;
@@ -96,7 +113,23 @@ export function getLambdaOverride(enrichedTeam, P_dynamic, isHome) {
   let lambda;
   if (enrichedTeam.hasLiveData && enrichedTeam.matchesPlayedInTournament >= 2) {
     const avgGoalsFor = enrichedTeam.liveStats ? enrichedTeam.liveStats.avgGoalsFor : 0;
-    lambda = (avgGoalsFor * 0.6) + (1.8 * P_dynamic + 0.27) * 0.4;
+    
+    // Opponent defense adjustment
+    let opponentDefenseFactor = 1.0;
+    if (opponentTeam) {
+      const tournamentAvgGoalsAgainst = getTournamentAvgGoalsAgainst();
+      if (tournamentAvgGoalsAgainst > 0) {
+        const statsB = opponentTeam.liveStats;
+        const matchesPlayedB = statsB ? (statsB.matchesPlayed || 0) : 0;
+        const avgGoalsAgainstB = statsB ? (statsB.avgGoalsAgainst || 0) : 0;
+        
+        const shrunkGoalsAgainstB = (matchesPlayedB * avgGoalsAgainstB + DEFENSE_SHRINKAGE_K * tournamentAvgGoalsAgainst) / (matchesPlayedB + DEFENSE_SHRINKAGE_K);
+        opponentDefenseFactor = shrunkGoalsAgainstB / tournamentAvgGoalsAgainst;
+      }
+    }
+    
+    const opponentAdjustedGoalsFor = avgGoalsFor * opponentDefenseFactor;
+    lambda = (opponentAdjustedGoalsFor * 0.6) + (1.8 * P_dynamic + 0.27) * 0.4;
   } else {
     lambda = 1.8 * P_dynamic + 0.27;
   }
@@ -199,8 +232,8 @@ if (isNode) {
         const defaultLambdaMEX = 1.8 * pDynamicMEX + 0.27;
         const defaultLambdaDEN = 1.8 * pDynamicDEN + 0.27;
         
-        const overrideMEX = getLambdaOverride(test1.enrichedA, pDynamicMEX, true);
-        const overrideDEN = getLambdaOverride(test2.enrichedB, pDynamicDEN, false);
+        const overrideMEX = getLambdaOverride(test1.enrichedA, pDynamicMEX, true, test1.enrichedB);
+        const overrideDEN = getLambdaOverride(test2.enrichedB, pDynamicDEN, false, test2.enrichedA);
 
         console.log(`MEX (with live data, played >= 2 matches, P_dynamic = ${pDynamicMEX}):`);
         console.log(`  - Default lambda: ${defaultLambdaMEX.toFixed(4)}`);

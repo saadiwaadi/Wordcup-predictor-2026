@@ -170,8 +170,8 @@ async function runBenchmark() {
     const prediction = runPrediction(enrichedA, enrichedB, options);
 
     // Apply lambda overrides and scoreline recomputation
-    const newLambdaA = getLambdaOverride(enrichedA, prediction.P_dynamic_A, true); // teamA is home
-    const newLambdaB = getLambdaOverride(enrichedB, prediction.P_dynamic_B, false); // teamB is away
+    const newLambdaA = getLambdaOverride(enrichedA, prediction.P_dynamic_A, true, enrichedB); // teamA is home
+    const newLambdaB = getLambdaOverride(enrichedB, prediction.P_dynamic_B, false, enrichedA); // teamB is away
 
     if (newLambdaA !== prediction.lambda_A || newLambdaB !== prediction.lambda_B) {
       prediction.lambda_A = newLambdaA;

@@ -652,8 +652,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const results = runPrediction(enrichedA, enrichedB, options);
 
     // Override lambdas and recompute top 5 scorelines if changed
-    const newLambdaA = getLambdaOverride(enrichedA, results.P_dynamic_A, enrichedA.isHome);
-    const newLambdaB = getLambdaOverride(enrichedB, results.P_dynamic_B, enrichedB.isHome);
+    const newLambdaA = getLambdaOverride(enrichedA, results.P_dynamic_A, enrichedA.isHome, enrichedB);
+    const newLambdaB = getLambdaOverride(enrichedB, results.P_dynamic_B, enrichedB.isHome, enrichedA);
 
     if (newLambdaA !== results.lambda_A || newLambdaB !== results.lambda_B) {
       results.lambda_A = newLambdaA;

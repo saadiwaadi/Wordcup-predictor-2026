@@ -145,8 +145,8 @@ export async function runBacktest() {
     const prediction = runPrediction(enrichedA, enrichedB, options);
 
     // Override lambdas and recompute scorelines
-    const newLambdaA = getLambdaOverride(enrichedA, prediction.P_dynamic_A, isAHome);
-    const newLambdaB = getLambdaOverride(enrichedB, prediction.P_dynamic_B, isBHome);
+    const newLambdaA = getLambdaOverride(enrichedA, prediction.P_dynamic_A, isAHome, enrichedB);
+    const newLambdaB = getLambdaOverride(enrichedB, prediction.P_dynamic_B, isBHome, enrichedA);
 
     if (newLambdaA !== prediction.lambda_A || newLambdaB !== prediction.lambda_B) {
       prediction.lambda_A = newLambdaA;
