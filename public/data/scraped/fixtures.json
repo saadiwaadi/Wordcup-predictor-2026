@@ -2024,9 +2024,24 @@
     "kickoff_utc": "2026-06-30T21:00:00Z",
     "stage": "Round of 32",
     "venue": "New York/New Jersey Stadium",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "ft": [
+        3,
+        0
+      ],
+      "ht": [
+        1,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "80663"
   },
   {
     "match_id": "85ea301f8686",
