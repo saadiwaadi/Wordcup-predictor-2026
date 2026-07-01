@@ -2076,8 +2076,23 @@
     "kickoff_utc": "2026-07-01T16:00:00Z",
     "stage": "Round of 32",
     "venue": "Atlanta Stadium",
-    "result": null,
-    "weather": {},
+    "result": {
+      "ft": [
+        2,
+        1
+      ],
+      "ht": [
+        0,
+        1
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
     "attendance": "68239"
   },
   {
