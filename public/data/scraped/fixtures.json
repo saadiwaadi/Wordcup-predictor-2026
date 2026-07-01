@@ -2050,9 +2050,24 @@
     "kickoff_utc": "2026-07-01T01:00:00Z",
     "stage": "Round of 32",
     "venue": "Mexico City Stadium",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "ft": [
+        2,
+        0
+      ],
+      "ht": [
+        1,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "80824"
   },
   {
     "match_id": "eea87038b44d",
@@ -2154,9 +2169,9 @@
     "attendance": null
   },
   {
-    "match_id": "6344d7d8a43c",
+    "match_id": "2bc700a9fd3e",
     "home_team": "Canada",
-    "away_team": "W75",
+    "away_team": "Morocco",
     "kickoff_utc": "2026-07-04T17:00:00Z",
     "stage": "Round of 16",
     "venue": "Houston Stadium",
@@ -2165,9 +2180,9 @@
     "attendance": null
   },
   {
-    "match_id": "ea271152c8aa",
-    "home_team": "W74",
-    "away_team": "W77",
+    "match_id": "b5747fc6a95e",
+    "home_team": "Paraguay",
+    "away_team": "France",
     "kickoff_utc": "2026-07-04T21:00:00Z",
     "stage": "Round of 16",
     "venue": "Philadelphia Stadium",
@@ -2176,9 +2191,9 @@
     "attendance": null
   },
   {
-    "match_id": "1dc0d4fb9e3e",
-    "home_team": "W76",
-    "away_team": "W78",
+    "match_id": "e976f075351a",
+    "home_team": "Brazil",
+    "away_team": "Norway",
     "kickoff_utc": "2026-07-05T20:00:00Z",
     "stage": "Round of 16",
     "venue": "New York/New Jersey Stadium",
