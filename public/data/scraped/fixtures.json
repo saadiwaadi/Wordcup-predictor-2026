@@ -2102,9 +2102,28 @@
     "kickoff_utc": "2026-07-01T20:00:00Z",
     "stage": "Round of 32",
     "venue": "Seattle Stadium",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "et": [
+        3,
+        2
+      ],
+      "ft": [
+        2,
+        2
+      ],
+      "ht": [
+        0,
+        1
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "66925"
   },
   {
     "match_id": "62690eaba814",
@@ -2113,9 +2132,24 @@
     "kickoff_utc": "2026-07-02T00:00:00Z",
     "stage": "Round of 32",
     "venue": "San Francisco Bay Area Stadium",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "ft": [
+        2,
+        0
+      ],
+      "ht": [
+        1,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68827"
   },
   {
     "match_id": "b76fdb9bcdaf",
