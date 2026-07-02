@@ -6,7 +6,7 @@ import { getCache } from './data/openFootballLayer.js';
 import { runPreMatchFlags } from './engine/preMatchFlags.js';
 import { deltaUpdateTeam } from './data/deltaSync.js';
 import { enrichMatchup, getLambdaOverride, recomputeScorelines } from './data/enrichTeam.js';
-import { getTeamForm, getTeamSquad, getTopScorers, getTeamCleanSheets } from './data/openFootballLayer.js';
+import { getTeamForm, getTeamSquad, getTopScorers, getTeamCleanSheets, VENUE_COORDINATES } from './data/openFootballLayer.js';
 import { normalizeName, getCompletedFixtures, getUpcomingFixtures, getMatchEvents, initScrapedData, getLineupByTeams } from './data/scrapedAdapter.js';
 
 
@@ -2723,7 +2723,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const upcoming = getUpcomingFixtures().slice(0, 20);
     if (!upcoming.length) {
-      container.innerHTML = '<div style="font-family:var(--font-data);font-size:9px;color:#333;padding:6px 0;">— No upcoming fixtures</div>';
+      container.innerHTML = '<div style="font-family:var(--font-data);font-size:9px;color:var(--text-muted);padding:6px 0;">— No upcoming fixtures</div>';
       return;
     }
 
@@ -2853,15 +2853,34 @@ document.addEventListener("DOMContentLoaded", () => {
       row.style.cssText = 'display:grid;grid-template-columns:1fr 52px 1fr;align-items:center;padding:4px 10px;border-bottom:1px solid #0d0d0d;font-family:var(--font-data);font-size:9px;';
       row.innerHTML = `
         <div style="text-align:right;color:${isHome?'#3b82f6':'transparent'}">${isHome ? icon[e.kind] + ' ' + (e.player_id||'') : ''}</div>
-        <div style="text-align:center;font-size:8px;color:#333;border:1px solid #111;padding:2px 4px;">${e.minute||'—'}</div>
-        <div style="text-align:left;color:${!isHome?'#888':'transparent'}">${!isHome ? icon[e.kind] + ' ' + (e.player_id||'') : ''}</div>
+        <div style="text-align:center;font-size:8px;color:var(--text-muted);border:1px solid #111;padding:2px 4px;">${e.minute||'—'}</div>
+        <div style="text-align:left;color:${!isHome?'var(--text-secondary)':'transparent'}">${!isHome ? icon[e.kind] + ' ' + (e.player_id||'') : ''}</div>
       `;
       container.appendChild(row);
     });
   }
 
+  const WMO_CODES = {
+    0: "CLEAR", 1: "MOSTLY CLEAR", 2: "PARTLY CLOUDY", 3: "OVERCAST",
+    45: "FOG", 48: "FOG",
+    51: "DRIZZLE", 53: "DRIZZLE", 55: "HEAVY DRIZZLE",
+    56: "FRZ DRIZZLE", 57: "FRZ DRIZZLE",
+    61: "LIGHT RAIN", 63: "RAIN", 65: "HEAVY RAIN",
+    66: "FRZ RAIN", 67: "FRZ RAIN",
+    71: "LIGHT SNOW", 73: "SNOW", 75: "HEAVY SNOW",
+    77: "SNOW",
+    80: "SHOWERS", 81: "SHOWERS", 82: "HEAVY SHOWERS",
+    85: "SNOW SHOWERS", 86: "SNOW SHOWERS",
+    95: "THUNDERSTORM", 96: "THUNDERSTORM", 99: "THUNDERSTORM"
+  };
+
+  const openMeteoCache = {};
+
   async function renderExpConditions(fixture) {
     const set = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val || '—'; };
+    const ind = document.getElementById('exp-weather-indicator');
+    const dot = document.getElementById('exp-weather-dot');
+    const lbl = document.getElementById('exp-weather-lbl');
 
     // Set venue from fixture first (always available)
     set('exp-cond-venue-val', fixture?.venue || '—');
@@ -2891,6 +2910,13 @@ document.addEventListener("DOMContentLoaded", () => {
         set('exp-cond-type-val', w.TypeLocalized?.[0]?.Description || '—');
         if (w.Temperature || w.Humidity) {
           hasWeather = true;
+          if (ind && dot && lbl) {
+            ind.classList.remove('hidden');
+            dot.style.background = 'var(--accent-green)';
+            dot.style.boxShadow = '0 0 6px var(--accent-green)';
+            dot.classList.add('weather-dot-pulse');
+            lbl.textContent = 'LIVE · FIFA';
+          }
         }
       }
       if (fm?.Stadium) {
@@ -2900,7 +2926,70 @@ document.addEventListener("DOMContentLoaded", () => {
       // fail silently — venue already set above
     }
 
+    if (!hasWeather && fixture?.venue && fixture?.kickoff_utc) {
+      try {
+        const coords = VENUE_COORDINATES[fixture.venue];
+        if (coords) {
+          const cacheKey = `${fixture.venue}_${fixture.kickoff_utc}`;
+          if (!openMeteoCache[cacheKey]) {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&timezone=UTC&forecast_days=16`;
+            const r = await fetch(url);
+            if (r.ok) {
+              const data = await r.json();
+              openMeteoCache[cacheKey] = data;
+            }
+          }
+
+          const data = openMeteoCache[cacheKey];
+          if (data && data.hourly) {
+            // Find the closest hour to kickoff_utc
+            const matchDate = new Date(fixture.kickoff_utc);
+            const times = data.hourly.time;
+            
+            // Convert Open-Meteo UTC times to Date objects
+            let closestIndex = -1;
+            let smallestDiff = Infinity;
+            for (let i = 0; i < times.length; i++) {
+              const tDate = new Date(times[i] + "Z"); // ensure UTC parsing
+              const diff = Math.abs(tDate - matchDate);
+              if (diff < smallestDiff) {
+                smallestDiff = diff;
+                closestIndex = i;
+              }
+            }
+            
+            // Only use if within 2 hours
+            if (closestIndex !== -1 && smallestDiff <= 2 * 3600000) {
+              const t = data.hourly.temperature_2m[closestIndex];
+              const h = data.hourly.relative_humidity_2m[closestIndex];
+              const w = data.hourly.wind_speed_10m[closestIndex];
+              const code = data.hourly.weather_code[closestIndex];
+              
+              set('exp-cond-temp-val', typeof t === 'number' ? Math.round(t) + '°C' : '—');
+              set('exp-cond-humidity-val', typeof h === 'number' ? Math.round(h) + '%' : '—');
+              set('exp-cond-wind-val', typeof w === 'number' ? Math.round(w) + ' km/h' : '—');
+              
+              const typeStr = WMO_CODES[code] || "UNKNOWN";
+              set('exp-cond-type-val', typeStr + ' · FORECAST');
+              
+              hasWeather = true;
+              if (ind && dot && lbl) {
+                ind.classList.remove('hidden');
+                dot.style.background = '#f59e0b';
+                dot.style.boxShadow = 'none';
+                dot.classList.remove('weather-dot-pulse');
+                lbl.textContent = 'FORECAST · OPEN-METEO';
+              }
+            }
+          }
+        }
+      } catch (e) {
+        // Fall through to N/A
+      }
+    }
+
     if (!hasWeather) {
+      if (ind) ind.classList.add('hidden');
       set('exp-cond-temp-val', 'N/A');
       set('exp-cond-humidity-val', 'N/A');
       set('exp-cond-wind-val', 'N/A');

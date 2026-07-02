@@ -57,13 +57,21 @@ function calculateStaticStrength(teamA, teamB) {
 }
 
 // Helper: Form Score
+export const FORM_DECAY = 0.85;
+
 function calculateFormRatio(team) {
   let score = 0;
-  team.last_6.forEach(r => {
-    if (r === "W") score += 3;
-    else if (r === "D") score += 1;
+  let weightSum = 0;
+  const N = team.last_6.length;
+  team.last_6.forEach((r, i) => {
+    const w = Math.pow(FORM_DECAY, N - 1 - i);
+    let pts = 0;
+    if (r === "W") pts = 3;
+    else if (r === "D") pts = 1;
+    score += pts * w;
+    weightSum += 3 * w; // max possible is 3 per match
   });
-  return score / 18;
+  return weightSum > 0 ? score / weightSum : 0;
 }
 
 // Layer 2: Dynamic Form
@@ -94,14 +102,24 @@ function calculateDynamicForm(teamA, teamB, options) {
   return { P_dynamic_A, P_dynamic_B, P_static_A, P_static_B };
 }
 
+export const STAGE_LAMBDA_MODIFIERS = {
+  "Group": 1.00,
+  "R32":   0.95,
+  "R16":   0.95,
+  "QF":    0.92,
+  "SF":    0.90,
+  "Final": 0.88
+};
+
 // Main Prediction Engine
 function runPrediction(teamA, teamB, options = {}) {
   // 1 & 2. Static & Dynamic Strengths
   const { P_dynamic_A, P_dynamic_B, P_static_A, P_static_B } = calculateDynamicForm(teamA, teamB, options);
 
   // 3. Expected Goals
-  const lambda_A = Math.max(0.1, 1.8 * P_dynamic_A + 0.27);
-  const lambda_B = Math.max(0.1, 1.8 * P_dynamic_B + 0.27);
+  const stageMod = STAGE_LAMBDA_MODIFIERS[options.stage] ?? 1.0;
+  const lambda_A = Math.max(0.1, 1.8 * P_dynamic_A + 0.27) * stageMod;
+  const lambda_B = Math.max(0.1, 1.8 * P_dynamic_B + 0.27) * stageMod;
 
   // 4. Scoreline Matrix (7x7)
   function dixonColesTau(i, j, lambda_A, lambda_B, rho) {

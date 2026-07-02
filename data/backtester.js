@@ -3,7 +3,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { runPrediction } from '../engine.js';
+import { runPrediction, FORM_DECAY } from '../engine.js';
 import { TEAMS } from './index.js';
 import { getLambdaOverride, recomputeScorelines } from './enrichTeam.js';
 import { getFixture, STADIUM_CAPACITIES } from './openFootballLayer.js';
@@ -43,20 +43,30 @@ export function getStatsBeforeDate(teamCode, beforeDate, allMatches) {
     return new Date(m.date) < new Date(beforeDate);
   });
 
+  let weightedGoalsFor = 0;
+  let weightedGoalsAgainst = 0;
+  let weightSum = 0;
   let goalsFor = 0;
   let goalsAgainst = 0;
   const matchesPlayed = priorMatches.length;
 
-  for (const m of priorMatches) {
+  for (let i = 0; i < matchesPlayed; i++) {
+    const m = priorMatches[i];
     const isTeam1 = m.team1Code === teamCode;
     const gFor = isTeam1 ? m.score.ft[0] : m.score.ft[1];
     const gAgainst = isTeam1 ? m.score.ft[1] : m.score.ft[0];
+    
     goalsFor += gFor;
     goalsAgainst += gAgainst;
+
+    const w = Math.pow(FORM_DECAY, matchesPlayed - 1 - i);
+    weightedGoalsFor += gFor * w;
+    weightedGoalsAgainst += gAgainst * w;
+    weightSum += w;
   }
 
-  const avgGoalsFor = matchesPlayed > 0 ? parseFloat((goalsFor / matchesPlayed).toFixed(4)) : 0;
-  const avgGoalsAgainst = matchesPlayed > 0 ? parseFloat((goalsAgainst / matchesPlayed).toFixed(4)) : 0;
+  const avgGoalsFor = weightSum > 0 ? parseFloat((weightedGoalsFor / weightSum).toFixed(4)) : 0;
+  const avgGoalsAgainst = weightSum > 0 ? parseFloat((weightedGoalsAgainst / weightSum).toFixed(4)) : 0;
 
   return {
     goalsFor,
@@ -135,11 +145,22 @@ export async function runBacktest() {
     enrichedA.crowd_factor = crowd_factor;
     enrichedB.crowd_factor = crowd_factor;
 
+    let normStage = "Group";
+    if (match.round) {
+      const s = match.round.toLowerCase();
+      if (s.includes("32")) normStage = "R32";
+      else if (s.includes("16")) normStage = "R16";
+      else if (s.includes("quarter") || s === "qf") normStage = "QF";
+      else if (s.includes("semi") || s === "sf") normStage = "SF";
+      else if (s.includes("final")) normStage = "Final";
+    }
+
     // Run prediction using blind versions
     const options = {
       staleData: !enrichedA.hasLiveData && !enrichedB.hasLiveData,
       injureKeyA: false,
-      injureKeyB: false
+      injureKeyB: false,
+      stage: normStage
     };
 
     const prediction = runPrediction(enrichedA, enrichedB, options);

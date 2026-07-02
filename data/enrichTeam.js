@@ -4,6 +4,7 @@ import fs from 'fs';
 import { getTeamForm, getTeamStats, getH2HResults, getFixture, STADIUM_CAPACITIES } from './openFootballLayer.js';
 import { TEAMS } from './index.js';
 import { getCompletedFixtures } from './scrapedAdapter.js';
+import { STAGE_LAMBDA_MODIFIERS } from '../engine.js';
 
 export async function enrichTeamWithLiveData(teamObject) {
   if (!teamObject) return null;
@@ -105,11 +106,12 @@ export function getTournamentAvgGoalsAgainst() {
   return totalGoals / (2 * completed.length);
 }
 
-export function getLambdaOverride(enrichedTeam, P_dynamic, isHome, opponentTeam = null) {
+export function getLambdaOverride(enrichedTeam, P_dynamic, isHome, opponentTeam = null, options = {}) {
   if (!enrichedTeam) {
     const defaultLambda = Math.max(0.1, 1.8 * P_dynamic + 0.27);
     const residual_adj = isHome ? 0.54 * 0.65 : -0.27 * 0.3;
-    return Math.max(0.1, defaultLambda + residual_adj);
+    const stageMod = STAGE_LAMBDA_MODIFIERS[options.stage] ?? 1.0;
+    return Math.max(0.1, defaultLambda + residual_adj) * stageMod;
   }
   
   let lambda;
@@ -137,7 +139,8 @@ export function getLambdaOverride(enrichedTeam, P_dynamic, isHome, opponentTeam 
   }
 
   const residual_adj = isHome ? 0.54 * 0.65 : -0.27 * 0.3;
-  return Math.max(0.1, lambda + residual_adj);
+  const stageMod = STAGE_LAMBDA_MODIFIERS[options.stage] ?? 1.0;
+  return Math.max(0.1, lambda + residual_adj) * stageMod;
 }
 
 // Poisson probability helpers

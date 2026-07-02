@@ -125,7 +125,7 @@
 
             <!-- UPCOMING FIXTURES -->
             <div class="margin-top-md">
-              <div style="font-family:var(--font-data);font-size:9px;letter-spacing:0.12em;color:#444;margin-bottom:6px;text-transform:uppercase;">UPCOMING FIXTURES</div>
+              <div style="font-family:var(--font-data);font-size:9px;letter-spacing:0.12em;color:var(--text-secondary);margin-bottom:6px;text-transform:uppercase;">UPCOMING FIXTURES</div>
               <div id="quick-fixture-list" style="display:flex;flex-direction:column;gap:3px;max-height:200px;overflow-y:auto;scrollbar-width:thin;"></div>
             </div>
 
@@ -154,14 +154,18 @@
 
           <!-- EVENTS PANE -->
           <div id="exp-pane-events" style="padding:8px 10px;">
-            <div style="font-family:var(--font-data);font-size:8px;letter-spacing:0.14em;color:#333;margin-bottom:6px;text-transform:uppercase;">MATCH TIMELINE</div>
+            <div style="font-family:var(--font-data);font-size:8px;letter-spacing:0.14em;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;">MATCH TIMELINE</div>
             <div id="exp-timeline-container"></div>
-            <div id="exp-no-events" style="font-family:var(--font-data);font-size:9px;color:#333;padding:10px 0;">— No match event data available for this fixture</div>
+            <div id="exp-no-events" style="font-family:var(--font-data);font-size:9px;color:var(--text-muted);padding:10px 0;">— No match event data available for this fixture</div>
           </div>
 
           <!-- CONDITIONS PANE -->
           <div id="exp-pane-conditions" class="hidden" style="padding:8px 10px;">
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);border-left:1px solid var(--border-color);border-top:1px solid var(--border-color);">
+            <div id="exp-weather-indicator" class="hidden" style="display:flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--font-data);font-size:8px;letter-spacing:0.1em;color:var(--text-secondary);text-transform:uppercase;">
+               <div id="exp-weather-dot" style="width:6px;height:6px;border-radius:50%;"></div>
+               <span id="exp-weather-lbl"></span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);border-left:1px solid rgba(141, 255, 47, 0.15);border-top:1px solid rgba(141, 255, 47, 0.15);background-color:#111;">
               <div class="exp-cond-cell" id="exp-cond-temp"><div class="exp-cond-lbl">TEMPERATURE</div><div class="exp-cond-val" id="exp-cond-temp-val">—</div></div>
               <div class="exp-cond-cell" id="exp-cond-humidity"><div class="exp-cond-lbl">HUMIDITY</div><div class="exp-cond-val" id="exp-cond-humidity-val">—</div></div>
               <div class="exp-cond-cell" id="exp-cond-wind"><div class="exp-cond-lbl">WIND</div><div class="exp-cond-val" id="exp-cond-wind-val">—</div></div>
@@ -172,11 +176,11 @@
 
           <!-- GOAL MAP PANE -->
           <div id="exp-pane-goals" class="hidden" style="padding:8px 10px;">
-            <div style="font-family:var(--font-data);font-size:8px;letter-spacing:0.14em;color:#333;margin-bottom:6px;text-transform:uppercase;">GOAL POSITIONS</div>
+            <div style="font-family:var(--font-data);font-size:8px;letter-spacing:0.14em;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;">GOAL POSITIONS</div>
             <div id="exp-goal-pitch" style="width:100%;height:100px;background:#050505;border:1px solid var(--border-color);position:relative;overflow:hidden;">
               <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:#111;transform:translateX(-50%);"></div>
             </div>
-            <div id="exp-no-goals" style="font-family:var(--font-data);font-size:9px;color:#333;padding:10px 0;">— No goal position data available</div>
+            <div id="exp-no-goals" style="font-family:var(--font-data);font-size:9px;color:var(--text-muted);padding:10px 0;">— No goal position data available</div>
           </div>
         </div>
 

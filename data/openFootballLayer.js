@@ -1,6 +1,7 @@
 import { getScrapedSquad } from './scrapedAdapter.js';
 import { getTeamCode } from './teamRegistry.js';
 import { TEAMS } from './teams.js';
+import { FORM_DECAY } from '../engine.js';
 
 // Check environment
 const isNode = typeof window === 'undefined';
@@ -142,33 +143,40 @@ function computeAll(matchesData, groupsData) {
     };
   }
 
-  for (const m of completedMatches) {
-    const t1 = m.team1Code;
-    const t2 = m.team2Code;
-    if (!t1 || !t2) continue;
-
-    const g1 = m.score.ft[0];
-    const g2 = m.score.ft[1];
-
-    if (stats[t1]) {
-      stats[t1].goalsFor += g1;
-      stats[t1].goalsAgainst += g2;
-      stats[t1].matchesPlayed += 1;
-    }
-
-    if (stats[t2]) {
-      stats[t2].goalsFor += g2;
-      stats[t2].goalsAgainst += g1;
-      stats[t2].matchesPlayed += 1;
-    }
-  }
-
-  // Compute averages
   for (const code of Object.keys(stats)) {
-    const t = stats[code];
-    if (t.matchesPlayed > 0) {
-      t.avgGoalsFor = parseFloat((t.goalsFor / t.matchesPlayed).toFixed(4));
-      t.avgGoalsAgainst = parseFloat((t.goalsAgainst / t.matchesPlayed).toFixed(4));
+    const teamMatches = completedMatches
+      .filter(m => m.team1Code === code || m.team2Code === code)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+      
+    const N = teamMatches.length;
+    let weightedGF = 0;
+    let weightedGA = 0;
+    let weightSum = 0;
+    let unweightedGF = 0;
+    let unweightedGA = 0;
+
+    for (let i = 0; i < N; i++) {
+      const m = teamMatches[i];
+      const isTeam1 = m.team1Code === code;
+      const gFor = isTeam1 ? m.score.ft[0] : m.score.ft[1];
+      const gAgainst = isTeam1 ? m.score.ft[1] : m.score.ft[0];
+      
+      unweightedGF += gFor;
+      unweightedGA += gAgainst;
+
+      const w = Math.pow(FORM_DECAY, N - 1 - i);
+      weightedGF += gFor * w;
+      weightedGA += gAgainst * w;
+      weightSum += w;
+    }
+    
+    stats[code].goalsFor = unweightedGF;
+    stats[code].goalsAgainst = unweightedGA;
+    stats[code].matchesPlayed = N;
+    
+    if (weightSum > 0) {
+      stats[code].avgGoalsFor = parseFloat((weightedGF / weightSum).toFixed(4));
+      stats[code].avgGoalsAgainst = parseFloat((weightedGA / weightSum).toFixed(4));
     }
   }
 
@@ -545,6 +553,25 @@ export const STADIUM_CAPACITIES = {
   "Estadio Akron": 49850,
   "Estadio BBVA": 53500,
   "Commonwealth Stadium": 56302
+};
+
+export const VENUE_COORDINATES = {
+  "Mexico City Stadium": { lat: 19.3029, lon: -99.1505 },
+  "Guadalajara Stadium": { lat: 20.6817, lon: -103.4628 },
+  "Monterrey Stadium": { lat: 25.6698, lon: -100.2444 },
+  "Toronto Stadium": { lat: 43.6332, lon: -79.4186 },
+  "BC Place Vancouver": { lat: 49.2768, lon: -123.1120 },
+  "New York/New Jersey Stadium": { lat: 40.8136, lon: -74.0745 },
+  "Boston Stadium": { lat: 42.0909, lon: -71.2643 },
+  "Philadelphia Stadium": { lat: 39.9008, lon: -75.1675 },
+  "Miami Stadium": { lat: 25.9580, lon: -80.2389 },
+  "Atlanta Stadium": { lat: 33.7554, lon: -84.4006 },
+  "Dallas Stadium": { lat: 32.7473, lon: -97.0945 },
+  "Houston Stadium": { lat: 29.6847, lon: -95.4107 },
+  "Kansas City Stadium": { lat: 39.0489, lon: -94.4839 },
+  "Los Angeles Stadium": { lat: 33.9535, lon: -118.3390 },
+  "San Francisco Bay Area Stadium": { lat: 37.4032, lon: -121.9698 },
+  "Seattle Stadium": { lat: 47.5952, lon: -122.3316 }
 };
 
 export function getAttendanceFactor(venueNameFromFixture) {
