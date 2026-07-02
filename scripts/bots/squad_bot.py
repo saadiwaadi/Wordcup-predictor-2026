@@ -28,15 +28,15 @@ def run_squad_bot():
         os.makedirs(os.path.dirname(squads_path), exist_ok=True)
 
         if not os.path.exists(fixtures_path):
-            print(f"Warning: fixtures.json not found at {fixtures_path}. Skipping squad update.", file=sys.stderr)
-            sys.exit(0)
+            print(f"FATAL ERROR: fixtures.json not found at {fixtures_path}. Skipping squad update.", file=sys.stderr)
+            sys.exit(1)
 
         try:
             with open(fixtures_path, "r", encoding="utf-8") as f:
                 fixtures_data = json.load(f)
         except Exception as e:
-            print(f"Warning: failed to load fixtures.json: {e}", file=sys.stderr)
-            sys.exit(0)
+            print(f"FATAL ERROR: failed to load fixtures.json: {e}", file=sys.stderr)
+            sys.exit(1)
 
         from datetime import datetime, timezone
         now = datetime.now(timezone.utc)

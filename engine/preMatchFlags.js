@@ -1,6 +1,11 @@
+import { getScrapedInjuries } from '../data/scrapedAdapter.js';
+
 export function runPreMatchFlags(teamId) {
   const teamData = JSON.parse(localStorage.getItem(`oracle26_team_${teamId}`));
-  const injuryData = JSON.parse(localStorage.getItem(`oracle26_injuries_${teamId}`));
+  let injuryData = getScrapedInjuries(teamId);
+  if (!injuryData) {
+    injuryData = JSON.parse(localStorage.getItem(`oracle26_injuries_${teamId}`));
+  }
   const flags = { critical: [], warning: [], info: [] };
 
   if (!teamData) {

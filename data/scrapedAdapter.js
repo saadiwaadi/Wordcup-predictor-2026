@@ -5,15 +5,20 @@ let _squads = null;
 let _fixtures = null;
 let _lineups = null;
 let _matchEvents = null;
+let _injuries = null;
 let _fetchPromise = null;
 
 async function performFetch() {
   try {
-    const [squadsRes, fixturesRes, lineupsRes, matchEventsRes] = await Promise.all([
+    const [squadsRes, fixturesRes, lineupsRes, matchEventsRes, injuriesRes] = await Promise.all([
       fetch('/data/scraped/squads.json'),
       fetch('/data/scraped/fixtures.json'),
       fetch('/data/scraped/lineups.json'),
-      fetch('/data/scraped/match_events.json')
+      fetch('/data/scraped/match_events.json'),
+      fetch('/data/scraped/injuries.json').catch(err => {
+        console.warn("Failed to fetch injuries:", err);
+        return { ok: false };
+      })
     ]);
 
     if (squadsRes.ok) {
@@ -38,6 +43,12 @@ async function performFetch() {
       _matchEvents = await matchEventsRes.json();
     } else {
       console.warn(`Failed to fetch match events: ${matchEventsRes.statusText}`);
+    }
+
+    if (injuriesRes && injuriesRes.ok) {
+      _injuries = await injuriesRes.json();
+    } else {
+      console.warn(`Failed to fetch injuries: ${injuriesRes ? injuriesRes.statusText : 'unknown'}`);
     }
   } catch (error) {
     console.warn("Failed loading scraped data from browser:", error);
@@ -108,6 +119,11 @@ export function getFixtureByTeams(teamA, teamB) {
 
     return match1 || match2;
   }) || null;
+}
+
+export function getScrapedInjuries(teamId) {
+  if (!_injuries) return null;
+  return _injuries[teamId] || null;
 }
 
 // Auto-trigger fetch at module load in browser context

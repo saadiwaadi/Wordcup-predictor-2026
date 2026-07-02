@@ -641,10 +641,45 @@ document.addEventListener("DOMContentLoaded", () => {
     // Set staleData dynamically based on team live data
     const staleData = !(enrichedA.hasLiveData || enrichedB.hasLiveData);
 
+    const getKeyInjuries = (team) => {
+      if (!team.injuries) return 0;
+      const realInjured = team.injuries.filter(name => name !== "lineup_absence");
+      const norm = (s) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\./g, '').trim();
+      const parts = (s) => norm(s).split(/\s+/).filter(Boolean);
+      let keyCount = 0;
+      for (const name of realInjured) {
+        const p = team.players.find(sp => {
+          const spParts = parts(sp.name);
+          const nameParts = parts(name);
+          if (spParts.length === 0 || nameParts.length === 0) return false;
+          const spLast = spParts[spParts.length - 1];
+          const nameLast = nameParts[nameParts.length - 1];
+          if (spLast !== nameLast) return false;
+          if (spParts.length === 1 || nameParts.length === 1) return true;
+          const spFirstInitial = spParts[0][0];
+          const nameFirstInitial = nameParts[0][0];
+          return spFirstInitial === nameFirstInitial;
+        });
+        if (p) {
+          if (p.is_starter) {
+            keyCount++;
+          }
+        } else {
+          console.warn(`[INJURY] No match found in squad for injured player: ${name} (${team.name})`);
+        }
+      }
+      return keyCount;
+    };
+
+    const hasAbsenceA = !!(enrichedA.injuries && enrichedA.injuries.includes("lineup_absence"));
+    const hasAbsenceB = !!(enrichedB.injuries && enrichedB.injuries.includes("lineup_absence"));
+    const keyInjuriesA = getKeyInjuries(enrichedA);
+    const keyInjuriesB = getKeyInjuries(enrichedB);
+
     const options = {
       staleData,
-      injureKeyA: !!(enrichedA.injuries && enrichedA.injuries.includes("lineup_absence")),
-      injureKeyB: !!(enrichedB.injuries && enrichedB.injuries.includes("lineup_absence")),
+      injureKeyA: hasAbsenceA || keyInjuriesA > 0,
+      injureKeyB: hasAbsenceB || keyInjuriesB > 0,
       stage: stageSelect.value
     };
 
@@ -799,6 +834,10 @@ document.addEventListener("DOMContentLoaded", () => {
     typewriterLines(engineNotesConsole, prefixedDrivers);
 
     // Update Squad Analysis
+    if (squadTeamASelect && squadTeamBSelect) {
+      squadTeamASelect.value = teamAId;
+      squadTeamBSelect.value = teamBId;
+    }
     renderSquadAnalysis();
     renderPreMatchFlags();
 

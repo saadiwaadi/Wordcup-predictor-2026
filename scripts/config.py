@@ -46,6 +46,30 @@ def is_placeholder(name):
     return bool(re.match(r'^[WL]\d+', name))
 # pragma: no mutate end
 
+TEAM_CODE_MAP = {
+    "brazil": "BRA", "france": "FRA", "england": "ENG", "germany": "GER", "spain": "ESP",
+    "argentina": "ARG", "portugal": "POR", "netherlands": "NED", "belgium": "BEL", "croatia": "CRO",
+    "senegal": "SEN", "morocco": "MAR", "japan": "JPN", "united states": "USA", "usa": "USA",
+    "mexico": "MEX", "canada": "CAN", "colombia": "COL", "uruguay": "URU", "switzerland": "SUI",
+    "serbia": "SRB", "denmark": "DEN", "austria": "AUT", "turkey": "TUR", "south korea": "KOR",
+    "poland": "POL", "australia": "AUS", "iran": "IRN", "ecuador": "ECU", "nigeria": "NGR",
+    "ghana": "GHA", "cameroon": "CMR", "egypt": "EGY", "algeria": "ALG", "ivory coast": "CIV",
+    "saudi arabia": "SAU", "qatar": "QAT", "costa rica": "CRI", "panama": "PAN", "venezuela": "VEN",
+    "chile": "CHI", "romania": "ROU", "ukraine": "UKR", "south africa": "RSA", "czech republic": "CZE",
+    "paraguay": "PAR", "scotland": "SCO", "sweden": "SWE", "tunisia": "TUN", "dr congo": "COD",
+    "bosnia & herzegovina": "BIH", "cape verde": "CPV", "haiti": "HAI", "iraq": "IRQ",
+    "norway": "NOR", "jordan": "JOR", "uzbekistan": "UZB", "curacao": "CUW", "curaçao": "CUW",
+    "bosnia and herzegovina": "BIH", "côte d'ivoire": "CIV", "cabo verde": "CPV", "türkiye": "TUR",
+    "ir iran": "IRN", "congo dr": "COD", "czechia": "CZE", "turkiye": "TUR"
+}
+
+def get_team_code(name):
+    if not name:
+        return None
+    name_norm = normalize_team_name(name).lower()
+    return TEAM_CODE_MAP.get(name_norm)
+
+
 def get_match_outcome(team, match):
     result = match.get("result")
     if not result:

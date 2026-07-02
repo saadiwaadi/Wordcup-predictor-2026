@@ -66,13 +66,15 @@ export async function enrichMatchup(teamAObject, teamBObject) {
   const lineupResult = getLineupAbsences(enrichedA.id, enrichedB.id);
   if (lineupResult && lineupResult.hasData) {
     if (lineupResult.homeAbsences) {
-      if (!enrichedA.injuries || enrichedA.injuries.length === 0) {
-        enrichedA.injuries = ["lineup_absence"];
+      if (!enrichedA.injuries) enrichedA.injuries = [];
+      if (!enrichedA.injuries.includes("lineup_absence")) {
+        enrichedA.injuries.push("lineup_absence");
       }
     }
     if (lineupResult.awayAbsences) {
-      if (!enrichedB.injuries || enrichedB.injuries.length === 0) {
-        enrichedB.injuries = ["lineup_absence"];
+      if (!enrichedB.injuries) enrichedB.injuries = [];
+      if (!enrichedB.injuries.includes("lineup_absence")) {
+        enrichedB.injuries.push("lineup_absence");
       }
     }
     console.log(`[LINEUP] Data found for ${enrichedA.id} vs ${enrichedB.id} — homeAbsences: ${lineupResult.homeAbsences}, awayAbsences: ${lineupResult.awayAbsences}`);

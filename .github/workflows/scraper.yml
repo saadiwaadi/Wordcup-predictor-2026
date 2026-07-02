@@ -65,11 +65,66 @@ jobs:
                   print(f'{f}: NOT FOUND')
           "
 
+      - name: Check if injuries.json should be committed
+        id: check_injuries
+        run: |
+          python -c "
+          import json, os, subprocess, time
+          new_path = 'public/data/scraped/injuries.json'
+          if not os.path.exists(new_path):
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write('should_commit=true\n')
+              exit(0)
+          try:
+              old_content = subprocess.check_output(['git', 'show', 'HEAD:' + new_path]).decode('utf-8')
+              old_data = json.loads(old_content)
+          except Exception:
+              old_data = None
+          if not old_data:
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write('should_commit=true\n')
+              exit(0)
+          with open(new_path, 'r') as f:
+              new_data = json.load(f)
+          def normalize(data):
+              if not isinstance(data, dict):
+                  return {}
+              res = {}
+              for code, info in data.items():
+                  res[code] = {
+                      'team_id': info.get('team_id'),
+                      'team_name': info.get('team_name'),
+                      'injured_players': sorted(info.get('injured_players', []))
+                  }
+              return res
+          if normalize(old_data) != normalize(new_data):
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write('should_commit=true\n')
+              exit(0)
+          try:
+              last_commit_time_str = subprocess.check_output(['git', 'log', '-1', '--format=%ct', '--', new_path]).decode('utf-8').strip()
+              if last_commit_time_str:
+                  last_commit_time = int(last_commit_time_str)
+                  if time.time() - last_commit_time > 86400:
+                      with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                          f.write('should_commit=true\n')
+                      exit(0)
+          except Exception:
+              pass
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write('should_commit=false\n')
+          "
+
       - name: Commit and push changes
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
-          git add public/data/scraped/
+          git add public/data/scraped/fixtures.json public/data/scraped/squads.json public/data/scraped/lineups.json public/data/scraped/match_events.json 2>/dev/null || true
+          if [ "${{ steps.check_injuries.outputs.should_commit }}" = "true" ]; then
+            git add public/data/scraped/injuries.json
+          else
+            git checkout -- public/data/scraped/injuries.json 2>/dev/null || true
+          fi
           if git diff --cached --quiet; then
             echo "No changes detected."
           else

@@ -32,8 +32,8 @@ def run_lineup_bot():
         url = f"https://api.fifa.com/api/v3/calendar/matches?idCompetition={ID_COMPETITION}&idSeason={ID_SEASON}&count=104&language=en-GB"
         r = requests.get(url, headers=headers, timeout=15)
         if r.status_code != 200:
-            print(f"Calendar fetch failed: Status {r.status_code}")
-            sys.exit(0)
+            print(f"Calendar fetch failed: Status {r.status_code}", file=sys.stderr)
+            sys.exit(1)
 
         data = r.json()
         matches = data.get("Results", [])
@@ -150,8 +150,8 @@ def run_lineup_bot():
         sys.exit(0)
 
     except Exception as e:
-        print(f"Error in lineup bot: {e}")
-        sys.exit(0)
+        print(f"Error in lineup bot: {e}", file=sys.stderr)
+        sys.exit(1)
 
 if __name__ == "__main__":
     run_lineup_bot()

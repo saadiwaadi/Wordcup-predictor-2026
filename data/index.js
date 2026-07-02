@@ -4,7 +4,7 @@ import { FORM as form } from './form.js';
 import { H2H as h2h } from './h2h.js';
 import { TOURNAMENT as tournament } from './tournament.js';
 import { simpleHash } from './deltaSync.js';
-import { getScrapedSquad, getCompletedFixtures, normalizeName } from './scrapedAdapter.js';
+import { getScrapedSquad, getCompletedFixtures, normalizeName, getScrapedInjuries } from './scrapedAdapter.js';
 const WC_48_TEAMS = new Set([
   "BRA", "FRA", "ENG", "GER", "ESP", "ARG", "POR", "NED", "BEL", "CRO",
   "SEN", "MAR", "JPN", "USA", "MEX", "CAN", "COL", "URU", "SUI", "SRB",
@@ -86,11 +86,17 @@ export function getTeamData(teamId) {
   let squad = team.players || [];
   let injuries = team.injuries || [];
   
-  if (typeof localStorage !== 'undefined') {
+  const scrapedInjuries = getScrapedInjuries(teamId);
+  if (scrapedInjuries && scrapedInjuries.injured_players) {
+    injuries = scrapedInjuries.injured_players;
+  } else if (typeof localStorage !== 'undefined') {
     const cachedTeam = JSON.parse(localStorage.getItem(`oracle26_team_${teamId}`) || 'null');
     const cachedInjuries = JSON.parse(localStorage.getItem(`oracle26_injuries_${teamId}`) || 'null');
     if (cachedTeam) squad = cachedTeam.squad;
     if (cachedInjuries) injuries = cachedInjuries.injured_players;
+  } else if (typeof localStorage !== 'undefined') {
+    const cachedTeam = JSON.parse(localStorage.getItem(`oracle26_team_${teamId}`) || 'null');
+    if (cachedTeam) squad = cachedTeam.squad;
   }
   
   const baseTeam = {
