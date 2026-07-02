@@ -96,6 +96,28 @@ export function getLineup(matchId) {
   return _lineups[matchId] || _lineups[String(matchId)] || null;
 }
 
+export function getLineupByTeams(codeA, codeB) {
+  if (!_lineups) return { hasData: false };
+  for (const key of Object.keys(_lineups)) {
+    const entry = _lineups[key];
+    if (
+      (entry.home === codeA && entry.away === codeB) ||
+      (entry.home === codeB && entry.away === codeA)
+    ) {
+      return {
+        hasData: true,
+        homeStarters: entry.home_starters || [],
+        awayStarters: entry.away_starters || [],
+        homeSubs: entry.home_subs || [],
+        awaySubs: entry.away_subs || [],
+        homeCode: entry.home,
+        awayCode: entry.away
+      };
+    }
+  }
+  return { hasData: false };
+}
+
 export function getMatchEvents(matchId) {
   if (!_matchEvents) return null;
   return _matchEvents[matchId] || _matchEvents[String(matchId)] || null;

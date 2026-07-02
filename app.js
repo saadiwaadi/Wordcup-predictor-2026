@@ -7,7 +7,7 @@ import { runPreMatchFlags } from './engine/preMatchFlags.js';
 import { deltaUpdateTeam } from './data/deltaSync.js';
 import { enrichMatchup, getLambdaOverride, recomputeScorelines } from './data/enrichTeam.js';
 import { getTeamForm, getTeamSquad, getTopScorers, getTeamCleanSheets } from './data/openFootballLayer.js';
-import { normalizeName, getCompletedFixtures, getUpcomingFixtures, getMatchEvents, initScrapedData } from './data/scrapedAdapter.js';
+import { normalizeName, getCompletedFixtures, getUpcomingFixtures, getMatchEvents, initScrapedData, getLineupByTeams } from './data/scrapedAdapter.js';
 
 
 
@@ -173,19 +173,99 @@ document.addEventListener("DOMContentLoaded", () => {
     selectedPlayer: null
   };
 
+  function matchPlayerInLineup(player, lineupList) {
+    const norm = (s) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\./g, '').trim();
+    const parts = (s) => norm(s).split(/\s+/).filter(Boolean);
+    
+    const spParts = parts(player.name);
+    if (spParts.length === 0) return false;
+
+    return lineupList.some(lp => {
+      const lpParts = parts(lp.name);
+      if (lpParts.length === 0) return false;
+      
+      const spLast = spParts[spParts.length - 1];
+      const lpLast = lpParts[lpParts.length - 1];
+      if (spLast !== lpLast) return false;
+      
+      if (spParts.length === 1 || lpParts.length === 1) return true;
+      
+      const spFirstInitial = spParts[0][0];
+      const lpFirstInitial = lpParts[0][0];
+      return spFirstInitial === lpFirstInitial;
+    });
+  }
+
   function initializeLineupState(teamCode, rawSquad, teamKey) {
-    const players = rawSquad.map(p => ({
-      ...p,
-      isStarter: p.starter !== undefined ? p.starter : false
-    }));
+    const teamAId = squadTeamASelect.value;
+    const teamBId = squadTeamBSelect.value;
+    const lineupData = getLineupByTeams(teamAId, teamBId);
+    
+    let hasConfirmed = false;
+    let startersList = [];
+    let subsList = [];
+    
+    if (lineupData && lineupData.hasData) {
+      if (lineupData.homeCode === teamCode) {
+        startersList = lineupData.homeStarters || [];
+        subsList = lineupData.homeSubs || [];
+        hasConfirmed = startersList.length > 0;
+      } else if (lineupData.awayCode === teamCode) {
+        startersList = lineupData.awayStarters || [];
+        subsList = lineupData.awaySubs || [];
+        hasConfirmed = startersList.length > 0;
+      }
+    }
+    
+    const players = rawSquad.map(p => {
+      let isStarter = p.starter !== undefined ? p.starter : false;
+      let matchedNumber = p.number;
+      let isCaptain = undefined;
+      
+      if (hasConfirmed) {
+        const matchedStarter = startersList.find(s => matchPlayerInLineup(p, [s]));
+        if (matchedStarter) {
+          isStarter = true;
+          if (matchedStarter.shirt) {
+            matchedNumber = matchedStarter.shirt;
+          }
+          if (matchedStarter.captain !== undefined) {
+            isCaptain = matchedStarter.captain;
+          }
+        } else {
+          isStarter = false;
+          const matchedSub = subsList.find(s => matchPlayerInLineup(p, [s]));
+          if (matchedSub) {
+            if (matchedSub.shirt) {
+              matchedNumber = matchedSub.shirt;
+            }
+            if (matchedSub.captain !== undefined) {
+              isCaptain = matchedSub.captain;
+            }
+          }
+        }
+      }
+      
+      return {
+        ...p,
+        number: matchedNumber,
+        isStarter: isStarter,
+        captain: isCaptain
+      };
+    });
+    
     lineupState[teamKey] = {
       code: teamCode,
       formation: lineupState[teamKey].formation || '4-3-3',
       players: players,
       starters: players.filter(p => p.isStarter),
-      bench: players.filter(p => !p.isStarter)
+      bench: players.filter(p => !p.isStarter),
+      hasConfirmedLineup: hasConfirmed
     };
-    adjustStartersForFormation(lineupState[teamKey], lineupState[teamKey].formation);
+    
+    if (!hasConfirmed) {
+      adjustStartersForFormation(lineupState[teamKey], lineupState[teamKey].formation);
+    }
   }
 
   function adjustStartersForFormation(teamState, targetFormation) {
@@ -193,6 +273,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!formation) return;
 
     teamState.formation = targetFormation;
+
+    if (teamState.hasConfirmedLineup) {
+      return;
+    }
 
     const gkSlots = formation.slots.filter(s => s.pos === "GK");
     const dfSlots = formation.slots.filter(s => s.pos === "DF");
@@ -378,10 +462,68 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function resetTeamLineup(teamState) {
-    teamState.players.sort((a, b) => a.number - b.number);
-    teamState.players.forEach((p, idx) => {
-      p.isStarter = idx < 11;
-    });
+    const teamAId = squadTeamASelect.value;
+    const teamBId = squadTeamBSelect.value;
+    const lineupData = getLineupByTeams(teamAId, teamBId);
+    
+    let hasConfirmed = false;
+    let startersList = [];
+    let subsList = [];
+    
+    if (lineupData && lineupData.hasData) {
+      if (lineupData.homeCode === teamState.code) {
+        startersList = lineupData.homeStarters || [];
+        subsList = lineupData.homeSubs || [];
+        hasConfirmed = startersList.length > 0;
+      } else if (lineupData.awayCode === teamState.code) {
+        startersList = lineupData.awayStarters || [];
+        subsList = lineupData.awaySubs || [];
+        hasConfirmed = startersList.length > 0;
+      }
+    }
+    
+    if (hasConfirmed) {
+      teamState.players.forEach(p => {
+        let isStarter = false;
+        let matchedNumber = p.number;
+        let isCaptain = undefined;
+        
+        const matchedStarter = startersList.find(s => matchPlayerInLineup(p, [s]));
+        if (matchedStarter) {
+          isStarter = true;
+          if (matchedStarter.shirt) {
+            matchedNumber = matchedStarter.shirt;
+          }
+          if (matchedStarter.captain !== undefined) {
+            isCaptain = matchedStarter.captain;
+          }
+        } else {
+          isStarter = false;
+          const matchedSub = subsList.find(s => matchPlayerInLineup(p, [s]));
+          if (matchedSub) {
+            if (matchedSub.shirt) {
+              matchedNumber = matchedSub.shirt;
+            }
+            if (matchedSub.captain !== undefined) {
+              isCaptain = matchedSub.captain;
+            }
+          }
+        }
+        
+        p.isStarter = isStarter;
+        p.number = matchedNumber;
+        p.captain = isCaptain;
+      });
+      teamState.hasConfirmedLineup = true;
+    } else {
+      teamState.players.sort((a, b) => a.number - b.number);
+      teamState.players.forEach((p, idx) => {
+        p.isStarter = idx < 11;
+        p.captain = undefined;
+      });
+      teamState.hasConfirmedLineup = false;
+    }
+    
     teamState.starters = teamState.players.filter(p => p.isStarter);
     teamState.bench = teamState.players.filter(p => !p.isStarter);
     teamState.formation = '4-3-3';
@@ -1184,7 +1326,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // Add starting XI section header symbol (Requirement 2 & 3)
     const startingHeader = document.createElement("div");
     startingHeader.className = "tactical-divider";
-    startingHeader.innerHTML = `${TACTICAL_ICONS.empty} STARTING XI`;
+    const teamState = side === 'a' ? lineupState.teamA : lineupState.teamB;
+    if (teamState.hasConfirmedLineup) {
+      startingHeader.innerHTML = `${TACTICAL_ICONS.active} STARTING XI <span class="lineup-status-badge confirmed-status">CONFIRMED LINEUP</span>`;
+    } else {
+      startingHeader.innerHTML = `${TACTICAL_ICONS.empty} STARTING XI <span class="lineup-status-badge projected-status">PROJECTED</span>`;
+    }
     container.appendChild(startingHeader);
 
     // Modified Section: 1. Independent formations, 2. Separate formation controls
@@ -1232,7 +1379,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let hasBenchPlayers = false;
 
     function buildPlayerRow(player, idx) {
-      const isCaptain = player.number === CAPTAINS_MAP[teamCode];
+      const isCaptain = player.captain !== undefined ? player.captain : (player.number === CAPTAINS_MAP[teamCode]);
       const verified = isPlayerVerified(teamCode, player.name);
 
       const row = document.createElement("div");

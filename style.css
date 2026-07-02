@@ -2428,3 +2428,29 @@ body {
   #exp-pane-conditions > div { grid-template-columns: repeat(2,1fr) !important; }
   .exp-cond-val { font-size:14px; }
 }
+
+/* Lineup Status Badges */
+.lineup-status-badge {
+  font-family: var(--font-data);
+  font-size: 8px;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  padding: 1px 4px;
+  margin-left: 8px;
+  border-radius: 0;
+  text-transform: uppercase;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.confirmed-status {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid var(--accent-green);
+  color: var(--accent-green);
+}
+
+.projected-status {
+  background: rgba(163, 163, 163, 0.1);
+  border: 1px solid #444;
+  color: #888;
+}
