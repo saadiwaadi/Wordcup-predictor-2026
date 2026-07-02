@@ -2251,9 +2251,9 @@
     "attendance": null
   },
   {
-    "match_id": "523d3e48f133",
+    "match_id": "8a3f94bf61d8",
     "home_team": "Mexico",
-    "away_team": "W80",
+    "away_team": "England",
     "kickoff_utc": "2026-07-06T00:00:00Z",
     "stage": "Round of 16",
     "venue": "Mexico City Stadium",
@@ -2273,9 +2273,9 @@
     "attendance": null
   },
   {
-    "match_id": "a63765b1966b",
-    "home_team": "W81",
-    "away_team": "W82",
+    "match_id": "bcf9aab40a34",
+    "home_team": "USA",
+    "away_team": "Belgium",
     "kickoff_utc": "2026-07-07T00:00:00Z",
     "stage": "Round of 16",
     "venue": "Seattle Stadium",
