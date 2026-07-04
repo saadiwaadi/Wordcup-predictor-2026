@@ -2326,7 +2326,16 @@
     "kickoff_utc": "2026-07-04T17:00:00Z",
     "stage": "Round of 16",
     "venue": "Houston Stadium",
-    "result": null,
+    "result": {
+      "ft": [
+        0,
+        3
+      ],
+      "ht": [
+        0,
+        0
+      ]
+    },
     "weather": {
       "Humidity": null,
       "Temperature": null,
