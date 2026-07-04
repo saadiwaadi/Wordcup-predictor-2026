@@ -36,7 +36,7 @@ def scrape_injuries():
             print(f"Active (gap window — placeholder unresolved): {', '.join(gap_names)}")
 
     # Transfermarkt absences page for World Cup
-    url = "https://www.transfermarkt.com/weltmeisterschaft2026/ausfalle/pokalwettbewerb/WM26"
+    url = "https://www.transfermarkt.com/weltmeisterschaft-2026/ausfalle/pokalwettbewerb/WM26"
     
     print(f"Fetching Transfermarkt absences: {url}")
     try:

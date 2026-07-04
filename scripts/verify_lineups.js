@@ -53,7 +53,7 @@ if (Array.isArray(squads)) {
   const t = squads.find(x => x.id === 'BRA' || x.code === 'BRA');
   braSquad = t ? t.squad : [];
 } else {
-  braSquad = squads['BRA'] || [];
+  braSquad = squads['Brazil'] || squads['BRA'] || [];
 }
 const starters = [];
 
@@ -70,8 +70,8 @@ braSquad.forEach(p => {
 });
 
 // Sort by formation order (GK, DF, MF, FW)
-const order = { 'GOALKEEPERS': 1, 'DEFENDERS': 2, 'MIDFIELDERS': 3, 'FORWARDS': 4 };
-starters.sort((a, b) => order[a.posGroup] - order[b.posGroup]);
+const order = { 'GK': 1, 'DF': 2, 'MF': 3, 'FW': 4 };
+starters.sort((a, b) => order[a.position] - order[b.position]);
 
 starters.forEach(p => {
   const badge = p.captain ? "[CAPTAIN]" : "";

@@ -36,10 +36,6 @@ jobs:
         continue-on-error: true
         run: python scripts/bots/squad_bot.py
 
-      - name: Run Injury Bot
-        continue-on-error: true
-        run: python scripts/bots/injury_bot.py
-
       - name: Run Lineup Bot
         continue-on-error: true
         run: python scripts/bots/lineup_bot.py
@@ -47,6 +43,10 @@ jobs:
       - name: Run Match Bot
         continue-on-error: true
         run: python scripts/bots/match_bot.py
+
+      - name: Run Injury Bot
+        continue-on-error: true
+        run: python scripts/bots/injury_bot.py
 
       - name: Print record counts
         run: |
@@ -121,7 +121,9 @@ jobs:
           git config --global user.email "actions@github.com"
           git add public/data/scraped/fixtures.json public/data/scraped/squads.json public/data/scraped/lineups.json public/data/scraped/match_events.json 2>/dev/null || true
           if [ "${{ steps.check_injuries.outputs.should_commit }}" = "true" ]; then
-            git add public/data/scraped/injuries.json
+            if [ -f public/data/scraped/injuries.json ]; then
+              git add public/data/scraped/injuries.json
+            fi
           else
             git checkout -- public/data/scraped/injuries.json 2>/dev/null || true
           fi
