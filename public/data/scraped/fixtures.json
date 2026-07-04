@@ -2158,9 +2158,24 @@
     "kickoff_utc": "2026-07-02T19:00:00Z",
     "stage": "Round of 32",
     "venue": "Los Angeles Stadium",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "ft": [
+        3,
+        0
+      ],
+      "ht": [
+        1,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "70492"
   },
   {
     "match_id": "f58c5cd36a2b",
@@ -2169,9 +2184,24 @@
     "kickoff_utc": "2026-07-02T23:00:00Z",
     "stage": "Round of 32",
     "venue": "Toronto Stadium",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "ft": [
+        2,
+        1
+      ],
+      "ht": [
+        0,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "43036"
   },
   {
     "match_id": "5845d4a3e339",
@@ -2180,9 +2210,24 @@
     "kickoff_utc": "2026-07-03T03:00:00Z",
     "stage": "Round of 32",
     "venue": "BC Place Vancouver",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "ft": [
+        2,
+        0
+      ],
+      "ht": [
+        1,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "52497"
   },
   {
     "match_id": "65c99bf10491",
@@ -2191,9 +2236,32 @@
     "kickoff_utc": "2026-07-03T18:00:00Z",
     "stage": "Round of 32",
     "venue": "Dallas Stadium",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "p": [
+        2,
+        4
+      ],
+      "et": [
+        1,
+        1
+      ],
+      "ft": [
+        1,
+        1
+      ],
+      "ht": [
+        0,
+        1
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "70244"
   },
   {
     "match_id": "763eb4c2f662",
@@ -2202,9 +2270,28 @@
     "kickoff_utc": "2026-07-03T22:00:00Z",
     "stage": "Round of 32",
     "venue": "Miami Stadium",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "et": [
+        3,
+        2
+      ],
+      "ft": [
+        1,
+        1
+      ],
+      "ht": [
+        1,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "64478"
   },
   {
     "match_id": "816ca1cef6be",
@@ -2213,9 +2300,24 @@
     "kickoff_utc": "2026-07-04T01:30:00Z",
     "stage": "Round of 32",
     "venue": "Kansas City Stadium",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "ft": [
+        1,
+        0
+      ],
+      "ht": [
+        1,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "69045"
   },
   {
     "match_id": "2bc700a9fd3e",
@@ -2225,8 +2327,14 @@
     "stage": "Round of 16",
     "venue": "Houston Stadium",
     "result": null,
-    "weather": {},
-    "attendance": null
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "68777"
   },
   {
     "match_id": "b5747fc6a95e",
@@ -2262,9 +2370,9 @@
     "attendance": null
   },
   {
-    "match_id": "d49ec22045ea",
-    "home_team": "W83",
-    "away_team": "W84",
+    "match_id": "436715491904",
+    "home_team": "Portugal",
+    "away_team": "Spain",
     "kickoff_utc": "2026-07-06T19:00:00Z",
     "stage": "Round of 16",
     "venue": "Dallas Stadium",
@@ -2284,9 +2392,9 @@
     "attendance": null
   },
   {
-    "match_id": "0991fdff5256",
-    "home_team": "W86",
-    "away_team": "W88",
+    "match_id": "c31ca89dddde",
+    "home_team": "Argentina",
+    "away_team": "Egypt",
     "kickoff_utc": "2026-07-07T16:00:00Z",
     "stage": "Round of 16",
     "venue": "Atlanta Stadium",
@@ -2295,9 +2403,9 @@
     "attendance": null
   },
   {
-    "match_id": "cbf6567d2d18",
-    "home_team": "W85",
-    "away_team": "W87",
+    "match_id": "68cc02481f85",
+    "home_team": "Switzerland",
+    "away_team": "Colombia",
     "kickoff_utc": "2026-07-07T20:00:00Z",
     "stage": "Round of 16",
     "venue": "BC Place Vancouver",
