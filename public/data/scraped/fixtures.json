@@ -2508,8 +2508,31 @@
     "kickoff_utc": "2026-07-07T20:00:00Z",
     "stage": "Round of 16",
     "venue": "BC Place Vancouver",
-    "result": null,
-    "weather": {},
+    "result": {
+      "p": [
+        4,
+        3
+      ],
+      "et": [
+        0,
+        0
+      ],
+      "ft": [
+        0,
+        0
+      ],
+      "ht": [
+        0,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
     "attendance": "52497"
   },
   {
