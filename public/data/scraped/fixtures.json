@@ -2542,9 +2542,24 @@
     "kickoff_utc": "2026-07-09T20:00:00Z",
     "stage": "Quarter-final",
     "venue": "Boston Stadium",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "ft": [
+        2,
+        0
+      ],
+      "ht": [
+        0,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "63811"
   },
   {
     "match_id": "9b0764228057",
