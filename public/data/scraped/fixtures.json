@@ -2624,9 +2624,28 @@
     "kickoff_utc": "2026-07-12T01:00:00Z",
     "stage": "Quarter-final",
     "venue": "Kansas City Stadium",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "et": [
+        3,
+        1
+      ],
+      "ft": [
+        1,
+        1
+      ],
+      "ht": [
+        1,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "69045"
   },
   {
     "match_id": "aaa05f0fa062",
