@@ -2680,14 +2680,29 @@
     "kickoff_utc": "2026-07-15T19:00:00Z",
     "stage": "Semi-final",
     "venue": "Atlanta Stadium",
-    "result": null,
-    "weather": {},
+    "result": {
+      "ft": [
+        1,
+        2
+      ],
+      "ht": [
+        0,
+        0
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
     "attendance": null
   },
   {
-    "match_id": "4eb54ae34296",
+    "match_id": "059303447b37",
     "home_team": "France",
-    "away_team": "L102",
+    "away_team": "England",
     "kickoff_utc": "2026-07-18T21:00:00Z",
     "stage": "Match for third place",
     "venue": "Miami Stadium",
@@ -2696,9 +2711,9 @@
     "attendance": null
   },
   {
-    "match_id": "d64131a1ca1f",
+    "match_id": "0b4df1b2ec21",
     "home_team": "Spain",
-    "away_team": "W102",
+    "away_team": "Argentina",
     "kickoff_utc": "2026-07-19T19:00:00Z",
     "stage": "Final",
     "venue": "New York/New Jersey Stadium",
