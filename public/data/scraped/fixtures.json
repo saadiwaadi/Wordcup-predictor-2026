@@ -2706,9 +2706,24 @@
     "kickoff_utc": "2026-07-18T21:00:00Z",
     "stage": "Match for third place",
     "venue": "Miami Stadium",
-    "result": null,
-    "weather": {},
-    "attendance": null
+    "result": {
+      "ft": [
+        4,
+        6
+      ],
+      "ht": [
+        0,
+        4
+      ]
+    },
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
+    "attendance": "64478"
   },
   {
     "match_id": "0b4df1b2ec21",
