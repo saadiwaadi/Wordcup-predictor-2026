@@ -2733,7 +2733,13 @@
     "stage": "Final",
     "venue": "New York/New Jersey Stadium",
     "result": null,
-    "weather": {},
+    "weather": {
+      "Humidity": null,
+      "Temperature": null,
+      "WindSpeed": null,
+      "Type": null,
+      "TypeLocalized": []
+    },
     "attendance": "80663"
   }
 ]
