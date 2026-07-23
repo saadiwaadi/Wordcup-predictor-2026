@@ -1,0 +1,2290 @@
+[
+  {
+    "match_id": "1",
+    "stage": "Group Stage",
+    "teamA": "MEX",
+    "teamB": "RSA",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 67.50790058645188,
+      "draw_pct": 17.482622722106782,
+      "winB_pct": 15.009476691441325,
+      "lambda_A": 1.7425894722319006,
+      "lambda_B": 0.5974105277680994,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "2",
+    "stage": "Group Stage",
+    "teamA": "KOR",
+    "teamB": "CZE",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 29.147514966315217,
+      "draw_pct": 32.328455004189735,
+      "winB_pct": 38.52403002949506,
+      "lambda_A": 1.0452967209868738,
+      "lambda_B": 1.2947032790131265,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "3",
+    "stage": "Group Stage",
+    "teamA": "CAN",
+    "teamB": "BIH",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 1,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 46.42883047469042,
+      "draw_pct": 28.774476644311175,
+      "winB_pct": 24.79669288099841,
+      "lambda_A": 1.4433419554827016,
+      "lambda_B": 0.8966580445172986,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "4",
+    "stage": "Group Stage",
+    "teamA": "USA",
+    "teamB": "PAR",
+    "actual": {
+      "scoreA": 4,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 40.733631841450546,
+      "draw_pct": 31.486604955601514,
+      "winB_pct": 27.779763202947944,
+      "lambda_A": 1.3401635390728681,
+      "lambda_B": 0.9998364609271321,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "5",
+    "stage": "Group Stage",
+    "teamA": "QAT",
+    "teamB": "SUI",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 1,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 14.335357205211235,
+      "draw_pct": 16.80611426523726,
+      "winB_pct": 68.8585285295515,
+      "lambda_A": 0.5801627330119781,
+      "lambda_B": 1.7598372669880222,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "6",
+    "stage": "Group Stage",
+    "teamA": "BRA",
+    "teamB": "MAR",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 1,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 40.08960787312265,
+      "draw_pct": 31.7489245918265,
+      "winB_pct": 28.161467535050843,
+      "lambda_A": 1.3272916798755525,
+      "lambda_B": 1.0127083201244473,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "7",
+    "stage": "Group Stage",
+    "teamA": "HAI",
+    "teamB": "SCO",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 1,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 20.310648583055997,
+      "draw_pct": 23.464305301606217,
+      "winB_pct": 56.2250461153378,
+      "lambda_A": 0.7476747319478898,
+      "lambda_B": 1.59232526805211,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "8",
+    "stage": "Group Stage",
+    "teamA": "AUS",
+    "teamB": "TUR",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 39.72964136358514,
+      "draw_pct": 31.889887972809174,
+      "winB_pct": 28.3804706636057,
+      "lambda_A": 1.3199667718341703,
+      "lambda_B": 1.02003322816583,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "9",
+    "stage": "Group Stage",
+    "teamA": "GER",
+    "teamB": "CUW",
+    "actual": {
+      "scoreA": 7,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 68.78058767125701,
+      "draw_pct": 16.844869219928306,
+      "winB_pct": 14.374543108814683,
+      "lambda_A": 1.758844484361424,
+      "lambda_B": 0.581155515638576,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "10",
+    "stage": "Group Stage",
+    "teamA": "NED",
+    "teamB": "JPN",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 2,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 41.50934135179353,
+      "draw_pct": 31.155085250921,
+      "winB_pct": 27.335573397285472,
+      "lambda_A": 1.3552916980949257,
+      "lambda_B": 0.9847083019050742,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "11",
+    "stage": "Group Stage",
+    "teamA": "CIV",
+    "teamB": "ECU",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 30.0012630677115,
+      "draw_pct": 32.716802719752394,
+      "winB_pct": 37.2819342125361,
+      "lambda_A": 1.0726115836462218,
+      "lambda_B": 1.267388416353778,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "12",
+    "stage": "Group Stage",
+    "teamA": "SWE",
+    "teamB": "TUN",
+    "actual": {
+      "scoreA": 5,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 51.59506898591819,
+      "draw_pct": 26.006033023043067,
+      "winB_pct": 22.398897991038737,
+      "lambda_A": 1.5251175179400032,
+      "lambda_B": 0.8148824820599967,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "13",
+    "stage": "Group Stage",
+    "teamA": "ESP",
+    "teamB": "CPV",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 0,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 69.25090404611142,
+      "draw_pct": 16.61155113083968,
+      "winB_pct": 14.137544823048904,
+      "lambda_A": 1.7648308665458419,
+      "lambda_B": 0.5751691334541581,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "14",
+    "stage": "Group Stage",
+    "teamA": "BEL",
+    "teamB": "EGY",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 1,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 41.864856215514166,
+      "draw_pct": 30.998022758964243,
+      "winB_pct": 27.137121025521598,
+      "lambda_A": 1.3620953891609724,
+      "lambda_B": 0.9779046108390278,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "15",
+    "stage": "Group Stage",
+    "teamA": "SAU",
+    "teamB": "URU",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 1,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 25.231760063988297,
+      "draw_pct": 29.23370185896992,
+      "winB_pct": 45.53453807704179,
+      "lambda_A": 0.9117909274364911,
+      "lambda_B": 1.428209072563509,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "16",
+    "stage": "Group Stage",
+    "teamA": "IRN",
+    "teamB": "NZL",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 2,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 53.65812751797596,
+      "draw_pct": 24.874123480010635,
+      "winB_pct": 21.4677490020134,
+      "lambda_A": 1.5556373064300641,
+      "lambda_B": 0.7843626935699358,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "17",
+    "stage": "Group Stage",
+    "teamA": "FRA",
+    "teamB": "SEN",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 59.28419750324427,
+      "draw_pct": 21.797052811062446,
+      "winB_pct": 18.918749685693278,
+      "lambda_A": 1.6345464696877168,
+      "lambda_B": 0.7054535303122833,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "18",
+    "stage": "Group Stage",
+    "teamA": "IRQ",
+    "teamB": "NOR",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 4,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 20.795152955568284,
+      "draw_pct": 24.0534626633363,
+      "winB_pct": 55.151384381095426,
+      "lambda_A": 0.7628634883522558,
+      "lambda_B": 1.5771365116477445,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "19",
+    "stage": "Group Stage",
+    "teamA": "ARG",
+    "teamB": "ALG",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 60.86024165190989,
+      "draw_pct": 20.948221701467048,
+      "winB_pct": 18.191536646623064,
+      "lambda_A": 1.6557807797787494,
+      "lambda_B": 0.6842192202212509,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "20",
+    "stage": "Group Stage",
+    "teamA": "AUT",
+    "teamB": "JOR",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 63.609326756369825,
+      "draw_pct": 19.49010305188846,
+      "winB_pct": 16.900570191741732,
+      "lambda_A": 1.69214550635009,
+      "lambda_B": 0.6478544936499099,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "21",
+    "stage": "Group Stage",
+    "teamA": "POR",
+    "teamB": "COD",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 1,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 68.17328194308257,
+      "draw_pct": 17.14804574711274,
+      "winB_pct": 14.678672309804691,
+      "lambda_A": 1.7510985281409015,
+      "lambda_B": 0.5889014718590986,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "22",
+    "stage": "Group Stage",
+    "teamA": "ENG",
+    "teamB": "CRO",
+    "actual": {
+      "scoreA": 4,
+      "scoreB": 2,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 42.164972362163475,
+      "draw_pct": 30.863130813654283,
+      "winB_pct": 26.971896824182238,
+      "lambda_A": 1.3677782353338561,
+      "lambda_B": 0.972221764666144,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "23",
+    "stage": "Group Stage",
+    "teamA": "GHA",
+    "teamB": "PAN",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 40.43553099378196,
+      "draw_pct": 31.609574450361578,
+      "winB_pct": 27.954894555856463,
+      "lambda_A": 1.3342418906427223,
+      "lambda_B": 1.0057581093572778,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "24",
+    "stage": "Group Stage",
+    "teamA": "UZB",
+    "teamB": "COL",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 3,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 8.43166407187702,
+      "draw_pct": 11.742830407124416,
+      "winB_pct": 79.82550552099858,
+      "lambda_A": 0.4419633135686211,
+      "lambda_B": 1.8980366864313791,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "25",
+    "stage": "Group Stage",
+    "teamA": "MEX",
+    "teamB": "KOR",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 69.7003423496509,
+      "draw_pct": 16.38981091139484,
+      "winB_pct": 13.909846738954254,
+      "lambda_A": 1.7705421898569784,
+      "lambda_B": 0.5694578101430217,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "26",
+    "stage": "Group Stage",
+    "teamA": "CZE",
+    "teamB": "RSA",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 1,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 39.925788467799315,
+      "draw_pct": 31.813602943619102,
+      "winB_pct": 28.260608588581576,
+      "lambda_A": 1.323970034266732,
+      "lambda_B": 1.0160299657332679,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "27",
+    "stage": "Group Stage",
+    "teamA": "CAN",
+    "teamB": "QAT",
+    "actual": {
+      "scoreA": 6,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 61.68845909612307,
+      "draw_pct": 20.50569520303587,
+      "winB_pct": 17.805845700841058,
+      "lambda_A": 1.666819893659377,
+      "lambda_B": 0.6731801063406231,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "28",
+    "stage": "Group Stage",
+    "teamA": "SUI",
+    "teamB": "BIH",
+    "actual": {
+      "scoreA": 4,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 55.99692968859382,
+      "draw_pct": 23.589367620281426,
+      "winB_pct": 20.41370269112476,
+      "lambda_A": 1.5891158128174634,
+      "lambda_B": 0.7508841871825365,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "29",
+    "stage": "Group Stage",
+    "teamA": "BRA",
+    "teamB": "HAI",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 77.37074706081728,
+      "draw_pct": 12.804475376223525,
+      "winB_pct": 9.824777562959197,
+      "lambda_A": 1.867184549440691,
+      "lambda_B": 0.47281545055930907,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "30",
+    "stage": "Group Stage",
+    "teamA": "SCO",
+    "teamB": "MAR",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 1,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 23.082489463468402,
+      "draw_pct": 26.82479149676692,
+      "winB_pct": 50.092719039764674,
+      "lambda_A": 0.8377945014998817,
+      "lambda_B": 1.5022054985001185,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "31",
+    "stage": "Group Stage",
+    "teamA": "USA",
+    "teamB": "AUS",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 40.10696429842155,
+      "draw_pct": 31.742021601480687,
+      "winB_pct": 28.151014100097772,
+      "lambda_A": 1.3276424533945006,
+      "lambda_B": 1.0123575466054997,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "32",
+    "stage": "Group Stage",
+    "teamA": "TUR",
+    "teamB": "PAR",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 1,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 28.791890466244467,
+      "draw_pct": 32.13578433843991,
+      "winB_pct": 39.072325195315614,
+      "lambda_A": 1.0336631814577237,
+      "lambda_B": 1.3063368185422766,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "33",
+    "stage": "Group Stage",
+    "teamA": "GER",
+    "teamB": "CIV",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 42.539485849763395,
+      "draw_pct": 30.69201589901628,
+      "winB_pct": 26.768498251220336,
+      "lambda_A": 1.3747944262526501,
+      "lambda_B": 0.96520557374735,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "34",
+    "stage": "Group Stage",
+    "teamA": "ECU",
+    "teamB": "CUW",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 0,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 63.615398246895694,
+      "draw_pct": 19.48691853045329,
+      "winB_pct": 16.897683222651022,
+      "lambda_A": 1.692224994428063,
+      "lambda_B": 0.6477750055719371,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "35",
+    "stage": "Group Stage",
+    "teamA": "NED",
+    "teamB": "SWE",
+    "actual": {
+      "scoreA": 5,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 52.08190035223939,
+      "draw_pct": 25.739465660729934,
+      "winB_pct": 22.178633987030693,
+      "lambda_A": 1.532412416879902,
+      "lambda_B": 0.8075875831200982,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "36",
+    "stage": "Group Stage",
+    "teamA": "TUN",
+    "teamB": "JPN",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 4,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 17.800939115703713,
+      "draw_pct": 20.500102033469496,
+      "winB_pct": 61.69895885082679,
+      "lambda_A": 0.6730406482000297,
+      "lambda_B": 1.6669593517999701,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "37",
+    "stage": "Group Stage",
+    "teamA": "BEL",
+    "teamB": "IRN",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 0,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 44.369152999912224,
+      "draw_pct": 29.817671547517016,
+      "winB_pct": 25.813175452570754,
+      "lambda_A": 1.407957049314976,
+      "lambda_B": 0.9320429506850242,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "38",
+    "stage": "Group Stage",
+    "teamA": "NZL",
+    "teamB": "EGY",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 3,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 19.753002222263298,
+      "draw_pct": 22.79082694811704,
+      "winB_pct": 57.45617082961966,
+      "lambda_A": 0.7305075095958022,
+      "lambda_B": 1.6094924904041978,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "39",
+    "stage": "Group Stage",
+    "teamA": "ESP",
+    "teamB": "SAU",
+    "actual": {
+      "scoreA": 4,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 68.536592555925,
+      "draw_pct": 16.966420184983924,
+      "winB_pct": 14.496987259091085,
+      "lambda_A": 1.755734649469552,
+      "lambda_B": 0.584265350530448,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "40",
+    "stage": "Group Stage",
+    "teamA": "URU",
+    "teamB": "CPV",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 2,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 48.88395100691583,
+      "draw_pct": 27.47728598136471,
+      "winB_pct": 23.63876301171947,
+      "lambda_A": 1.4832903877513253,
+      "lambda_B": 0.8567096122486748,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "41",
+    "stage": "Group Stage",
+    "teamA": "FRA",
+    "teamB": "IRQ",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 81.986720752736,
+      "draw_pct": 10.845058551889878,
+      "winB_pct": 7.1682206953741225,
+      "lambda_A": 1.925276700964656,
+      "lambda_B": 0.41472329903534394,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "42",
+    "stage": "Group Stage",
+    "teamA": "NOR",
+    "teamB": "SEN",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 2,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 30.228657347968575,
+      "draw_pct": 32.80296433915619,
+      "winB_pct": 36.96837831287523,
+      "lambda_A": 1.0797318980106358,
+      "lambda_B": 1.2602681019893642,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "43",
+    "stage": "Group Stage",
+    "teamA": "ARG",
+    "teamB": "AUT",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 58.84567286374332,
+      "draw_pct": 22.034636272912145,
+      "winB_pct": 19.119690863344534,
+      "lambda_A": 1.628580350186155,
+      "lambda_B": 0.711419649813845,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "44",
+    "stage": "Group Stage",
+    "teamA": "JOR",
+    "teamB": "ALG",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 2,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 17.557577988822025,
+      "draw_pct": 20.22386999106716,
+      "winB_pct": 62.21855202011082,
+      "lambda_A": 0.6661540924126159,
+      "lambda_B": 1.6738459075873842,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "45",
+    "stage": "Group Stage",
+    "teamA": "POR",
+    "teamB": "UZB",
+    "actual": {
+      "scoreA": 5,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 72.95193715558096,
+      "draw_pct": 14.822611661112054,
+      "winB_pct": 12.225451183306985,
+      "lambda_A": 1.8116472545225273,
+      "lambda_B": 0.5283527454774728,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "46",
+    "stage": "Group Stage",
+    "teamA": "COL",
+    "teamB": "COD",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 74.93478844094584,
+      "draw_pct": 13.900488720284654,
+      "winB_pct": 11.164722838769519,
+      "lambda_A": 1.8365898352837717,
+      "lambda_B": 0.5034101647162286,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "47",
+    "stage": "Group Stage",
+    "teamA": "ENG",
+    "teamB": "GHA",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 0,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 52.6393061600175,
+      "draw_pct": 25.433757340638497,
+      "winB_pct": 21.92693649934401,
+      "lambda_A": 1.5406923093990161,
+      "lambda_B": 0.799307690600984,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "48",
+    "stage": "Group Stage",
+    "teamA": "PAN",
+    "teamB": "CRO",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 1,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 19.510230929768056,
+      "draw_pct": 22.49971820931136,
+      "winB_pct": 57.99005086092058,
+      "lambda_A": 0.7231391997829077,
+      "lambda_B": 1.6168608002170923,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "49",
+    "stage": "Group Stage",
+    "teamA": "CZE",
+    "teamB": "MEX",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 3,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 22.29412087413444,
+      "draw_pct": 25.879358846340235,
+      "winB_pct": 51.82652027952533,
+      "lambda_A": 0.8114067788519199,
+      "lambda_B": 1.5285932211480802,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "50",
+    "stage": "Group Stage",
+    "teamA": "RSA",
+    "teamB": "KOR",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 32.531061325991146,
+      "draw_pct": 33.301353597857506,
+      "winB_pct": 34.167585076151354,
+      "lambda_A": 1.1479175222497937,
+      "lambda_B": 1.1920824777502061,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "51",
+    "stage": "Group Stage",
+    "teamA": "SUI",
+    "teamB": "CAN",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 48.03403796069153,
+      "draw_pct": 27.93134617367875,
+      "winB_pct": 24.034615865629725,
+      "lambda_A": 1.4697069979634747,
+      "lambda_B": 0.8702930020365254,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "52",
+    "stage": "Group Stage",
+    "teamA": "BIH",
+    "teamB": "QAT",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 46.44563748770533,
+      "draw_pct": 28.765766042359793,
+      "winB_pct": 24.788596469934884,
+      "lambda_A": 1.4436231701120563,
+      "lambda_B": 0.8963768298879438,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "53",
+    "stage": "Group Stage",
+    "teamA": "SCO",
+    "teamB": "BRA",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 3,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 19.188837894526465,
+      "draw_pct": 22.11667082577492,
+      "winB_pct": 58.694491279698624,
+      "lambda_A": 0.7134826884824328,
+      "lambda_B": 1.6265173115175673,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "54",
+    "stage": "Group Stage",
+    "teamA": "MAR",
+    "teamB": "HAI",
+    "actual": {
+      "scoreA": 4,
+      "scoreB": 2,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 74.88214917135674,
+      "draw_pct": 13.924626663397202,
+      "winB_pct": 11.19322416524605,
+      "lambda_A": 1.8359283635209607,
+      "lambda_B": 0.5040716364790394,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "55",
+    "stage": "Group Stage",
+    "teamA": "TUR",
+    "teamB": "USA",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 2,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 26.820771436134955,
+      "draw_pct": 30.736519053938054,
+      "winB_pct": 42.44270950992699,
+      "lambda_A": 0.967010717994932,
+      "lambda_B": 1.3729892820050682,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "56",
+    "stage": "Group Stage",
+    "teamA": "PAR",
+    "teamB": "AUS",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 0,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 32.83867333626649,
+      "draw_pct": 33.321350714753024,
+      "winB_pct": 33.839975948980495,
+      "lambda_A": 1.156484843932764,
+      "lambda_B": 1.183515156067236,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "57",
+    "stage": "Group Stage",
+    "teamA": "ECU",
+    "teamB": "GER",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 29.551253775665003,
+      "draw_pct": 32.52503060269748,
+      "winB_pct": 37.92371562163753,
+      "lambda_A": 1.058325763928742,
+      "lambda_B": 1.281674236071258,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "58",
+    "stage": "Group Stage",
+    "teamA": "CUW",
+    "teamB": "CIV",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 2,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 16.653208706382994,
+      "draw_pct": 19.21853889820269,
+      "winB_pct": 64.12825239541432,
+      "lambda_A": 0.6410724622041091,
+      "lambda_B": 1.698927537795891,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "65",
+    "stage": "Group Stage",
+    "teamA": "NOR",
+    "teamB": "FRA",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 4,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 18.649410420651282,
+      "draw_pct": 21.480585380571153,
+      "winB_pct": 59.87000419877757,
+      "lambda_A": 0.6975240578381237,
+      "lambda_B": 1.6424759421618764,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "66",
+    "stage": "Group Stage",
+    "teamA": "SEN",
+    "teamB": "IRQ",
+    "actual": {
+      "scoreA": 5,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 59.20000664017413,
+      "draw_pct": 21.842621851936073,
+      "winB_pct": 18.957371507889796,
+      "lambda_A": 1.6334031038047696,
+      "lambda_B": 0.7065968961952304,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "59",
+    "stage": "Group Stage",
+    "teamA": "TUN",
+    "teamB": "NED",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 3,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 12.807086880532955,
+      "draw_pct": 15.349320714414269,
+      "winB_pct": 71.84359240505277,
+      "lambda_A": 0.5423280732005269,
+      "lambda_B": 1.797671926799473,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "60",
+    "stage": "Group Stage",
+    "teamA": "JPN",
+    "teamB": "SWE",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 1,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 41.97326330228504,
+      "draw_pct": 30.949534220060254,
+      "winB_pct": 27.077202477654698,
+      "lambda_A": 1.3641544432863493,
+      "lambda_B": 0.9758455567136508,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "61",
+    "stage": "Group Stage",
+    "teamA": "NZL",
+    "teamB": "BEL",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 5,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 15.946298802001529,
+      "draw_pct": 18.45715967606017,
+      "winB_pct": 65.5965415219383,
+      "lambda_A": 0.6220031645890051,
+      "lambda_B": 1.7179968354109951,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "62",
+    "stage": "Group Stage",
+    "teamA": "EGY",
+    "teamB": "IRN",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 1,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 35.01612095129513,
+      "draw_pct": 33.20845376013726,
+      "winB_pct": 31.7754252885676,
+      "lambda_A": 1.2136675935900714,
+      "lambda_B": 1.1263324064099285,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "63",
+    "stage": "Group Stage",
+    "teamA": "URU",
+    "teamB": "ESP",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 1,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 18.845260678698022,
+      "draw_pct": 21.710473642600718,
+      "winB_pct": 59.44426567870126,
+      "lambda_A": 0.70328234056241,
+      "lambda_B": 1.6367176594375903,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "64",
+    "stage": "Group Stage",
+    "teamA": "CPV",
+    "teamB": "SAU",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 0,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 29.78431150664596,
+      "draw_pct": 32.62790701501913,
+      "winB_pct": 37.58778147833491,
+      "lambda_A": 1.0657562001809011,
+      "lambda_B": 1.274243799819099,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "67",
+    "stage": "Group Stage",
+    "teamA": "JOR",
+    "teamB": "ARG",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 3,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 6.528924850970387,
+      "draw_pct": 10.413284095016035,
+      "winB_pct": 83.05779105401358,
+      "lambda_A": 0.40118088561490506,
+      "lambda_B": 1.938819114385095,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "68",
+    "stage": "Group Stage",
+    "teamA": "ALG",
+    "teamB": "AUT",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 3,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 31.05159111557298,
+      "draw_pct": 33.05665925833009,
+      "winB_pct": 35.89174962609694,
+      "lambda_A": 1.1049279164856496,
+      "lambda_B": 1.2350720835143505,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "69",
+    "stage": "Group Stage",
+    "teamA": "COL",
+    "teamB": "POR",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 0,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 36.58841926837347,
+      "draw_pct": 32.90023809770523,
+      "winB_pct": 30.511342633921295,
+      "lambda_A": 1.251511004151863,
+      "lambda_B": 1.0884889958481372,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "70",
+    "stage": "Group Stage",
+    "teamA": "COD",
+    "teamB": "UZB",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 37.286343764736294,
+      "draw_pct": 32.71555450991717,
+      "winB_pct": 29.998101725346544,
+      "lambda_A": 1.2674878783301793,
+      "lambda_B": 1.0725121216698208,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "71",
+    "stage": "Group Stage",
+    "teamA": "PAN",
+    "teamB": "ENG",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 2,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 15.055122093063089,
+      "draw_pct": 17.529181530261795,
+      "winB_pct": 67.41569637667511,
+      "lambda_A": 0.5985916190762353,
+      "lambda_B": 1.7414083809237648,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "72",
+    "stage": "Group Stage",
+    "teamA": "CRO",
+    "teamB": "GHA",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 45.405719260900156,
+      "draw_pct": 29.299111398230394,
+      "winB_pct": 25.295169340869457,
+      "lambda_A": 1.4260009539621914,
+      "lambda_B": 0.9139990460378088,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "73",
+    "stage": "Round of 32",
+    "teamA": "RSA",
+    "teamB": "CAN",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 1,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 27.972795899471077,
+      "draw_pct": 31.621894894362473,
+      "winB_pct": 40.40530920616645,
+      "lambda_A": 0.9560438220201841,
+      "lambda_B": 1.266956177979816,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "74",
+    "stage": "Round of 32",
+    "teamA": "BRA",
+    "teamB": "JPN",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 43.461245682041536,
+      "draw_pct": 30.258884295030263,
+      "winB_pct": 26.279870022928197,
+      "lambda_A": 1.3221372408879473,
+      "lambda_B": 0.9008627591120529,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "75",
+    "stage": "Round of 32",
+    "teamA": "GER",
+    "teamB": "PAR",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 1,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 40.58756882764657,
+      "draw_pct": 31.54718144220481,
+      "winB_pct": 27.865249730148626,
+      "lambda_A": 1.2704062811077197,
+      "lambda_B": 0.9525937188922803,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "76",
+    "stage": "Round of 32",
+    "teamA": "NED",
+    "teamB": "MAR",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 1,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 38.39637231699816,
+      "draw_pct": 32.37156315901619,
+      "winB_pct": 29.232064523985642,
+      "lambda_A": 1.2273607758663627,
+      "lambda_B": 0.9956392241336369,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "77",
+    "stage": "Round of 32",
+    "teamA": "CIV",
+    "teamB": "NOR",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 2,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 36.667206313665396,
+      "draw_pct": 32.88073229482953,
+      "winB_pct": 30.452061391505076,
+      "lambda_A": 1.190671735481222,
+      "lambda_B": 1.0323282645187781,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "78",
+    "stage": "Round of 32",
+    "teamA": "FRA",
+    "teamB": "SWE",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 61.49779498228239,
+      "draw_pct": 20.607336457219798,
+      "winB_pct": 17.894868560497816,
+      "lambda_A": 1.5810711219026865,
+      "lambda_B": 0.6419288780973136,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "79",
+    "stage": "Round of 32",
+    "teamA": "MEX",
+    "teamB": "ECU",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 47.84120890860505,
+      "draw_pct": 28.03370759969624,
+      "winB_pct": 24.125083491698724,
+      "lambda_A": 1.393260898820033,
+      "lambda_B": 0.8297391011799669,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "80",
+    "stage": "Round of 32",
+    "teamA": "ENG",
+    "teamB": "COD",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 67.79165727608839,
+      "draw_pct": 17.339635721708373,
+      "winB_pct": 14.868707002203237,
+      "lambda_A": 1.65891015091383,
+      "lambda_B": 0.5640898490861697,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "81",
+    "stage": "Round of 32",
+    "teamA": "BEL",
+    "teamB": "SEN",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 2,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 39.58168365971812,
+      "draw_pct": 31.946572570335668,
+      "winB_pct": 28.47174376994622,
+      "lambda_A": 1.25108148714218,
+      "lambda_B": 0.9719185128578199,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "82",
+    "stage": "Round of 32",
+    "teamA": "USA",
+    "teamB": "BIH",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 57.64315389363761,
+      "draw_pct": 22.68879735810632,
+      "winB_pct": 19.668048748256073,
+      "lambda_A": 1.5314742571551585,
+      "lambda_B": 0.6915257428448417,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "83",
+    "stage": "Round of 32",
+    "teamA": "ESP",
+    "teamB": "AUT",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 54.571456135046034,
+      "draw_pct": 24.372106325019878,
+      "winB_pct": 21.0564375399341,
+      "lambda_A": 1.490399100667413,
+      "lambda_B": 0.7326008993325871,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "84",
+    "stage": "Round of 32",
+    "teamA": "POR",
+    "teamB": "CRO",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 40.7671727151816,
+      "draw_pct": 31.472608361352822,
+      "winB_pct": 27.760218923465587,
+      "lambda_A": 1.2737846751640456,
+      "lambda_B": 0.9492153248359545,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "85",
+    "stage": "Round of 32",
+    "teamA": "SUI",
+    "teamB": "ALG",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 44.92128597628762,
+      "draw_pct": 29.54324703553936,
+      "winB_pct": 25.535466988173035,
+      "lambda_A": 1.3467489227427007,
+      "lambda_B": 0.8762510772572989,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "86",
+    "stage": "Round of 32",
+    "teamA": "AUS",
+    "teamB": "EGY",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 1,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 37.08548221257592,
+      "draw_pct": 32.771391350150815,
+      "winB_pct": 30.143126437273278,
+      "lambda_A": 1.1997914923734192,
+      "lambda_B": 1.0232085076265807,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "87",
+    "stage": "Round of 32",
+    "teamA": "ARG",
+    "teamB": "CPV",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 2,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 73.97652624518555,
+      "draw_pct": 14.342844841101765,
+      "winB_pct": 11.68062891371268,
+      "lambda_A": 1.7333160306585458,
+      "lambda_B": 0.48968396934145386,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "88",
+    "stage": "Round of 32",
+    "teamA": "COL",
+    "teamB": "GHA",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 57.89219262569648,
+      "draw_pct": 22.55302821393375,
+      "winB_pct": 19.554779160369772,
+      "lambda_A": 1.5347378330220476,
+      "lambda_B": 0.6882621669779524,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "89",
+    "stage": "Round of 16",
+    "teamA": "PAR",
+    "teamB": "FRA",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 1,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 20.199401518329775,
+      "draw_pct": 23.329487391929863,
+      "winB_pct": 56.47111108974037,
+      "lambda_A": 0.7070118776616634,
+      "lambda_B": 1.5159881223383365,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": true
+  },
+  {
+    "match_id": "90",
+    "stage": "Round of 16",
+    "teamA": "CAN",
+    "teamB": "MAR",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 3,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 27.569915642136074,
+      "draw_pct": 31.33347028255994,
+      "winB_pct": 41.09661407530399,
+      "lambda_A": 0.9430725695189576,
+      "lambda_B": 1.2799274304810424,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "91",
+    "stage": "Round of 16",
+    "teamA": "BRA",
+    "teamB": "NOR",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 2,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 53.36665234680926,
+      "draw_pct": 25.03430366170307,
+      "winB_pct": 21.599043991487658,
+      "lambda_A": 1.4738164523308024,
+      "lambda_B": 0.7491835476691975,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "92",
+    "stage": "Round of 16",
+    "teamA": "MEX",
+    "teamB": "ENG",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 3,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 35.57554472938562,
+      "draw_pct": 33.117550048716254,
+      "winB_pct": 31.30690522189813,
+      "lambda_A": 1.1660686765595487,
+      "lambda_B": 1.0569313234404516,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "93",
+    "stage": "Round of 16",
+    "teamA": "POR",
+    "teamB": "ESP",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 1,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 27.59198746843864,
+      "draw_pct": 31.34987221648078,
+      "winB_pct": 41.058140315080585,
+      "lambda_A": 0.9437863910729251,
+      "lambda_B": 1.279213608927075,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "94",
+    "stage": "Round of 16",
+    "teamA": "USA",
+    "teamB": "BEL",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 4,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 35.369614156931846,
+      "draw_pct": 33.15358306661597,
+      "winB_pct": 31.476802776452185,
+      "lambda_A": 1.1612910566190406,
+      "lambda_B": 1.0617089433809597,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "95",
+    "stage": "Round of 16",
+    "teamA": "ARG",
+    "teamB": "EGY",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 2,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 61.01657220805027,
+      "draw_pct": 20.864494246916383,
+      "winB_pct": 18.118933545033354,
+      "lambda_A": 1.5749769274277403,
+      "lambda_B": 0.6480230725722598,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "96",
+    "stage": "Round of 16",
+    "teamA": "SUI",
+    "teamB": "COL",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 0,
+      "outcome": "D"
+    },
+    "predicted": {
+      "winA_pct": 28.040243141484318,
+      "draw_pct": 31.667898594954913,
+      "winB_pct": 40.29185826356078,
+      "lambda_A": 0.9582026373551276,
+      "lambda_B": 1.264797362644872,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "97",
+    "stage": "Quarter-finals",
+    "teamA": "FRA",
+    "teamB": "MAR",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 47.053130568985665,
+      "draw_pct": 28.449135884537935,
+      "winB_pct": 24.49773354647639,
+      "lambda_A": 1.3374152786484914,
+      "lambda_B": 0.8153847213515085,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "98",
+    "stage": "Quarter-finals",
+    "teamA": "ESP",
+    "teamB": "BEL",
+    "actual": {
+      "scoreA": 2,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 48.28237838611328,
+      "draw_pct": 27.799142019449818,
+      "winB_pct": 23.918479594436903,
+      "lambda_A": 1.3558053805419104,
+      "lambda_B": 0.7969946194580899,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "99",
+    "stage": "Quarter-finals",
+    "teamA": "NOR",
+    "teamB": "ENG",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 2,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 22.8287719912363,
+      "draw_pct": 26.522703508018154,
+      "winB_pct": 50.64852450074555,
+      "lambda_A": 0.7629051359042953,
+      "lambda_B": 1.389894864095705,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "100",
+    "stage": "Quarter-finals",
+    "teamA": "ARG",
+    "teamB": "SUI",
+    "actual": {
+      "scoreA": 3,
+      "scoreB": 1,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 48.0693933441555,
+      "draw_pct": 27.912550025244382,
+      "winB_pct": 24.018056630600118,
+      "lambda_A": 1.352654837781025,
+      "lambda_B": 0.8001451622189752,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "101",
+    "stage": "Semi-finals",
+    "teamA": "FRA",
+    "teamB": "ESP",
+    "actual": {
+      "scoreA": 0,
+      "scoreB": 2,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 34.09555011740838,
+      "draw_pct": 33.306544768140945,
+      "winB_pct": 32.597905114450676,
+      "lambda_A": 1.071189077896451,
+      "lambda_B": 1.0348109221035495,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "102",
+    "stage": "Semi-finals",
+    "teamA": "ENG",
+    "teamB": "ARG",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 2,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 26.59390964319477,
+      "draw_pct": 30.540775840619784,
+      "winB_pct": 42.86531451618545,
+      "lambda_A": 0.8632507175018228,
+      "lambda_B": 1.2427492824981774,
+      "mostLikelyScoreline": "0-1"
+    },
+    "status": "ok",
+    "correct_outcome": true,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "103",
+    "stage": "Third-place match",
+    "teamA": "FRA",
+    "teamB": "ENG",
+    "actual": {
+      "scoreA": 4,
+      "scoreB": 6,
+      "outcome": "B"
+    },
+    "predicted": {
+      "winA_pct": 40.796094012116725,
+      "draw_pct": 31.460513963942184,
+      "winB_pct": 27.743392023941098,
+      "lambda_A": 1.2072568995171642,
+      "lambda_B": 0.8987431004828357,
+      "mostLikelyScoreline": "1-0"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  },
+  {
+    "match_id": "104",
+    "stage": "Final",
+    "teamA": "ESP",
+    "teamB": "ARG",
+    "actual": {
+      "scoreA": 1,
+      "scoreB": 0,
+      "outcome": "A"
+    },
+    "predicted": {
+      "winA_pct": 31.13150141057206,
+      "draw_pct": 33.076598397530944,
+      "winB_pct": 35.79190019189699,
+      "lambda_A": 0.9744468585512969,
+      "lambda_B": 1.0847531414487033,
+      "mostLikelyScoreline": "1-1"
+    },
+    "status": "ok",
+    "correct_outcome": false,
+    "correct_scoreline": false
+  }
+]
